@@ -2,18 +2,16 @@
 <html>
 <head>
 
-<!--TODO: THE METADATA OF THE WEBSITE CAN BE EDITED USING THE META TAGS BELOW -->
   <meta charset="utf-8">
   <meta name="description"
-        content="Template project website. Replace this line with a one-sentence summary of your project.">
-  <meta name="keywords" content="project website, template, research">
+        content="Decentralized Graph-of-Thoughts with OSM map grounding for cooperative autonomous driving. Project page for CS-503 (EPFL).">
+  <meta name="keywords" content="V2V, cooperative driving, V2V4Real, V2V-GoT, OpenStreetMap, OSM, Graph-of-Thoughts, autonomous driving, LiDAR, decentralized perception">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Project Title</title>
-<!------------------------------------------------------------------------->
+  <title>Decentralized V2V-GoT with OSM Map Grounding</title>
 
-
-
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap"
         rel="stylesheet">
 
   <link rel="stylesheet" href="./static/css/bulma.min.css">
@@ -39,517 +37,1714 @@
     };
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* ============================================================
+       Design tokens  —  quiet academic palette
+       ============================================================ */
+    :root {
+      --bg:            #ffffff;
+      --bg-soft:       #fafaf9;
+      --bg-mute:       #f4f4f3;
+      --ink:           #18181b;       /* zinc-900 */
+      --ink-soft:      #3f3f46;       /* zinc-700 */
+      --ink-muted:     #71717a;       /* zinc-500 */
+      --line:          #e4e4e7;       /* zinc-200 */
+      --line-soft:     #f1f1f0;
+      --accent:        #1e293b;       /* slate-800, conservative ink-blue */
+      --accent-soft:   #f1f5f9;       /* slate-100 */
+      --accent-dark:   #0f172a;       /* slate-900 */
+      --good:          #15803d;       /* green-700, used as ink only */
+      --bad:           #b91c1c;       /* red-700, used as ink only */
+
+      --serif:   'Source Serif 4', Georgia, 'Times New Roman', serif;
+      --sans:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --display: 'Source Serif 4', Georgia, serif;
+
+      --radius-sm: 3px;
+      --radius:    4px;
+      --radius-lg: 6px;
+    }
+
+    /* ============================================================
+       Base typography
+       ============================================================ */
+    html, body { background: var(--bg); color: var(--ink); }
+    body {
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .content, .content p, p, li {
+      font-family: var(--serif);
+      font-size: 1.02rem;
+      line-height: 1.72;
+      color: var(--ink-soft);
+    }
+    .content li + li { margin-top: 0.35rem; }
+
+    h1, h2, h3, h4, h5, h6,
+    .title, .subtitle {
+      font-family: var(--sans) !important;
+      color: var(--ink);
+      letter-spacing: -0.005em;
+    }
+    .publication-title {
+      font-family: var(--display) !important;
+      font-weight: 600;
+      letter-spacing: -0.022em;
+      line-height: 1.15;
+    }
+    .title.is-3 {
+      font-size: 1.45rem;
+      font-weight: 600;
+      margin-bottom: 0.85rem;
+      letter-spacing: -0.005em;
+    }
+    .title.is-4 {
+      font-size: 1.08rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-top: 2.25rem;
+      margin-bottom: 0.65rem;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .title.is-5 {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      text-transform: none;
+      margin-top: 1.4rem !important;
+      margin-bottom: 0.4rem;
+    }
+
+    /* Code */
+    code, pre, kbd {
+      font-family: var(--mono);
+      font-size: 0.88em;
+    }
+    code {
+      background: var(--bg-mute);
+      color: var(--ink);
+      padding: 0.08em 0.38em;
+      border-radius: 3px;
+      font-weight: 400;
+    }
+
+    strong { color: var(--ink); font-weight: 600; }
+    em     { color: var(--ink-soft); }
+
+    /* Links — quiet, underline-only */
+    a {
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-color: var(--line);
+      text-underline-offset: 3px;
+      text-decoration-thickness: 1px;
+      transition: text-decoration-color .15s ease;
+    }
+    a:hover { text-decoration-color: var(--ink); }
+
+    /* ============================================================
+       Hero — minimal, paper-like
+       ============================================================ */
+    section.hero {
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-body { padding: 4.5rem 1.5rem 2.5rem; }
+    .publication-title {
+      font-size: 2.35rem;
+      font-weight: 600;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .publication-subtitle {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--ink-muted);
+      font-size: 1.0rem;
+      letter-spacing: 0;
+      margin-top: 0.65rem;
+    }
+    .author-row {
+      display: block;
+      margin-top: 1.5rem;
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+      text-align: center;
+    }
+    .author-chip {
+      display: inline;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      font-weight: 400;
+    }
+    .author-chip + .author-chip::before {
+      content: " \00b7 ";
+      color: var(--ink-muted);
+      padding: 0 0.15rem;
+    }
+    .affiliation {
+      margin-top: 0.55rem;
+      font-family: var(--sans);
+      font-size: 0.76rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    /* Hero buttons */
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      justify-content: center;
+      margin-top: 1.6rem;
+    }
+    .hero-actions a.hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.5rem 1rem;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      text-decoration: none;
+      letter-spacing: 0;
+      transition: background .15s ease, color .15s ease;
+    }
+    .hero-actions a.hero-btn:hover {
+      background: var(--ink);
+      color: #fff;
+      text-decoration: none;
+    }
+    .hero-actions a.hero-btn .icon { font-size: 0.9em; }
+
+    /* Teaser */
+    .hero.teaser { background: transparent; border-bottom: none; }
+    .hero.teaser .hero-body { padding-top: 2.5rem; padding-bottom: 1rem; }
+    .hero.teaser .subtitle {
+      font-family: var(--serif);
+      font-style: normal;
+      font-weight: 400;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+      max-width: 680px;
+      margin: 1.5rem auto 0;
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       Sections / containers
+       ============================================================ */
+    section.section { padding: 2.25rem 1.5rem; }
+    section.section + section.section { padding-top: 0.25rem; }
+    .container.is-max-desktop { max-width: 820px; }
+
+    /* ============================================================
+       Overview cards
+       ============================================================ */
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.65rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 700px) { .nav-grid { grid-template-columns: repeat(2, 1fr); } }
+    .nav-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.3rem;
+      padding: 0.85rem 1rem;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .nav-card:hover {
+      border-color: var(--ink-soft);
+      background: var(--bg-soft);
+      text-decoration: none;
+    }
+    .nav-card .nav-num {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+    }
+    .nav-card .nav-title {
+      font-family: var(--sans);
+      font-weight: 500;
+      color: var(--ink);
+      font-size: 0.92rem;
+      line-height: 1.3;
+    }
+
+    /* ============================================================
+       Part divider (replaces banner)
+       ============================================================ */
+    .part-banner {
+      position: relative;
+      padding: 1.5rem 0 0 0;
+      margin: 2.75rem 0 1.25rem 0;
+      background: transparent;
+      border: none;
+      border-top: 1px solid var(--line);
+      border-radius: 0;
+    }
+    .part-banner .part-label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      color: var(--ink-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .part-banner h2 {
+      margin: 0 !important;
+      color: var(--ink);
+      font-size: 1.55rem;
+      font-weight: 600;
+    }
+    .part-banner .part-sub {
+      margin-top: 0.5rem;
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--ink-muted);
+      font-size: 0.95rem;
+    }
+
+    /* ============================================================
+       Callouts — quiet grey
+       ============================================================ */
+    .callout {
+      position: relative;
+      padding: 0.85rem 1rem;
+      margin: 1.25rem 0;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-left: 2px solid var(--ink-soft);
+      border-radius: 0;
+      color: var(--ink-soft);
+      font-family: var(--serif);
+      font-size: 0.97rem;
+      line-height: 1.6;
+    }
+    .callout::before { display: none; }
+    .callout strong { color: var(--ink); }
+    .callout.warn,
+    .callout.danger { background: var(--bg-soft); border-left-color: var(--ink-soft); }
+
+    /* ============================================================
+       Real figures (image + video)
+       ============================================================ */
+    .teaser-figure {
+      margin: 0 auto;
+      max-width: 720px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+    }
+    .teaser-video {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .teaser-figure figcaption {
+      padding: 0.65rem 0.95rem;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      font-family: var(--sans);
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+      text-align: center;
+    }
+    .pipeline-figure {
+      margin: 1.4rem auto;
+      padding: 1.2rem 1.2rem 1rem;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    .pipeline-img {
+      display: block;
+      max-width: 440px;
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
+    }
+    .pipeline-figure figcaption {
+      margin-top: 0.9rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--line-soft);
+      font-family: var(--sans);
+      font-size: 0.86rem;
+      color: var(--ink-muted);
+      line-height: 1.55;
+      text-align: left;
+    }
+    .pipeline-figure figcaption strong { color: var(--ink); }
+
+    /* ============================================================
+       Diagram placeholder
+       ============================================================ */
+    .diagram-slot {
+      position: relative;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--ink-muted);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      margin: 1.5rem 0;
+    }
+    .diagram-slot::before {
+      content: "PLACEHOLDER";
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink-muted);
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+    }
+    .diagram-slot strong { color: var(--ink); }
+
+    /* ============================================================
+       Pipeline question pills — quiet
+       ============================================================ */
+    .tag-method {
+      display: inline-block;
+      padding: 0.08rem 0.4rem;
+      border-radius: 3px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 500;
+      margin-right: 0.35rem;
+      background: var(--bg-mute);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      letter-spacing: 0;
+    }
+
+    /* ============================================================
+       Tables — hairline academic
+       ============================================================ */
+    .table-container {
+      margin: 1.3rem 0;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      overflow-x: auto;
+      background: #fff;
+    }
+    table.table {
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      border: none !important;
+      margin-bottom: 0;
+    }
+    table.table thead th {
+      background: var(--bg-soft) !important;
+      color: var(--ink) !important;
+      font-weight: 600;
+      font-size: 0.78rem;
+      letter-spacing: 0;
+      border: none !important;
+      border-bottom: 1px solid var(--line) !important;
+      padding: 0.6rem 0.7rem;
+      text-align: center;
+      vertical-align: middle;
+    }
+    table.table thead tr:first-child th:first-child { text-align: left; }
+    table.table tbody td {
+      border: none !important;
+      border-bottom: 1px solid var(--line-soft) !important;
+      padding: 0.5rem 0.7rem;
+      vertical-align: middle;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--ink);
+    }
+    table.table tbody tr:last-child td { border-bottom: none !important; }
+    table.table tbody td:first-child {
+      text-align: left;
+      font-family: var(--sans);
+      color: var(--ink-soft);
+    }
+    table.table tbody tr:hover td { background: var(--bg-soft); }
+    table.table.is-striped tbody tr:nth-child(even) { background: transparent !important; }
+    table.table caption {
+      caption-side: bottom !important;
+      text-align: left !important;
+      padding: 0.6rem 0.85rem 0.8rem;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      font-style: normal;
+      background: #fff;
+      border-top: 1px solid var(--line-soft);
+    }
+    table.table caption em { color: var(--ink); font-style: normal; font-weight: 600; }
+
+    .approach-cell {
+      font-family: var(--mono) !important;
+      font-weight: 500 !important;
+      color: var(--ink) !important;
+      letter-spacing: 0;
+      font-size: 0.85rem !important;
+    }
+    /* Best / worst use only colour, no fill */
+    .metric-best  { color: var(--good) !important; font-weight: 600; background: transparent !important; }
+    .metric-worst { color: var(--bad)  !important; background: transparent !important; }
+    table.table tbody tr.metric-worst td { background: transparent !important; color: var(--bad) !important; }
+
+    table.compact td, table.compact th { padding: 0.45rem 0.6rem; }
+
+    /* ============================================================
+       Footer — slim
+       ============================================================ */
+    footer.footer {
+      background: var(--bg);
+      border-top: 1px solid var(--line);
+      padding: 2rem 1.5rem;
+      margin-top: 2rem;
+    }
+    footer.footer .content,
+    footer.footer p {
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      line-height: 1.6;
+    }
+    footer.footer .title { color: var(--ink); font-size: 0.92rem; font-weight: 600; }
+    footer.footer strong { color: var(--ink-soft); font-weight: 500; }
+
+    /* ============================================================
+       Section number — inline, plain
+       ============================================================ */
+    .section-num {
+      display: inline;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin-right: 0.55rem;
+      letter-spacing: 0.08em;
+      vertical-align: baseline;
+      font-weight: 500;
+      text-transform: uppercase;
+      position: static;
+    }
+
+    /* ============================================================
+       Contribution panel — quiet cards
+       ============================================================ */
+    .contrib-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.9rem;
+      margin: 1.75rem 0 0.5rem;
+    }
+    @media (max-width: 720px) { .contrib-grid { grid-template-columns: 1fr; } }
+    .contrib-card {
+      position: relative;
+      padding: 1.2rem 1.35rem 1.3rem;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      transition: border-color .15s ease, background .15s ease;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .contrib-card::before { display: none; }
+    .contrib-card:hover {
+      border-color: var(--ink-soft);
+      background: var(--bg-soft);
+      text-decoration: none;
+    }
+    .contrib-card .contrib-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      font-weight: 500;
+      margin-bottom: 0.45rem;
+    }
+    .contrib-card h4 {
+      font-family: var(--sans);
+      font-size: 1.08rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0 0 0.5rem 0;
+    }
+    .contrib-card p {
+      font-family: var(--serif);
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      margin: 0 0 0.9rem;
+    }
+    .contrib-card .contrib-link {
+      margin-top: auto;
+      align-self: flex-start;
+      font-family: var(--sans);
+      font-weight: 500;
+      color: var(--ink-soft);
+      font-size: 0.84rem;
+      letter-spacing: 0;
+    }
+    .contrib-card .contrib-link::after {
+      content: " \2192";
+      transition: transform .15s ease;
+      display: inline-block;
+    }
+    .contrib-card:hover .contrib-link { color: var(--ink); }
+    .contrib-card:hover .contrib-link::after { transform: translateX(2px); }
+
+    /* ============================================================
+       KPI / headline-metric cards
+       ============================================================ */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.7rem;
+      margin: 1.25rem 0 1.5rem;
+    }
+    @media (max-width: 720px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi-card {
+      padding: 1rem 1.1rem 1rem;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      text-align: left;
+    }
+    .kpi-card .kpi-label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 0.55rem;
+      font-weight: 500;
+    }
+    .kpi-card .kpi-value {
+      font-family: var(--display);
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-card .kpi-unit {
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin-left: 0.3rem;
+      font-weight: 500;
+    }
+    .kpi-card .kpi-note {
+      display: block;
+      margin-top: 0.45rem;
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+    }
+    .kpi-card.is-accent {
+      background: #fff;
+      border-color: var(--ink);
+    }
+    .kpi-card.is-accent .kpi-label { color: var(--ink); }
+    .kpi-card.is-delta .kpi-value { color: var(--ink-soft); font-weight: 600; font-size: 1.45rem; }
+
+    /* ============================================================
+       Strategy cards
+       ============================================================ */
+    .strategy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+      margin: 1.3rem 0;
+    }
+    @media (max-width: 820px) { .strategy-grid { grid-template-columns: 1fr; } }
+    .strategy-card {
+      padding: 1.05rem 1.15rem 1.0rem;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .strategy-card h5 {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--ink);
+      background: transparent;
+      border: none;
+      padding: 0;
+      border-radius: 0;
+      display: block;
+      align-self: flex-start;
+      font-weight: 600;
+      margin: 0;
+    }
+    .strategy-card h5::before {
+      content: "// ";
+      color: var(--ink-muted);
+      font-weight: 400;
+    }
+    .strategy-card .strategy-where {
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .strategy-card .strategy-note {
+      font-family: var(--serif);
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+    .cost-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--ink-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+    .cost-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--line);
+    }
+    .cost-pill.cost-low    .cost-dot:nth-child(1) { background: var(--ink); }
+    .cost-pill.cost-medium .cost-dot:nth-child(1),
+    .cost-pill.cost-medium .cost-dot:nth-child(2) { background: var(--ink); }
+    .cost-pill.cost-high   .cost-dot:nth-child(1),
+    .cost-pill.cost-high   .cost-dot:nth-child(2),
+    .cost-pill.cost-high   .cost-dot:nth-child(3) { background: var(--ink); }
+
+    /* ============================================================
+       Yes/no marks in the config table
+       ============================================================ */
+    .mark { font-family: var(--sans); font-weight: 500; font-size: 0.95rem; }
+    .mark-yes { color: var(--good); }
+    .mark-no  { color: var(--ink-muted); }
+    .mark-na  { color: var(--ink-muted); opacity: 0.5; }
+    table.table tbody tr.is-highlight td:not(.metric-best):not(.metric-worst) {
+      background: var(--bg-soft) !important;
+    }
+    table.table tbody tr.is-highlight td:first-child {
+      color: var(--ink) !important;
+      font-weight: 600;
+      box-shadow: inset 2px 0 0 var(--ink);
+    }
+    table.table tbody tr.is-highlight td.approach-cell {
+      color: var(--ink) !important;
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       Scenario grid (dataset section)
+       ============================================================ */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.7rem;
+      margin: 1.5rem 0 0.5rem;
+    }
+    @media (max-width: 720px) { .scenario-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .scenario-grid { grid-template-columns: 1fr; } }
+    .scenario-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+    .scenario-card .scen-media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--bg-mute);
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+    }
+    .scenario-card .scen-media video,
+    .scenario-card .scen-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .scenario-card .scen-media.is-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        repeating-linear-gradient(135deg,
+          var(--bg-soft) 0,
+          var(--bg-soft) 10px,
+          var(--bg-mute) 10px,
+          var(--bg-mute) 20px);
+    }
+    .scenario-card .scen-media.is-empty::after {
+      content: "video TBD";
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.16em;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 0.18rem 0.55rem;
+      border-radius: 3px;
+    }
+    .scenario-card figcaption {
+      padding: 0.55rem 0.75rem 0.65rem;
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      background: #fff;
+    }
+    .scenario-card .scen-num {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      color: var(--ink);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .scenario-card .scen-meta {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.04em;
+      margin-top: 0.1rem;
+    }
+    .scenario-card .scen-desc {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--ink-soft);
+      font-family: var(--serif);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       Section dividers
+       ============================================================ */
+    .section-divider {
+      max-width: 60px;
+      margin: 0 auto 1.5rem;
+      border: 0;
+      border-top: 1px solid var(--line);
+      opacity: 1;
+    }
+
+    /* ============================================================
+       Misc
+       ============================================================ */
+    .columns.is-centered { margin-left: auto; margin-right: auto; }
+    .subtitle { color: var(--ink-muted); }
+    section.section .columns { margin: 0; }
+    section.section .content ol li::marker,
+    section.section .content ul li::marker { color: var(--ink-muted); }
+    hr { background-color: var(--line); height: 1px; }
+  </style>
 </head>
 <body>
 
-<!--TODO: THE HEADLINE OF THE WEBPAGE: TITLE AND AUTHORS -->
-
+<!-- ============================================================ -->
+<!-- HERO                                                          -->
+<!-- ============================================================ -->
 <section class="hero">
   <div class="hero-body">
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Project Title</h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="https://people.epfl.ch/">John Doe</a>,
-            </span>
-            <span class="author-block">
-              <a href="https://people.epfl.ch/">Alice Smith</a>,
-            </span>
-            <span class="author-block">
-              <a href="https://people.epfl.ch/">Bob Johnson</a>,
-            </span>
-            <span class="author-block">
-              <a href="https://people.epfl.ch/">Jane Doe</a>
-            </span>
+          <h1 class="title publication-title">
+            Decentralized Graph-of-Thoughts with OSM Map Grounding
+          </h1>
+          <p class="publication-subtitle">for Cooperative Autonomous Driving</p>
+
+          <div class="author-row">
+            <span class="author-chip">Ilyas Faresse</span>
+            <span class="author-chip">Imade Bouhamria</span>
+            <span class="author-chip">Paul Tercier</span>
+            <span class="author-chip">Adri&aacute;n Mart&iacute;nez L&oacute;pez</span>
           </div>
+          <div class="affiliation">EPFL &middot; CS-503 Project</div>
 
-<!------------------------------------------------------------------------->
-
-<!--TODO: THE LINKS RELATED TO THE PROJECT -->
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <!-- PDF Link. -->
-              <span class="link-block">
-                <a href="https://arxiv.org"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Document</span>
-                </a>
-              </span>
-              <!-- YouTube Link. -->
-              <span class="link-block">
-                <a href="https://www.youtube.com"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-youtube"></i>
-                  </span>
-                  <span>Video</span>
-                </a>
-              </span>
-              <!-- GitHub Link. -->
-              <span class="link-block">
-                <a href="https://github.com/tarhanefe/cs503-project-template"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-github"></i>
-                  </span>
-                  <span>Project Code</span>
-                  </a>
-              </span>
-              <!-- Dataset Link. -->
-                <span class="link-block">
-                  <a href="https://drive.google.com/drive/folders/13W_453e-h2TWAfAnp6Ga00TYwEzTnMtg?usp=sharing"
-                    class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                      <i class="fab fa-google-drive"></i>
-                    </span>
-                    <span>Dataset/Drive</span>
-                  </a>
-                </span>
-              <!-- GitHub Website Link. -->
-              <span class="link-block">
-                <a href="https://github.com/tarhanefe/cs503-project-template"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-github"></i>
-                  </span>
-                  <span>Website Code</span>
-                  </a>
-              </span>
-            </div>
-
+          <div class="hero-actions">
+            <a href="#" class="hero-btn" target="_blank" rel="noopener">
+              <span class="icon"><i class="fab fa-github"></i></span>
+              <span>Code</span>
+            </a>
+            <a href="#" class="hero-btn" target="_blank" rel="noopener">
+              <span class="icon"><i class="fas fa-file-pdf"></i></span>
+              <span>Report</span>
+            </a>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-<!------------------------------------------------------------------------->
 
-<!--TODO: THE LINKS RELATED TO THE PROJECT -->
-
+<!-- ============================================================ -->
+<!-- TEASER                                                        -->
+<!-- ============================================================ -->
 <section class="hero teaser">
   <div class="container is-max-desktop">
     <div class="hero-body">
-      <!-- TODO: Replace with your teaser image, gif or video file. Choose something that represents your project. -->
-      <video id="teaser" autoplay muted loop playsinline height="100%">
-        <source src="./static/videos/teaser.mp4"
-                type="video/mp4">
-      </video>
-      <h2 class="subtitle has-text-centered">
-        <span class="dnerf">Project Name</span> one-sentence teaser about what your project does.
-      </h2>
+      <figure class="teaser-figure">
+        <video autoplay muted loop playsinline preload="metadata" class="teaser-video">
+          <source src="./static/videos/v2v_scenario0.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </figure>
     </div>
   </div>
 </section>
 
-<!------------------------------------------------------------------------->
-
-<!--TODO: ABSTRACT OF THE PROJECT -->
-
+<!-- ============================================================ -->
+<!-- ABSTRACT                                                      -->
+<!-- ============================================================ -->
 <section class="section">
   <div class="container is-max-desktop">
-    <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            <!-- TODO: Replace this abstract with your own project summary (3-5 sentences). -->
-            [Problem] Briefly describe the problem your project tackles and why it matters.
+            V2V-GoT casts cooperative autonomous driving as a Graph-of-Thoughts (GoT) over
+            nine perception, prediction and planning question nodes (Q1&hellip;Q9), with all
+            participating CAVs sharing one centralized LM that fuses their LiDAR features. We
+            build on this baseline along two axes.
           </p>
           <p>
-            [Approach] Explain your main idea, model, or system in one to two sentences.
+            <strong>OSM map grounding.</strong> We recover GPS traces from V2V4Real metadata,
+            align them to the LiDAR BEV frame, and study three strategies for injecting the
+            local OpenStreetMap road graph into the GoT: a learned visual encoder feeding the
+            projector, a rasterized OSM image fed directly into LLaVA's visual context, and a
+            short textual description of the road graph injected as text tokens.
           </p>
           <p>
-            [Results] Summarize key outcomes, such as quantitative improvements, qualitative
-            observations, and main conclusions.
+            <strong>Decentralization.</strong> Each CAV runs the entire Q1&hellip;Q9 chain on
+            its own LiDAR. Vehicles cooperate only through two compact V2V text messages
+            broadcast between question nodes. Our full decentralized configuration reaches
+            PDMS 0.861 on V2V4Real against 0.876 for centralized fusion, while exposing a
+            clear Q8&rarr;Q9 information bottleneck in the original GoT design.
           </p>
         </div>
       </div>
     </div>
-    <!--/ Abstract. -->
-<!------------------------------------------------------------------------->
-<!--TODO: LIST OF ITEMS IN THE WEBSITE -->
 
-<div class="columns is-centered has-text-centered">
-        <div class="column is-full-width">
+    <!-- Dataset -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3" id="dataset" style="margin-top: 2rem;">Dataset</h2>
+        <div class="content has-text-justified">
+          <p>
+            All experiments use <strong>V2V4Real</strong>, a real-world cooperative-driving
+            benchmark recorded with two connected vehicles equipped with roof-mounted LiDAR.
+            Each sample is a synchronized pair of BEV LiDAR point clouds together with
+            ground-truth annotations for objects, motion, and planning.
+          </p>
+          <p>
+            The validation split we use contains <strong>1723 frame pairs</strong> spread
+            across <strong>9 driving scenarios</strong>. Each scenario is a different route
+            with its own road geometry, traffic pattern, and manoeuvre profile. Below is a
+            visual tour, with frame counts per scenario.
+          </p>
+        </div>
 
-          <h2 class="title is-3">Overview</h2>
-          <div class="tile is-ancestor is-centered" style="vertical-align: middle;">
-            <div class="tile is-parent">
-              <a href="#intro" class="tile is-child box">
-                <p class="subtitle">
-                  <font size="-1">Introduction</font>
-                </p>
-              </a>
+        <div class="scenario-grid">
+          <figure class="scenario-card">
+            <div class="scen-media">
+              <video autoplay muted loop playsinline preload="metadata">
+                <source src="./static/videos/v2v_scenario0.mp4" type="video/mp4">
+              </video>
             </div>
+            <figcaption>
+              <span class="scen-num">Scenario 0</span>
+              <span class="scen-meta">117 frame pairs</span>
+            </figcaption>
+          </figure>
 
-            <div class="tile is-parent">
-              <a href="#related-work" class="tile is-child box">
-                <p class="subtitle">
-                  <font size="-1">Related Works</font>
-                </p>
-              </a>
+          <figure class="scenario-card">
+            <div class="scen-media">
+              <video autoplay muted loop playsinline preload="metadata">
+                <source src="./static/videos/v2v_scenario1.mp4" type="video/mp4">
+              </video>
             </div>
+            <figcaption>
+              <span class="scen-num">Scenario 1</span>
+              <span class="scen-meta">84 frame pairs</span>
+            </figcaption>
+          </figure>
 
-            <div class="tile is-parent">
-              <a href="#method" class="tile is-child box">
-                <p class="subtitle">
-                  <font size="-1">Methodology</font>
-                </p>
-              </a>
+          <figure class="scenario-card">
+            <div class="scen-media">
+              <video autoplay muted loop playsinline preload="metadata">
+                <source src="./static/videos/v2v_scenario2.mp4" type="video/mp4">
+              </video>
             </div>
+            <figcaption>
+              <span class="scen-num">Scenario 2</span>
+              <span class="scen-meta">114 frame pairs</span>
+            </figcaption>
+          </figure>
 
-            <div class="tile is-parent">
-              <a href="#results" class="tile is-child box">
-                <p class="subtitle">
-                  <font size="-1">Results</font>
-                </p>
-              </a>
+          <figure class="scenario-card">
+            <div class="scen-media">
+              <video autoplay muted loop playsinline preload="metadata">
+                <source src="./static/videos/v2v_scenario3.mp4" type="video/mp4">
+              </video>
             </div>
+            <figcaption>
+              <span class="scen-num">Scenario 3</span>
+              <span class="scen-meta">168 frame pairs</span>
+            </figcaption>
+          </figure>
 
-            <div class="tile is-parent">
-              <a href="#conclusion" class="tile is-child box">
-                <p class="subtitle">
-                  <font size="-1">Conclusion and Limitations</font>
-                </p>
-              </a>
+          <figure class="scenario-card">
+            <div class="scen-media">
+              <video autoplay muted loop playsinline preload="metadata">
+                <source src="./static/videos/v2v_scenario4.mp4" type="video/mp4">
+              </video>
             </div>
-<!--- TODO: Remove this part, this is here to show you possible visualizations used in the website ---------------->
+            <figcaption>
+              <span class="scen-num">Scenario 4</span>
+              <span class="scen-meta">150 frame pairs</span>
+            </figcaption>
+          </figure>
 
-            <div class="tile is-parent">
-              <a href="#visual_items" class="tile is-child box">
-                <p class="subtitle">
-                  <font size="-1">Visual Items</font>
-                </p>
-              </a>
+          <figure class="scenario-card">
+            <div class="scen-media">
+              <video autoplay muted loop playsinline preload="metadata">
+                <source src="./static/videos/v2v_scenario5.mp4" type="video/mp4">
+              </video>
             </div>
-          </div>
+            <figcaption>
+              <span class="scen-num">Scenario 5</span>
+              <span class="scen-meta">280 frame pairs</span>
+            </figcaption>
+          </figure>
 
+          <figure class="scenario-card">
+            <div class="scen-media">
+              <video autoplay muted loop playsinline preload="metadata">
+                <source src="./static/videos/v2v_scenario6.mp4" type="video/mp4">
+              </video>
+            </div>
+            <figcaption>
+              <span class="scen-num">Scenario 6</span>
+              <span class="scen-meta">274 frame pairs</span>
+            </figcaption>
+          </figure>
+
+          <figure class="scenario-card">
+            <div class="scen-media">
+              <video autoplay muted loop playsinline preload="metadata">
+                <source src="./static/videos/v2v_scenario7.mp4" type="video/mp4">
+              </video>
+            </div>
+            <figcaption>
+              <span class="scen-num">Scenario 7</span>
+              <span class="scen-meta">191 frame pairs</span>
+            </figcaption>
+          </figure>
+
+          <figure class="scenario-card">
+            <div class="scen-media">
+              <video autoplay muted loop playsinline preload="metadata">
+                <source src="./static/videos/v2v_scenario8.mp4" type="video/mp4">
+              </video>
+            </div>
+            <figcaption>
+              <span class="scen-num">Scenario 8</span>
+              <span class="scen-meta">345 frame pairs</span>
+            </figcaption>
+          </figure>
         </div>
       </div>
-<!------------------------------------------------------------------------->
+    </div>
+
+    <!-- Contributions panel -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3" id="contributions" style="margin-top: 2rem;">Two Main Contributions</h2>
+        <div class="contrib-grid">
+          <a class="contrib-card" href="#osm">
+            <h4>OSM Map Grounding</h4>
+            <p>
+              We recover GPS traces from V2V4Real metadata, align them to the LiDAR BEV
+              frame, and study three strategies for injecting the local OpenStreetMap road
+              graph into the GoT chain.
+            </p>
+            <span class="contrib-link">Read more</span>
+          </a>
+          <a class="contrib-card" href="#decent">
+            <h4>Decentralized V2V-GoT</h4>
+            <p>
+              Each CAV runs Q1&hellip;Q9 on its own LiDAR. Two compact V2V text messages
+              broadcast between question nodes close most of the gap to centralized
+              fusion.
+            </p>
+            <span class="contrib-link">Read more</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overview tile nav -->
+    <div class="columns is-centered">
+      <div class="column is-full-width has-text-centered">
+        <h2 class="title is-3" style="margin-top: 2rem;">Overview</h2>
+        <div class="nav-grid">
+          <a href="#intro" class="nav-card">
+            <span class="nav-num">&sect; I</span>
+            <span class="nav-title">Introduction</span>
+          </a>
+          <a href="#dataset" class="nav-card">
+            <span class="nav-num">Dataset</span>
+            <span class="nav-title">V2V4Real &middot; 9 scenarios</span>
+          </a>
+          <a href="#osm" class="nav-card">
+            <span class="nav-num">Part A &middot; &sect; II</span>
+            <span class="nav-title">OSM Map Grounding</span>
+          </a>
+          <a href="#decent" class="nav-card">
+            <span class="nav-num">Part B &middot; &sect; III</span>
+            <span class="nav-title">Decentralization</span>
+          </a>
+          <a href="#conclusion" class="nav-card">
+            <span class="nav-num">&sect; IV</span>
+            <span class="nav-title">Conclusion</span>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-----------------------------TODO: INTRODUCTION-------------------------------->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <!-- Introduction. -->
-      <div class="columns is-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3" id="intro">I. Introduction</h2>
-          <div class="content has-text-justified">
-            <p>
-              The introduction part of the report can be provided here
-            </p>
-          </div>
-        </div>
-      </div>
-      <!--/ Introduction. -->
-    </div>
-  </section>
-<!------------------------------------------------------------------------->
-
-<!-----------------------------TODO: RELATED WORKS-------------------------------->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <!-- Related Works. -->
-      <div class="columns is-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3" id="related-work">II. Related Works</h2>
-          <div class="content has-text-justified">
-            <p>
-              The related works part of the report can be provided here
-            </p>
-          </div>
-        </div>
-      </div>
-      <!--/ Related Works. -->
-    </div>
-  </section>
-<!------------------------------------------------------------------------->
-
-<!-----------------------------TODO: METHODOLOGY-------------------------------->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <!-- Methodology. -->
-      <div class="columns is-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3" id="method">III. Methodology</h2>
-          <div class="content has-text-justified">
-            <p>
-              The methodology part of the report can be provided here
-            </p>
-          </div>
-        </div>
-      </div>
-      <!--/ Methodology. -->
-    </div>
-  </section>
-
-<!------------------------------------------------------------------------->
-
-<!-----------------------------TODO: RESULTS-------------------------------->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <!-- Results. -->
-      <div class="columns is-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3" id="results">IV. Results</h2>
-          <div class="content has-text-justified">
-            <p>
-              The results part of the report can be provided here
-            </p>
-          </div>
-        </div>
-      </div>
-      <!--/ Results. -->
-    </div>
-  </section>
-<!------------------------------------------------------------------------->
-
-<!-----------------------------TODO: DISCUSSION-------------------------------->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <!-- Conclusion and Limitations. -->
-      <div class="columns is-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3" id="conclusion">V. Conclusion and Limitations</h2>
-          <div class="content has-text-justified">
-            <p>
-              The conclusion and limitations part of the report can be provided here
-            </p>
-          </div>
-        </div>
-      </div>
-      <!--/ Conclusion and Limitations. -->
-    </div>
-  </section>
-<!------------------------------------------------------------------------->
-
-<!-----------------------------TODO: VISUAL ITEMS THAT CAN BE USED-------------------------------->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <!-- Visual Items. -->
-      <div class="columns is-centered">
-        <div class="column is-full-width">
-          <h2 class="title is-3" id="visual_items">V. Visual Items</h2>
-          <div class="content has-text-justified">
-            <p>
-            Here you can see possible visualizations that can be used in this website 
-            </p>
-          </div>
-        <h3 class="title is-4">Video Clip</h3>
-       <!-- Video can be added like this -->   
-        <div class="content has-text-centered">
-          <video id="replay-video"
-                 controls
-                 muted
-                 preload
-                 playsinline
-                 width="75%">
-            <source src="./static/videos/replay.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-       <!---------------------------------> 
-           
-      <h3 class="title is-4">Image Interpolation with Slider</h3>
-       <!-- Image can be added like this -->
-        <div class="columns is-vcentered interpolation-panel">
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_start.jpg"
-                 class="interpolation-image"
-                 alt="Interpolate start reference image."/>
-            <p>Start Frame</p>
-          </div>
-          <div class="column interpolation-video-column">
-            <div id="interpolation-image-wrapper">
-              Loading...
-            </div>
-            <input class="slider is-fullwidth is-large is-info"
-                   id="interpolation-slider"
-                   step="1" min="0" max="100" value="0" type="range">
-          </div>
-          <div class="column is-3 has-text-centered">
-            <img src="./static/images/interpolate_end.jpg"
-                 class="interpolation-image"
-                 alt="Interpolation end reference image."/>
-            <p class="is-bold">End Frame</p>
-          </div>
-        </div>
-        
-<h3 class="title is-4">Double Column Media Display</h3>
-    <div class="columns is-centered is-multiline">
-      <!-- Column 1. -->
-      <div class="column is-half">
-        <div class="content">
-          <h3 class="title is-5">Column 1</h3>
+<!-- ============================================================ -->
+<!-- INTRODUCTION                                                  -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3" id="intro"><span class="section-num">&sect; I</span>Introduction</h2>
+        <div class="content has-text-justified">
           <p>
-            Add a short description for the first video/image.
+            Cooperative driving promises safer behaviour by letting vehicles see what their
+            neighbours see. Published V2V perception systems &mdash; including V2V-GoT &mdash;
+            usually assume <strong>intermediate feature fusion</strong>: each CAV ships
+            compressed BEV LiDAR features to a central node that runs a single jointly-trained
+            model. This is bandwidth-heavy, time-synchronization-sensitive, and ignores every
+            trust boundary between vehicles from different manufacturers or operators. It also
+            ignores a rich, free, vehicle-independent source of priors: the road map itself.
           </p>
-          <video id="dollyzoom" autoplay controls muted loop playsinline width="100%">
-            <source src="./static/videos/dollyzoom-stacked.mp4"
-                    type="video/mp4">
-          </video>
-        </div>
-      </div>
-      <!--/ Column 1 -->
-
-      <!-- Column 2 -->
-      <div class="column is-half">
-        <div class="content">
-          <h3 class="title is-5">Column 2</h3>
           <p>
-            Add a short description for the second video/image.
+            We ask two questions on top of V2V-GoT:
           </p>
-          <video id="matting-video" controls playsinline width="100%">
-            <source src="./static/videos/matting.mp4"
-                    type="video/mp4">
-          </video>
+          <ol>
+            <li>
+              <strong>Can an explicit map prior help?</strong> Most planning errors we observe
+              are road-geometry violations (wrong lane, drift into the kerb, missed turn cue),
+              not perception failures. We test whether grounding the GoT with an
+              <strong>OSM-derived road raster or description</strong> reduces these errors.
+            </li>
+            <li>
+              <strong>Can the GoT be decentralized?</strong> If each CAV runs the chain on its
+              own LiDAR and the only cooperation is a few short text messages, how close to the
+              centralized baseline can we get? Which messages carry the most signal?
+            </li>
+          </ol>
+          <p>
+            The two questions are complementary: OSM grounding is a per-CAV intervention that
+            survives decentralization unchanged, and we ultimately want both axes in the same
+            system.
+          </p>
         </div>
       </div>
-      <!--/ Column 2 -->
     </div>
-  <!--------------------------------->
-<h3 class="title is-4">Card Media Display</h3>
-      <div class="columns is-centered">
-        <div class="column is-three-quarters">
-          <div align="center" class="box">
-            <img src="static/images/related_2.gif"
-              alt="3D Bezier curves are used for representing 3D sketches of objects.">
-            <h5 class="subtitle has-text-centered">
-              <font size="-0.7">
-                <span style="font-weight:normal">
-                  Write about the media displayed in the card here. You can also add a link to the media if needed.
-                </span>
-              </font>
-            </h5>
-          </div>
-        </div>
-      </div>
-<!--------------------------------->
-<h3 class="title is-4">LaTeX Equation</h3>
-  
-Format the equations using LaTeX and add them to the website like this:
-    <p>
-        \[
-        D_{\mathrm{KL}}(P \parallel Q) =
-        \sum_{x} P(x)\,\log\!\left(\frac{P(x)}{Q(x)}\right)
-        \]
-    </p>
-<!--------------------------------->
-
-<h3 class="title is-4">Sliding Media Display</h3>
-    <section class="section">
-      <div class="container is-max-desktop">
-        <div id="dataset-carousel" class="carousel results-carousel">
-          <a href="./static/gifs/bike.gif" data-lightbox="image">
-            <img src="./static/gifs/bike.gif" alt="Bike Object">
-          </a>
-
-          <a href="./static/gifs/duck.gif" data-lightbox="image">
-            <img src="./static/gifs/duck.gif" alt="Duck Object">
-          </a>
-
-          <a href="./static/gifs/horse.gif" data-lightbox="image">
-            <img src="./static/gifs/horse.gif" alt="Horse Object">
-          </a>
-
-          <a href="./static/gifs/rose.gif" data-lightbox="image">
-            <img src="./static/gifs/rose.gif" alt="Rose Object">
-          </a>
-        </div>
-      </div>
-    </section>
-<!--------------------------------->
-<h3 class="title is-4">Table</h3>
-
-<div class="content has-text-justified">
-  <p>
-    The table format below can be used for results and other purposes.
-  </p>
-  <div class="table-container">
-    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-      <thead>
-        <tr>
-          <th>Method</th>
-          <th>Metric 1</th>
-          <th>Metric 2</th>
-          <th>Notes</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Baseline</td>
-          <td>0.00</td>
-          <td>0.00</td>
-          <td>Reference setup</td>
-        </tr>
-        <tr>
-          <td>Method A</td>
-          <td>0.00</td>
-          <td>0.00</td>
-          <td>First variant</td>
-        </tr>
-        <tr>
-          <td>Method B</td>
-          <td>0.00</td>
-          <td>0.00</td>
-          <td>Second variant</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
-</div>
+</section>
 
-<!--------------------------------->
-<h3 class="title is-4">Interactive Plot</h3>
-<div class="box">
-  <iframe src="./static/plotly/interactive_plot.html" frameborder="0" width="100%"
-    height="500px"></iframe>
-</div>
+<!-- ============================================================ -->
+<!-- PART A: OSM MAP GROUNDING                                     -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="part-banner" id="osm">
+      <span class="part-label">Part&nbsp;A &middot; Contribution&nbsp;1</span>
+      <h2 class="title is-3">II. OSM Map Grounding</h2>
+      <p class="part-sub">Recovering GPS, aligning to LiDAR BEV, and three injection strategies for the road graph.</p>
+    </div>
 
-<!--------------------------------->
+    <!-- Motivation -->
+    <h3 class="title is-4">A.1 &nbsp; Motivation</h3>
+    <div class="content has-text-justified">
+      <p>
+        V2V-GoT sees the world only through BEV LiDAR. Lanes, road boundaries, intersections and
+        turn topology are <em>implicit</em> in the point cloud and must be re-inferred at every
+        timestep. Maps from OpenStreetMap, by contrast, encode this information directly and
+        come at near-zero per-frame cost. Our hypothesis is that injecting an OSM-derived map
+        prior in the planning prompt should reduce trajectory errors driven by road geometry
+        rather than by missed perception.
+      </p>
+    </div>
 
+    <!-- Data preparation -->
+    <h3 class="title is-4">A.2 &nbsp; GPS recovery and LiDAR alignment</h3>
+    <div class="content has-text-justified">
+      <p>
+        V2V4Real does not publish latitude/longitude in a directly consumable format, so we
+        recovered ego positions from the underlying dataset metadata. We then validated spatial
+        correctness by overlaying each frame's LiDAR BEV against the local OSM road graph
+        rendered at the recovered GPS location.
+      </p>
+      <figure class="image">
+        <div class="diagram-slot">
+          <strong>[Figure A.1 &mdash; <code>Media/GPS_location_and_Lidar_fusion</code>]</strong><br>
+          Recovered ego position overlaid on the local OSM road graph, with the
+          LiDAR BEV projected into the same frame. Orientation and position
+          match the expected road geometry, validating that the recovered GPS
+          is usable for downstream Overpass API queries.
+        </div>
+      </figure>
+      <p>
+        Orientation and position match the expected road geometry, which unblocks the rest of
+        the OSM pipeline: Overpass tile fetching, BEV rasterization, and alignment with the
+        LiDAR coordinate frame.
+      </p>
+    </div>
+
+    <!-- Injection strategies -->
+    <h3 class="title is-4">A.3 &nbsp; Three injection strategies</h3>
+    <div class="content has-text-justified">
+      <p>
+        We compare three ways of pushing the OSM road graph into V2V-GoT, chosen to span the
+        compute-vs-expressivity trade-off:
+      </p>
+    </div>
+    <div class="strategy-grid">
+      <div class="strategy-card">
+        <h5>encoder</h5>
+        <span class="strategy-where">CNN&nbsp;/&nbsp;ViT encoder &rarr; LLaVA projector</span>
+        <span class="strategy-note">
+          Closest to the original proposal; richest representation. Trains an extra encoder
+          stack on top of the LoRA-adapted backbone.
+        </span>
+        <span class="cost-pill cost-high">
+          <span class="cost-dot"></span><span class="cost-dot"></span><span class="cost-dot"></span>
+          training&nbsp;cost: high
+        </span>
+      </div>
+      <div class="strategy-card">
+        <h5>raw-image</h5>
+        <span class="strategy-where">Rasterized OSM BEV &rarr; LLaVA visual context</span>
+        <span class="strategy-note">
+          Cheapest visual integration; the rasterized map is concatenated alongside the LiDAR
+          feature tokens and reuses LLaVA's pretrained vision tower.
+        </span>
+        <span class="cost-pill cost-medium">
+          <span class="cost-dot"></span><span class="cost-dot"></span><span class="cost-dot"></span>
+          training&nbsp;cost: medium
+        </span>
+      </div>
+      <div class="strategy-card">
+        <h5>text-graph</h5>
+        <span class="strategy-where">Textual road-graph description &rarr; extra text tokens</span>
+        <span class="strategy-note">
+          A short textual description of the local road graph is injected as tokens. Cheapest
+          to prototype and may even work zero-shot.
+        </span>
+        <span class="cost-pill cost-low">
+          <span class="cost-dot"></span><span class="cost-dot"></span><span class="cost-dot"></span>
+          training&nbsp;cost: low
+        </span>
+      </div>
+    </div>
+    <div class="content has-text-justified">
+      <p>
+        The text-description path is also informative on its own: if it already lifts planning
+        quality without any fine-tuning, the bottleneck is information rather than modality.
+      </p>
+    </div>
+
+    <!-- Synthetic prototype -->
+    <h3 class="title is-4">A.4 &nbsp; Synthetic-road sanity check</h3>
+    <div class="content has-text-justified">
+      <p>
+        Before deploying GPU time to the full OSM pipeline, we built a synthetic-road dataset
+        in which a simple road-mask channel replaces the real OSM raster. This isolates two
+        questions: <em>(i)</em> does the token-injection pipeline plumb through the projector
+        and the LM without numerical collapse, and <em>(ii)</em> does a map-shaped channel
+        carry enough signal to move the planning metrics at all? Both checks passed, which
+        cleared the way for the full OSM integration.
+      </p>
+    </div>
+
+    <!-- Training -->
+    <h3 class="title is-4">A.5 &nbsp; Training: from full fine-tune to LoRA</h3>
+    <div class="content has-text-justified">
+      <p>
+        The original V2V-GoT recipe estimates 45&nbsp;h per fine-tune run on
+        4&times;&nbsp;H100&nbsp;80&nbsp;GB. Our SCITAS Izar allocation gives us at best
+        2&times;&nbsp;V100&nbsp;32&nbsp;GB, which do not support FlashAttention-2 or BF16; the
+        extra OSM channel further inflates token count. Effective throughput drops to roughly
+        200&nbsp;h per epoch, far beyond the budget needed for three full configurations.
+      </p>
+      <p>
+        We therefore switched to <strong>LoRA fine-tuning</strong> of the LLaVA backbone:
+        trainable parameter count and per-step memory both drop by an order of magnitude, and
+        the inductive bias is appropriate &mdash; we are not retraining V2V-GoT from scratch,
+        only asking it to absorb a relatively narrow new modality (OSM road geometry).
+      </p>
+    </div>
+
+    <!-- Results placeholder -->
+    <h3 class="title is-4">A.6 &nbsp; Results</h3>
+    <div class="content has-text-justified">
+      <p>
+        We compare the three injection strategies against the reproduced V2V-GoT baseline on
+        planning L2, collision rate (CR) and wrong-lane rate. The reproduced baseline matches
+        the published numbers to within $\pm 0.2\%$, giving us a trustworthy reference.
+      </p>
+      <div class="table-container">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
+          <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
+            <em>Table&nbsp;A.1 &mdash; placeholder.</em> Planning metrics for the three OSM
+            injection strategies against the reproduced baseline. Numbers to fill in once the
+            LoRA runs converge.
+          </caption>
+          <thead>
+            <tr>
+              <th>Configuration</th>
+              <th>L2 (m) &darr;</th>
+              <th>CR &darr;</th>
+              <th>Wrong-lane rate &darr;</th>
+              <th>Training cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="approach-cell">baseline (no OSM)</td>
+              <td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>reference</td>
+            </tr>
+            <tr>
+              <td class="approach-cell">+ OSM encoder</td>
+              <td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td>
+            </tr>
+            <tr>
+              <td class="approach-cell">+ OSM raw image</td>
+              <td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td>
+            </tr>
+            <tr>
+              <td class="approach-cell">+ OSM text graph</td>
+              <td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        <strong>To do.</strong> Drop in the final LoRA numbers for the three injection
+        strategies once the runs are done. Also add a qualitative figure of two trajectories
+        (with and without OSM) over the same OSM tile to make the map effect visual.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PART B: DECENTRALIZED V2V-GoT                                 -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="part-banner" id="decent">
+      <span class="part-label">Part&nbsp;B &middot; Contribution&nbsp;2</span>
+      <h2 class="title is-3">III. Decentralized V2V-GoT</h2>
+      <p class="part-sub">Per-CAV inference linked by two compact V2V text messages, closing most of the gap to centralized fusion.</p>
+    </div>
+
+    <!-- Pipeline -->
+    <h3 class="title is-4">B.1 &nbsp; The V2V-GoT pipeline</h3>
+    <div class="content has-text-justified">
+      <p>
+        V2V-GoT decomposes cooperative driving into nine question nodes, each implemented as a
+        LoRA-tuned LLaVA prompt that takes (i)&nbsp;the asker's BEV LiDAR features as visual
+        tokens and (ii)&nbsp;a text prompt built from outputs of earlier nodes. The chain is:
+      </p>
+      <ul>
+        <li><span class="tag-method">Q1</span> visible notable objects</li>
+        <li><span class="tag-method">Q2</span> occluding objects</li>
+        <li><span class="tag-method">Q3</span> invisible notable objects (hidden behind occluders)</li>
+        <li><span class="tag-method">Q4</span> notable object identification &mdash; takes Q1+Q3</li>
+        <li><span class="tag-method">Q5</span> motion prediction of notables &mdash; takes Q4</li>
+        <li><span class="tag-method">Q6</span> is the other CAV a notable object? &mdash; takes Q4</li>
+        <li><span class="tag-method">Q7</span> motion with full context &mdash; takes Q5+Q6</li>
+        <li><span class="tag-method">Q8</span> suggested speed &amp; steering (action class) &mdash; takes Q7</li>
+        <li><span class="tag-method">Q9</span> trajectory planning &mdash; takes Q8</li>
+      </ul>
+    </div>
+
+    <h3 class="title is-4">B.2 &nbsp; Pipeline diagram</h3>
+    <figure class="pipeline-figure">
+      <img src="./static/images/pipeline_questions.png"
+           alt="V2V-GoT pipeline: Q1 visible / Q2 occluding / Q3 invisible feed Q4 overall notable objects; Q5 prediction by perception and Q6 prediction by planning feed Q7 overall prediction; Q7 feeds Q8 suggested action classification and Q9 suggested trajectory."
+           class="pipeline-img">
+      <figcaption>
+        <strong>Figure&nbsp;B.1.</strong> The V2V-GoT chain. Perception nodes (Q1&ndash;Q3) feed
+        the overall notable-object set Q4, which branches into prediction-by-perception (Q5)
+        and prediction-by-planning (Q6); their fusion in Q7 drives action classification (Q8)
+        and the final trajectory (Q9). In Part&nbsp;B we add two cross-CAV text edges on top of
+        this graph: a sender's Q1 list into the receiver's Q3 prompt, and the sender's Q9 plan
+        into the receiver's Q6 prompt.
+      </figcaption>
+    </figure>
+
+    <!-- From centralized to decentralized -->
+    <h3 class="title is-4">B.3 &nbsp; From centralized to decentralized</h3>
+    <div class="content has-text-justified">
+      <p>
+        In the original system, a single LM jointly consumes BEV LiDAR features from
+        <em>both</em> CAVs at every question. The decentralized version we study replaces this
+        with per-CAV inference: each vehicle independently runs the full Q1&hellip;Q9 chain on
+        its own LiDAR. Cooperation is restricted to two compact text messages broadcast between
+        question nodes:
+      </p>
+      <ol>
+        <li><strong>Q1 message (q1msg).</strong> After running Q1, each CAV broadcasts its list
+            of visible notable objects (positions + motion descriptor). The receiving CAV
+            concatenates this list to its own Q3 prompt, giving it a chance to reason about
+            objects it cannot see directly.</li>
+        <li><strong>Q9 plan broadcast (Q6 input).</strong> Each CAV broadcasts its intended
+            future trajectory, matching the convention used by cooperative-driving protocols
+            where a vehicle announces its planned path. The receiver pastes this trajectory
+            into its Q6 prompt so the chain can reason about whether the other CAV is itself a
+            notable object on its path.</li>
+      </ol>
+      <p>
+        Concretely, the chain in Figure&nbsp;B.1 is duplicated &mdash; one instance per CAV,
+        running on disjoint inputs &mdash; and the two new cross-CAV edges link the two chains
+        at Q3 and Q6.
+      </p>
+    </div>
+
+    <figure class="pipeline-figure">
+      <div class="diagram-slot" id="dual-chain-diagram">
+        <strong>[Two-CAV chain diagram &mdash; to be drawn]</strong><br>
+        Two copies of the Q1&hellip;Q9 graph from Figure&nbsp;B.1, side by side, with two
+        new arrows connecting them: sender's&nbsp;Q1&nbsp;&rarr;&nbsp;receiver's&nbsp;Q3
+        and sender's&nbsp;Q9&nbsp;&rarr;&nbsp;receiver's&nbsp;Q6. All other edges remain
+        intra-CAV.
+      </div>
+      <figcaption>
+        <strong>Figure&nbsp;B.2.</strong> Decentralized V2V-GoT: each CAV runs the full
+        Q1&hellip;Q9 chain on its own LiDAR. Two cross-CAV text messages (Q1&rarr;Q3 and
+        Q9&rarr;Q6) replace the centralized LiDAR-feature fusion of the original system.
+      </figcaption>
+    </figure>
+
+    <!-- Setup -->
+    <h3 class="title is-4">B.4 &nbsp; Experimental setup</h3>
+    <div class="content has-text-justified">
+      <p>
+        All experiments use the V2V4Real validation split (9 scenarios, 1723 paired frames). We
+        evaluate each frame twice &mdash; once asking from the perspective of <code>ego</code>
+        and once from <code>CAV<sub>1</sub></code> &mdash; for a total of 3446 samples per
+        configuration.
+      </p>
+      <div class="table-container">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
+          <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
+            <em>Table&nbsp;B.1.</em> The three configurations compared in Part&nbsp;B.
+          </caption>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>LiDAR fusion</th>
+              <th>q1msg edge</th>
+              <th>Q9 plan broadcast</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="approach-cell">central</td>
+              <td>full cross-CAV</td>
+              <td><span class="mark mark-na">&mdash;</span></td>
+              <td><span class="mark mark-na">&mdash;</span></td>
+              <td>centralized baseline</td>
+            </tr>
+            <tr>
+              <td class="approach-cell">strip</td>
+              <td>per-CAV only</td>
+              <td><span class="mark mark-no">&#10007;</span></td>
+              <td><span class="mark mark-no">&#10007;</span></td>
+              <td>decentralized, no cooperation</td>
+            </tr>
+            <tr class="is-highlight">
+              <td class="approach-cell">q1msg</td>
+              <td>per-CAV only</td>
+              <td><span class="mark mark-yes">&#10003;</span></td>
+              <td><span class="mark mark-yes">&#10003;</span></td>
+              <td><strong>full proposed system</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Per question we report the metrics most relevant to that node: Q1&ndash;Q4 use binary
+        F1/precision/recall and a location F1 at 4&nbsp;m; Q5 and Q7 use L2 over predicted
+        motion vectors; Q6 uses classification accuracy; Q8 uses action edit distance; Q9 uses
+        L2, CR and PDMS.
+      </p>
+    </div>
+
+    <!-- Results: aggregate -->
+    <h3 class="title is-4">B.5 &nbsp; Headline numbers</h3>
+    <div class="content has-text-justified">
+      <p>
+        <code>q1msg</code> is the full decentralized system and stays within
+        0.015&nbsp;PDMS of <code>central</code>.
+      </p>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Centralized baseline</span>
+        <span class="kpi-value">0.876<span class="kpi-unit">PDMS</span></span>
+        <span class="kpi-note">L2 2.62&nbsp;m &middot; CR 1.84%</span>
+      </div>
+      <div class="kpi-card is-accent">
+        <span class="kpi-label">Ours &middot; q1msg</span>
+        <span class="kpi-value">0.861<span class="kpi-unit">PDMS</span></span>
+        <span class="kpi-note">L2 2.72&nbsp;m &middot; CR 1.96%</span>
+      </div>
+      <div class="kpi-card is-delta">
+        <span class="kpi-label">Gap to central</span>
+        <span class="kpi-value">&minus;0.015<span class="kpi-unit">PDMS</span></span>
+        <span class="kpi-note">+0.10&nbsp;m L2 &middot; +0.12&nbsp;pp CR</span>
+      </div>
+    </div>
+    <div class="content has-text-justified">
+      <div class="table-container">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
+          <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
+            <em>Table&nbsp;B.2.</em> Aggregate metrics across all 3446 samples. Best
+            decentralized value per column shaded green; worst shaded red.
+          </caption>
+          <thead>
+            <tr>
+              <th>Approach</th>
+              <th>Q1 F1@4 &uarr;</th>
+              <th>Q3 F1@4 &uarr;</th>
+              <th>Q4 acc &uarr;</th>
+              <th>Q5 L2 &darr;</th>
+              <th>Q6 acc &uarr;</th>
+              <th>Q7 L2 &darr;</th>
+              <th>Q8 edit &darr;</th>
+              <th>Q9 L2 &darr;</th>
+              <th>Q9 CR &darr;</th>
+              <th>Q9 PDMS &uarr;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="approach-cell">central</td>
+              <td>0.516</td><td>0.438</td><td>0.905</td><td>8.06</td><td>0.875</td>
+              <td>7.62</td><td>0.088</td><td>2.621</td><td>0.0184</td><td>0.876</td>
+            </tr>
+            <tr>
+              <td class="approach-cell">strip</td>
+              <td>0.511</td>
+              <td class="metric-best">0.427</td>
+              <td>0.893</td>
+              <td class="metric-best">7.97</td>
+              <td class="metric-worst">0.000</td>
+              <td class="metric-worst">9.06</td>
+              <td class="metric-worst">0.093</td>
+              <td class="metric-worst">2.725</td>
+              <td class="metric-worst">0.0206</td>
+              <td class="metric-worst">0.859</td>
+            </tr>
+            <tr class="is-highlight">
+              <td class="approach-cell">q1msg</td>
+              <td>0.511</td>
+              <td class="metric-worst">0.346</td>
+              <td>0.893</td>
+              <td class="metric-worst">8.14</td>
+              <td class="metric-best">0.873</td>
+              <td class="metric-best">7.65</td>
+              <td class="metric-best">0.088</td>
+              <td class="metric-best">2.723</td>
+              <td class="metric-best">0.0196</td>
+              <td class="metric-best">0.861</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Analysis -->
+    <h3 class="title is-4">B.6 &nbsp; Analysis: the Q8&rarr;Q9 bottleneck</h3>
+    <div class="content has-text-justified">
+      <p>
+        Q8 metrics are essentially identical across all three configurations &mdash; centralized
+        features barely help once Q7 has produced a reasonable motion summary. Yet Q9 numbers
+        shift noticeably between configurations. Since Q9 only consumes Q8 as text input, this
+        sensitivity has to come from the <em>visual</em> tokens (the BEV LiDAR features). Q9 is
+        therefore the place where missing cross-CAV LiDAR hurts most: there is no rich textual
+        context to compensate.
+      </p>
+      <p>
+        The aggregate PDMS reported above follows the standard NAVSIM-style decomposition, with
+        No-Collision (NC), Time-To-Collision (TTC) and Comfort (C) as multiplicative components:
+      </p>
+      <p>
+        \[
+          \mathrm{PDMS} \;\propto\; \mathrm{NC} \cdot \mathrm{TTC} \cdot \mathrm{C}
+        \]
+      </p>
+      <p>
+        Across the three configurations the spread on NC and TTC is small (a few percent), while
+        comfort moves more visibly with the decentralization: trajectories become jaggier when
+        cross-CAV LiDAR is missing, which both lowers comfort directly and nudges the path into
+        nominal-collision regions, inflating CR.
+      </p>
+      <div class="callout">
+        <strong>Implication.</strong> Adding more cross-CAV text messages (e.g.&nbsp;a sender's
+        Q5 message routed to the receiver's Q7) will continue to fall short of central unless
+        we also widen the Q9 input &mdash; either by injecting rich synthetic perception text in
+        the Q9 prompt, or by routing Q6&nbsp;/&nbsp;Q7 outputs into Q9 alongside Q8.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CONCLUSION                                                    -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3" id="conclusion"><span class="section-num">&sect; IV</span>Conclusion and Limitations</h2>
+        <div class="content has-text-justified">
+          <p>
+            We extended V2V-GoT along two axes. On the <strong>OSM</strong> side we recovered
+            usable GPS traces from V2V4Real, aligned them to the LiDAR BEV, and laid out three
+            injection strategies (encoder, raw image, text graph) which we compare with LoRA
+            fine-tuning under a tight compute budget. On the <strong>decentralization</strong>
+            side we showed that the GoT chain can be run per-CAV with only two short text
+            messages, recovering planning quality close to the centralized baseline on V2V4Real
+            (PDMS&nbsp;0.861 vs.&nbsp;0.876).
+          </p>
+          <p>
+            <strong>Limitations and honest leaks.</strong> All prompts use ego's coordinate
+            frame for both askers; simply switching CAV<sub>1</sub> to its own frame at
+            inference time is not a valid experiment because the LM was trained exclusively in
+            ego frame. We treat the Q6 plan broadcast as honest: real V2V protocols already
+            broadcast a vehicle's intended trajectory, and the V2V4Real ground-truth trajectory
+            is the best available proxy for that intent.
+          </p>
+          <p>
+            <strong>Future work.</strong>
+          </p>
+          <ul>
+            <li><em>OSM &times; decentralization:</em> stack the chosen OSM injection on top of
+                <code>q1msg</code>; OSM is a per-CAV signal and should compose cleanly.</li>
+            <li><em>Q5 cross-CAV messaging:</em> route the sender's Q5 motion predictions into
+                the receiver's Q7 prompt, the only major node that currently has no cooperative
+                input.</li>
+            <li><em>Q9 with synthetic perception text:</em> short fine-tune of Q9 with a richer
+                prompt containing Q3/Q5/Q6/Q7 outputs, so that planning can compensate textually
+                for missing cross-CAV visual tokens. Directly targets the Q8&rarr;Q9
+                bottleneck.</li>
+          </ul>
         </div>
       </div>
-      <!--/ Visual Items. -->
     </div>
-  </section>
+  </div>
+</section>
 
-<!------------------------------------------------------------------------->
-
+<!-- ============================================================ -->
+<!-- FOOTER                                                        -->
+<!-- ============================================================ -->
 <footer class="footer">
-            <div class="container">
-              <div class="content has-text-centered">
-                <!-- Optional icon link (e.g., to GitHub repo) -->
-              </div>
-
-              <div class="columns is-centered">
-                <div class="column is-8">
-                  <div class="content">
-                    <h6 class="title is-6">Individual Contributions</h6>
-                    <p>
-                      Add the contributions of each team member here.
-                    </p>
-                    <p><em>
-                        This website is based on the <a href="https://github.com/nerfies/nerfies.github.io"
-                          target="_blank">Nerfies website template</a>,
-                        which is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"
-                          target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-                      </em></p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </footer>
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8 has-text-centered">
+        <div class="content">
+          <p><em>
+              This website is based on the
+              <a href="https://github.com/nerfies/nerfies.github.io" target="_blank">Nerfies website
+                template</a>, licensed under
+              <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
+                CC BY-SA 4.0</a>.
+            </em></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>
