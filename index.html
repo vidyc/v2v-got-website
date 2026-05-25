@@ -1,8 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="light">
 <head>
 
   <meta charset="utf-8">
+  <script>
+    /* Apply theme before stylesheets to avoid flash */
+    (function () {
+      try {
+        var saved = localStorage.getItem('v2vgot.theme');
+        var theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
   <meta name="description"
         content="Decentralized Graph-of-Thoughts with OSM map grounding for cooperative autonomous driving. Project page for CS-503 (EPFL).">
   <meta name="keywords" content="V2V, cooperative driving, V2V4Real, V2V-GoT, OpenStreetMap, OSM, Graph-of-Thoughts, autonomous driving, LiDAR, decentralized perception">
@@ -28,6 +38,7 @@
   <script src="./static/js/bulma-carousel.min.js"></script>
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
+  <script defer src="./static/js/demo.js"></script>
   <script>
     window.MathJax = {
       tex: {
@@ -40,23 +51,9 @@
 
   <style>
     /* ============================================================
-       Design tokens  —  quiet academic palette
+       Design tokens  -  two themes (light = Distill+, dark = Warm dark)
        ============================================================ */
     :root {
-      --bg:            #ffffff;
-      --bg-soft:       #fafaf9;
-      --bg-mute:       #f4f4f3;
-      --ink:           #18181b;       /* zinc-900 */
-      --ink-soft:      #3f3f46;       /* zinc-700 */
-      --ink-muted:     #71717a;       /* zinc-500 */
-      --line:          #e4e4e7;       /* zinc-200 */
-      --line-soft:     #f1f1f0;
-      --accent:        #1e293b;       /* slate-800, conservative ink-blue */
-      --accent-soft:   #f1f5f9;       /* slate-100 */
-      --accent-dark:   #0f172a;       /* slate-900 */
-      --good:          #15803d;       /* green-700, used as ink only */
-      --bad:           #b91c1c;       /* red-700, used as ink only */
-
       --serif:   'Source Serif 4', Georgia, 'Times New Roman', serif;
       --sans:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       --mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -67,16 +64,77 @@
       --radius-lg: 6px;
     }
 
+    /* LIGHT - Distill+ editorial (warm paper, deep wine accent) */
+    [data-theme="light"] {
+      --bg:              #f8f4ea;
+      --bg-soft:         #f1ebd9;
+      --bg-mute:         #ebe4cf;
+      --surface:         #fffcf3;
+      --surface-mute:    #f5efde;
+      --ink:             #16140f;
+      --ink-soft:        #3a342a;
+      --ink-muted:       #6a665a;
+      --line:            #e2dbc6;
+      --line-soft:       #ece5d0;
+      --accent:          #7a1d34;
+      --accent-soft:     #f3e3e7;
+      --accent-dark:     #5e1525;
+      --accent-2:        #a85a3d;
+      --good:            #166534;
+      --bad:             #991b1b;
+      --masthead-bg:     #16140f;
+      --masthead-fg:     #f3ecd9;
+      --masthead-accent: #d4a14a;
+      --masthead-rule:   rgba(243,236,217,.16);
+      --btn-invert-fg:   #fffcf3;
+      --body-gradient:   radial-gradient(1200px 600px at 100% -120px, rgba(122,29,52,.07), transparent 60%);
+    }
+
+    /* DARK - Warm dark academic (dark warm ink, amber accent) */
+    [data-theme="dark"] {
+      --bg:              #0f0e0c;
+      --bg-soft:         #16140f;
+      --bg-mute:         #1c1a14;
+      --surface:         #16140f;
+      --surface-mute:    #1c1a14;
+      --ink:             #ece6d6;
+      --ink-soft:        #c8c2b1;
+      --ink-muted:       #8a8576;
+      --line:            #2a261d;
+      --line-soft:       #1f1c16;
+      --accent:          #d4a14a;
+      --accent-soft:     rgba(212,161,74,.12);
+      --accent-dark:     #b88a3a;
+      --accent-2:        #d4a14a;
+      --good:            #6ee7a1;
+      --bad:             #f87171;
+      --masthead-bg:     #1c1a14;
+      --masthead-fg:     #ece6d6;
+      --masthead-accent: #d4a14a;
+      --masthead-rule:   rgba(236,230,214,.12);
+      --btn-invert-fg:   #0f0e0c;
+      --body-gradient:   radial-gradient(900px 500px at 80% -10%, rgba(212,161,74,.09), transparent 60%);
+    }
+
     /* ============================================================
        Base typography
        ============================================================ */
-    html, body { background: var(--bg); color: var(--ink); }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+    html, body { background: var(--bg); color: var(--ink); transition: background-color .25s ease, color .25s ease; }
+    /* Anchor landings: leave a little air above the heading */
+    section.section { scroll-margin-top: 1.25rem; }
+    h2[id], h3[id] { scroll-margin-top: 1.25rem; }
     body {
       font-family: var(--sans);
       font-size: 16px;
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      background: var(--body-gradient), var(--bg);
+      background-attachment: fixed, fixed;
     }
     .content, .content p, p, li {
       font-family: var(--serif);
@@ -96,7 +154,26 @@
       font-family: var(--display) !important;
       font-weight: 600;
       letter-spacing: -0.022em;
-      line-height: 1.15;
+      line-height: 1.08;
+    }
+    .hero-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+    .hero-meta::before,
+    .hero-meta::after {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.5;
     }
     .title.is-3 {
       font-size: 1.45rem;
@@ -134,11 +211,29 @@
       border-radius: 3px;
       font-weight: 400;
     }
+    pre {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 0.85rem 1rem;
+      margin: 1rem 0 1.2rem;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      border-radius: 0;
+      color: var(--ink);
+      font-size: 0.82rem;
+      white-space: pre;
+    }
 
     strong { color: var(--ink); font-weight: 600; }
     em     { color: var(--ink-soft); }
 
-    /* Links — quiet, underline-only */
+    /* Links - quiet, underline-only */
     a {
       color: var(--ink);
       text-decoration: underline;
@@ -150,7 +245,7 @@
     a:hover { text-decoration-color: var(--ink); }
 
     /* ============================================================
-       Hero — minimal, paper-like
+       Hero - minimal, paper-like
        ============================================================ */
     section.hero {
       background: var(--bg);
@@ -158,10 +253,13 @@
     }
     .hero-body { padding: 4.5rem 1.5rem 2.5rem; }
     .publication-title {
-      font-size: 2.35rem;
+      font-size: 2.65rem;
       font-weight: 600;
-      max-width: 720px;
+      max-width: 740px;
       margin: 0 auto;
+    }
+    @media (max-width: 720px) {
+      .publication-title { font-size: 2.05rem; }
     }
     .publication-subtitle {
       font-family: var(--serif);
@@ -221,7 +319,7 @@
       font-size: 0.85rem;
       font-weight: 500;
       color: var(--ink);
-      background: #fff;
+      background: var(--surface);
       border: 1px solid var(--ink);
       border-radius: 999px;
       text-decoration: none;
@@ -230,8 +328,18 @@
     }
     .hero-actions a.hero-btn:hover {
       background: var(--ink);
-      color: #fff;
+      color: var(--btn-invert-fg);
       text-decoration: none;
+    }
+    .hero-actions a.hero-btn.is-primary {
+      background: var(--accent);
+      color: var(--btn-invert-fg);
+      border-color: var(--accent);
+    }
+    .hero-actions a.hero-btn.is-primary:hover {
+      background: var(--accent-dark);
+      border-color: var(--accent-dark);
+      color: var(--btn-invert-fg);
     }
     .hero-actions a.hero-btn .icon { font-size: 0.9em; }
 
@@ -252,9 +360,24 @@
     /* ============================================================
        Sections / containers
        ============================================================ */
-    section.section { padding: 2.25rem 1.5rem; }
-    section.section + section.section { padding-top: 0.25rem; }
-    .container.is-max-desktop { max-width: 820px; }
+    section.section { padding: 2.75rem 1.5rem; position: relative; }
+    section.section + section.section { padding-top: 2.75rem; }
+    section.section.is-band {
+      background: var(--bg-soft);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    [data-theme="dark"] section.section.is-band {
+      background: var(--surface-mute);
+      border-top-color: var(--line);
+      border-bottom-color: var(--line);
+    }
+    /* When two non-band sections meet, draw a thin rule */
+    section.section + section.section:not(.is-band) {
+      border-top: 1px solid var(--line);
+    }
+    section.section.is-band + section.section.is-band { border-top: 1px solid var(--line); }
+    .container.is-max-desktop { max-width: 984px; }
 
     /* ============================================================
        Overview cards
@@ -272,7 +395,7 @@
       align-items: flex-start;
       gap: 0.3rem;
       padding: 0.85rem 1rem;
-      background: #fff;
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       text-decoration: none;
@@ -335,7 +458,7 @@
     }
 
     /* ============================================================
-       Callouts — quiet grey
+       Callouts - quiet grey
        ============================================================ */
     .callout {
       position: relative;
@@ -373,7 +496,7 @@
     }
     .teaser-figure figcaption {
       padding: 0.65rem 0.95rem;
-      background: #fff;
+      background: var(--surface);
       border-top: 1px solid var(--line);
       font-family: var(--sans);
       font-size: 0.84rem;
@@ -383,7 +506,7 @@
     .pipeline-figure {
       margin: 1.4rem auto;
       padding: 1.2rem 1.2rem 1rem;
-      background: #fff;
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       text-align: center;
@@ -431,7 +554,7 @@
       font-family: var(--mono);
       font-size: 0.62rem;
       letter-spacing: 0.14em;
-      background: #fff;
+      background: var(--surface);
       border: 1px solid var(--line);
       color: var(--ink-muted);
       padding: 0.1rem 0.45rem;
@@ -440,7 +563,7 @@
     .diagram-slot strong { color: var(--ink); }
 
     /* ============================================================
-       Pipeline question pills — quiet
+       Pipeline question pills - quiet
        ============================================================ */
     .tag-method {
       display: inline-block;
@@ -457,14 +580,14 @@
     }
 
     /* ============================================================
-       Tables — hairline academic
+       Tables - hairline academic
        ============================================================ */
     .table-container {
       margin: 1.3rem 0;
       border-radius: var(--radius);
       border: 1px solid var(--line);
       overflow-x: auto;
-      background: #fff;
+      background: var(--surface);
     }
     table.table {
       font-family: var(--sans);
@@ -513,7 +636,7 @@
       font-size: 0.78rem;
       color: var(--ink-muted);
       font-style: normal;
-      background: #fff;
+      background: var(--surface);
       border-top: 1px solid var(--line-soft);
     }
     table.table caption em { color: var(--ink); font-style: normal; font-weight: 600; }
@@ -533,7 +656,191 @@
     table.compact td, table.compact th { padding: 0.45rem 0.6rem; }
 
     /* ============================================================
-       Footer — slim
+       Interactive demo
+       ============================================================ */
+    .demo-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 1rem;
+      margin: 1.25rem 0 0.6rem;
+    }
+    .demo-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      min-width: 200px;
+      flex: 1;
+    }
+    .demo-field-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+    .demo-field select {
+      font-family: var(--sans);
+      font-size: 0.92rem;
+      padding: 0.5rem 0.6rem;
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+    .demo-field select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .demo-button {
+      padding: 0.55rem 1.2rem;
+      font-family: var(--sans);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--ink);
+      color: var(--btn-invert-fg);
+      border: 1px solid var(--ink);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background .15s ease, border-color .15s ease;
+    }
+    .demo-button:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .demo-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .demo-info {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+      margin: 0.4rem 0 1.25rem;
+    }
+    .demo-info code {
+      font-size: 0.78rem;
+      padding: 0.04em 0.32em;
+    }
+    .demo-views {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 0 0 1.5rem;
+    }
+    @media (max-width: 720px) {
+      .demo-views { grid-template-columns: 1fr; }
+    }
+    .demo-view {
+      margin: 0;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0.55rem;
+    }
+    .demo-view figcaption {
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 0.4rem;
+    }
+    .demo-view img {
+      width: 100%;
+      display: block;
+      border-radius: var(--radius-sm);
+      background: var(--bg-mute);
+      min-height: 280px;
+      object-fit: contain;
+    }
+    .demo-got {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      margin-top: 0.4rem;
+    }
+    .got-stage {
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--stage-color, var(--accent));
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+    }
+    .got-stage-head {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+    }
+    .got-stage-name {
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--stage-color, var(--ink));
+    }
+    .got-stage-desc {
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+    }
+    .got-stage-osm {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: var(--btn-invert-fg);
+      padding: 0.06rem 0.42rem;
+      border-radius: 3px;
+    }
+    .got-block {
+      margin-top: 0.5rem;
+      padding: 0.55rem 0.75rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.55;
+      border-radius: var(--radius-sm);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .got-q {
+      background: var(--bg-soft);
+      color: var(--ink-soft);
+    }
+    .got-q::before {
+      content: "Q";
+      display: inline-block;
+      margin-right: 0.5rem;
+      font-weight: 700;
+      color: var(--ink-muted);
+    }
+    .got-a {
+      background: var(--bg-mute);
+      color: var(--ink);
+      border-left: 2px solid var(--stage-color, var(--accent));
+    }
+    .got-a::before {
+      content: "A";
+      display: inline-block;
+      margin-right: 0.5rem;
+      font-weight: 700;
+      color: var(--stage-color, var(--accent));
+    }
+    .got-empty {
+      font-family: var(--sans);
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      margin-top: 0.4rem;
+    }
+
+    /* ============================================================
+       Footer - slim
        ============================================================ */
     footer.footer {
       background: var(--bg);
@@ -552,7 +859,7 @@
     footer.footer strong { color: var(--ink-soft); font-weight: 500; }
 
     /* ============================================================
-       Section number — inline, plain
+       Section number - inline, plain
        ============================================================ */
     .section-num {
       display: inline;
@@ -571,7 +878,7 @@
     }
 
     /* ============================================================
-       Contribution panel — quiet cards
+       Contribution panel - quiet cards
        ============================================================ */
     .contrib-grid {
       display: grid;
@@ -583,7 +890,7 @@
     .contrib-card {
       position: relative;
       padding: 1.2rem 1.35rem 1.3rem;
-      background: #fff;
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       transition: border-color .15s ease, background .15s ease;
@@ -650,7 +957,7 @@
     @media (max-width: 720px) { .kpi-grid { grid-template-columns: 1fr; } }
     .kpi-card {
       padding: 1rem 1.1rem 1rem;
-      background: #fff;
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       text-align: left;
@@ -681,18 +988,52 @@
       margin-left: 0.3rem;
       font-weight: 500;
     }
+    .kpi-card .kpi-sub {
+      display: block;
+      margin-top: 0.35rem;
+      font-family: var(--display);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-card .kpi-sub .kpi-unit {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      font-weight: 500;
+      margin-left: 0.25rem;
+      letter-spacing: 0;
+    }
+    .kpi-card.is-accent .kpi-sub { color: var(--accent); }
+    .kpi-card.is-delta .kpi-sub { font-size: 1.1rem; color: var(--ink-soft); font-weight: 600; }
     .kpi-card .kpi-note {
       display: block;
-      margin-top: 0.45rem;
-      font-family: var(--sans);
-      font-size: 0.8rem;
+      margin-top: 0.55rem;
+      padding-top: 0.45rem;
+      border-top: 1px solid var(--line-soft);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--ink-muted);
     }
     .kpi-card.is-accent {
-      background: #fff;
-      border-color: var(--ink);
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      position: relative;
     }
-    .kpi-card.is-accent .kpi-label { color: var(--ink); }
+    .kpi-card.is-accent::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+    }
+    .kpi-card.is-accent .kpi-label { color: var(--accent); }
+    .kpi-card.is-accent .kpi-value { color: var(--accent); }
     .kpi-card.is-delta .kpi-value { color: var(--ink-soft); font-weight: 600; font-size: 1.45rem; }
 
     /* ============================================================
@@ -707,36 +1048,18 @@
     @media (max-width: 820px) { .strategy-grid { grid-template-columns: 1fr; } }
     .strategy-card {
       padding: 1.05rem 1.15rem 1.0rem;
-      background: #fff;
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       display: flex;
       flex-direction: column;
       gap: 0.55rem;
     }
-    .strategy-card h5 {
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      color: var(--ink);
-      background: transparent;
-      border: none;
-      padding: 0;
-      border-radius: 0;
-      display: block;
-      align-self: flex-start;
-      font-weight: 600;
-      margin: 0;
-    }
-    .strategy-card h5::before {
-      content: "// ";
-      color: var(--ink-muted);
-      font-weight: 400;
-    }
     .strategy-card .strategy-where {
       font-family: var(--sans);
-      font-size: 0.88rem;
+      font-size: 0.95rem;
       color: var(--ink);
-      font-weight: 500;
+      font-weight: 600;
       line-height: 1.4;
     }
     .strategy-card .strategy-note {
@@ -745,30 +1068,6 @@
       color: var(--ink-soft);
       line-height: 1.55;
     }
-    .cost-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-family: var(--mono);
-      font-size: 0.72rem;
-      font-weight: 500;
-      color: var(--ink-muted);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-top: 0.3rem;
-    }
-    .cost-dot {
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--line);
-    }
-    .cost-pill.cost-low    .cost-dot:nth-child(1) { background: var(--ink); }
-    .cost-pill.cost-medium .cost-dot:nth-child(1),
-    .cost-pill.cost-medium .cost-dot:nth-child(2) { background: var(--ink); }
-    .cost-pill.cost-high   .cost-dot:nth-child(1),
-    .cost-pill.cost-high   .cost-dot:nth-child(2),
-    .cost-pill.cost-high   .cost-dot:nth-child(3) { background: var(--ink); }
 
     /* ============================================================
        Yes/no marks in the config table
@@ -802,7 +1101,7 @@
     @media (max-width: 720px) { .scenario-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .scenario-grid { grid-template-columns: 1fr; } }
     .scenario-card {
-      background: #fff;
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       overflow: hidden;
@@ -843,7 +1142,7 @@
       letter-spacing: 0.16em;
       color: var(--ink-muted);
       text-transform: uppercase;
-      background: #fff;
+      background: var(--surface);
       border: 1px solid var(--line);
       padding: 0.18rem 0.55rem;
       border-radius: 3px;
@@ -853,7 +1152,7 @@
       font-family: var(--sans);
       font-size: 0.82rem;
       color: var(--ink-muted);
-      background: #fff;
+      background: var(--surface);
     }
     .scenario-card .scen-num {
       display: block;
@@ -901,9 +1200,360 @@
     section.section .content ol li::marker,
     section.section .content ul li::marker { color: var(--ink-muted); }
     hr { background-color: var(--line); height: 1px; }
+
+    /* ============================================================
+       Masthead band  -  editorial newspaper bar with theme toggle
+       ============================================================ */
+    .masthead {
+      background: var(--masthead-bg);
+      color: var(--masthead-fg);
+      padding: 9px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--masthead-rule);
+      transition: background-color .25s ease, color .25s ease;
+    }
+    .masthead .mh-num { color: var(--masthead-accent); }
+    .masthead .mh-dot { color: var(--masthead-fg); opacity: 0.42; margin: 0 8px; }
+    .masthead .mh-mid {
+      flex: 1 1 auto;
+      text-align: center;
+      color: var(--masthead-fg);
+      opacity: 0.92;
+    }
+    .masthead .mh-left,
+    .masthead .mh-right { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; }
+    .masthead .mh-right { justify-content: flex-end; }
+    @media (max-width: 760px) {
+      .masthead { padding: 8px 14px; font-size: 10px; letter-spacing: 0.14em; gap: 10px; }
+      .masthead .mh-mid { display: none; }
+    }
+
+    /* theme toggle pill */
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px 5px 9px;
+      background: transparent;
+      border: 1px solid var(--masthead-rule);
+      color: var(--masthead-fg);
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+    }
+    .theme-toggle:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: var(--masthead-accent);
+      color: var(--masthead-accent);
+    }
+    .theme-toggle .t-icon {
+      width: 16px; height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .theme-toggle .t-icon svg { width: 14px; height: 14px; display: block; }
+    .theme-toggle .t-icon .icon-moon { display: none; }
+    [data-theme="dark"] .theme-toggle .t-icon .icon-sun { display: none; }
+    [data-theme="dark"] .theme-toggle .t-icon .icon-moon { display: block; }
+
+    /* ============================================================
+       Drop cap  -  first paragraph of a .has-dropcap block
+       ============================================================ */
+    .has-dropcap > p:first-of-type::first-letter {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 4.6rem;
+      line-height: 0.85;
+      float: left;
+      padding: 0.45rem 0.55rem 0 0;
+      color: var(--accent);
+      margin-top: -0.05em;
+    }
+    @media (max-width: 600px) {
+      .has-dropcap > p:first-of-type::first-letter { font-size: 3.6rem; }
+    }
+
+    /* ============================================================
+       Pull quote  -  optional, used in abstract
+       ============================================================ */
+    .pull-quote {
+      margin: 2rem 0;
+      padding: 1rem 0 1rem 1.4rem;
+      border-left: 3px solid var(--accent);
+      font-family: var(--display);
+      font-style: italic;
+      font-size: 1.15rem;
+      line-height: 1.45;
+      color: var(--ink);
+      max-width: 720px;
+    }
+    .pull-quote cite {
+      display: block;
+      margin-top: 0.7rem;
+      font-family: var(--mono);
+      font-style: normal;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    /* ============================================================
+       Theme-specific tweaks
+       ============================================================ */
+    /* The teaser video uses #000 letterbox intentionally - leave as is */
+
+    /* Section h2 headings get an accent rule in both themes */
+    section.section .title.is-3:not(.publication-title) {
+      position: relative;
+      padding-left: 0;
+    }
+
+    /* Slightly stronger card hover in dark */
+    [data-theme="dark"] .contrib-card:hover,
+    [data-theme="dark"] .nav-card:hover {
+      border-color: var(--accent);
+      background: var(--surface-mute);
+    }
+
+    /* In dark theme, table accent row contrast bump */
+    [data-theme="dark"] table.table tbody tr.is-highlight td:first-child {
+      box-shadow: inset 2px 0 0 var(--accent);
+    }
+    [data-theme="light"] table.table tbody tr.is-highlight td:first-child {
+      box-shadow: inset 2px 0 0 var(--accent);
+    }
+
+    /* Author-row separators - use accent in light for editorial feel */
+    [data-theme="light"] .author-chip + .author-chip::before {
+      color: var(--accent);
+      opacity: 0.7;
+    }
+
+    /* Pipeline image in dark - slight invert-friendly framing */
+    [data-theme="dark"] .pipeline-img { filter: brightness(0.92) contrast(0.95); }
+
+    /* Scenario video frame slightly tinted in dark */
+    [data-theme="dark"] .scenario-card .scen-media { background: #000; }
+
+    /* ============================================================
+       Paper-reference chip (next to related-work h3 titles)
+       ============================================================ */
+    .paper-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 12px;
+      padding: 3px 9px 3px 9px;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      text-decoration: none;
+      vertical-align: 0.15em;
+      font-weight: 500;
+      transition: background-color .15s ease, color .15s ease;
+      line-height: 1;
+    }
+    .paper-chip:hover {
+      background: var(--accent);
+      color: var(--btn-invert-fg);
+      text-decoration: none;
+    }
+    .paper-chip .icon { font-size: 0.85em; opacity: 0.85; }
+
+    /* ============================================================
+       Dual-chain SVG (decentralized V2V-GoT figure)
+       ============================================================ */
+    .dual-chain {
+      display: block;
+      width: 100%;
+      max-width: 720px;
+      height: auto;
+      margin: 0.4rem auto 0.6rem;
+    }
+    .dual-chain .edge-intra { stroke: var(--ink-muted); stroke-width: 1; opacity: 0.45; fill: none; }
+    .dual-chain .edge-msg   { stroke: var(--accent); stroke-width: 2; fill: none; }
+    .dual-chain .node-a circle { fill: var(--surface); stroke: var(--accent); stroke-width: 1.5; }
+    .dual-chain .node-b circle { fill: var(--surface); stroke: var(--ink); stroke-width: 1.5; }
+    .dual-chain text.node-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+    .dual-chain .node-a .node-label { fill: var(--accent); }
+    .dual-chain .node-b .node-label { fill: var(--ink); }
+    .dual-chain .ch-header {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-anchor: middle;
+    }
+    .dual-chain .edge-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      fill: var(--accent);
+      text-anchor: middle;
+    }
+    .dual-chain .legend-text {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      fill: var(--ink-muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ============================================================
+       3x3 grid of Q1-Q9 illustrations (V2V-GoT figure)
+       ============================================================ */
+    .qa-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.55rem;
+      margin: 0.4rem 0 0.9rem;
+    }
+    @media (max-width: 720px) { .qa-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .qa-grid { grid-template-columns: 1fr; } }
+    .qa-cell {
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .qa-cell img {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: var(--surface);
+    }
+    .qa-cell .qa-caption {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.05em;
+      color: var(--ink);
+      text-align: center;
+      padding: 0.45rem 0.4rem 0.55rem;
+      border-top: 1px solid var(--line-soft);
+      background: var(--surface);
+      line-height: 1.3;
+    }
+    .qa-cell .qa-caption b {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-weight: 600;
+      margin-right: 0.25rem;
+    }
+
+    /* ============================================================
+       Inline citation chips  [1] [2] [3]
+       ============================================================ */
+    sup.cite {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+      vertical-align: super;
+      line-height: 1;
+      margin-left: 1px;
+    }
+    sup.cite a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent-soft);
+      padding: 0 1px;
+    }
+    sup.cite a:hover {
+      background: var(--accent-soft);
+      border-bottom-color: var(--accent);
+    }
+
+    /* ============================================================
+       References list (bottom of page)
+       ============================================================ */
+    .ref-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      counter-reset: ref;
+    }
+    .ref-list li {
+      counter-increment: ref;
+      position: relative;
+      padding: 0.55rem 0 0.55rem 2.4rem;
+      border-bottom: 1px solid var(--line-soft);
+      font-family: var(--serif);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: var(--ink-soft);
+    }
+    .ref-list li:last-child { border-bottom: none; }
+    .ref-list li::before {
+      content: "[" counter(ref) "]";
+      position: absolute;
+      left: 0;
+      top: 0.55rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .ref-list li b { color: var(--ink); font-weight: 600; }
+    .ref-list li a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent-soft);
+    }
+    .ref-list li a:hover { border-bottom-color: var(--accent); }
   </style>
 </head>
 <body>
+
+<!-- ============================================================ -->
+<!-- MASTHEAD  (editorial band + theme toggle)                     -->
+<!-- ============================================================ -->
+<div class="masthead" role="banner">
+  <div class="mh-left">
+    EPFL <span class="mh-dot">·</span> CS-503 <span class="mh-dot">·</span>
+    <span class="mh-num">2026 / Vol. I</span>
+  </div>
+  <div class="mh-mid">V2V-GoT - Project Page</div>
+  <div class="mh-right">
+    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch theme" title="Switch theme">
+      <span class="t-icon" aria-hidden="true">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </span>
+      <span class="t-label" id="themeLabel">Light</span>
+    </button>
+  </div>
+</div>
 
 <!-- ============================================================ -->
 <!-- HERO                                                          -->
@@ -913,6 +1563,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
+          <div class="hero-meta">Research project · 2026</div>
           <h1 class="title publication-title">
             Decentralized Graph-of-Thoughts with OSM Map Grounding
           </h1>
@@ -927,13 +1578,17 @@
           <div class="affiliation">EPFL &middot; CS-503 Project</div>
 
           <div class="hero-actions">
-            <a href="#" class="hero-btn" target="_blank" rel="noopener">
+            <a href="#" class="hero-btn is-primary" target="_blank" rel="noopener">
               <span class="icon"><i class="fab fa-github"></i></span>
               <span>Code</span>
             </a>
             <a href="#" class="hero-btn" target="_blank" rel="noopener">
               <span class="icon"><i class="fas fa-file-pdf"></i></span>
               <span>Report</span>
+            </a>
+            <a href="https://github.com/vidyc/v2v-got-website" class="hero-btn" target="_blank" rel="noopener">
+              <span class="icon"><i class="fab fa-github"></i></span>
+              <span>Website</span>
             </a>
           </div>
         </div>
@@ -966,7 +1621,7 @@
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
+        <div class="content has-text-justified has-dropcap">
           <p>
             V2V-GoT casts cooperative autonomous driving as a Graph-of-Thoughts (GoT) over
             nine perception, prediction and planning question nodes (Q1&hellip;Q9), with all
@@ -983,30 +1638,251 @@
           <p>
             <strong>Decentralization.</strong> Each CAV runs the entire Q1&hellip;Q9 chain on
             its own LiDAR. Vehicles cooperate only through two compact V2V text messages
-            broadcast between question nodes. Our full decentralized configuration reaches
-            PDMS 0.861 on V2V4Real against 0.876 for centralized fusion, while exposing a
-            clear Q8&rarr;Q9 information bottleneck in the original GoT design.
+            broadcast between question nodes. Our full decentralized configuration trails the
+            centralized baseline by only 0.10&nbsp;m on planning L2 (2.72&nbsp;m vs.
+            2.62&nbsp;m) and 0.12&nbsp;pp on collision rate (1.96% vs. 1.84%) on V2V4Real,
+            while exposing a clear Q8&rarr;Q9 information bottleneck in the original GoT
+            design.
           </p>
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- Dataset -->
+<!-- ============================================================ -->
+<!-- OVERVIEW                                                      -->
+<!-- ============================================================ -->
+<section class="section is-band">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width has-text-centered">
+        <h2 class="title is-3">Overview</h2>
+        <div class="nav-grid">
+          <a href="#intro" class="nav-card">
+            <span class="nav-title">Introduction</span>
+          </a>
+          <a href="#related" class="nav-card">
+            <span class="nav-title">Related Works</span>
+          </a>
+          <a href="#osm" class="nav-card">
+            <span class="nav-title">OSM Map Grounding</span>
+          </a>
+          <a href="#decent" class="nav-card">
+            <span class="nav-title">Decentralized V2V-GoT</span>
+          </a>
+          <a href="#conclusion" class="nav-card">
+            <span class="nav-title">Conclusion</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- INTRODUCTION                                                  -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3" id="dataset" style="margin-top: 2rem;">Dataset</h2>
+        <h2 class="title is-3" id="intro">Introduction</h2>
         <div class="content has-text-justified">
           <p>
-            All experiments use <strong>V2V4Real</strong>, a real-world cooperative-driving
-            benchmark recorded with two connected vehicles equipped with roof-mounted LiDAR.
-            Each sample is a synchronized pair of BEV LiDAR point clouds together with
-            ground-truth annotations for objects, motion, and planning.
+            <strong>Vehicle-to-vehicle (V2V) cooperative perception</strong> lets connected
+            cars see beyond their own sensors by exchanging information with nearby
+            vehicles. The motivation is concrete: a car's own LiDAR is blind to anything
+            occluded by a truck, a building, or a hill, but a neighbouring car very often
+            is not. Decoding the shared scene correctly is the difference between a planner
+            that knows about an oncoming pedestrian and one that does not, and the safety
+            ceiling of single-vehicle perception is plausibly capped by exactly the kinds
+            of occlusions that V2V can cut through.
           </p>
           <p>
-            The validation split we use contains <strong>1723 frame pairs</strong> spread
-            across <strong>9 driving scenarios</strong>. Each scenario is a different route
-            with its own road geometry, traffic pattern, and manoeuvre profile. Below is a
-            visual tour, with frame counts per scenario.
+            Recent academic work has reframed cooperative driving as a question-answering
+            problem on top of a Multimodal LLM.
+            <strong>V2V-LLM</strong><sup class="cite"><a href="#ref-v2vllm">[1]</a></sup>
+            opened this line by curating the V2V-QA dataset on V2V4Real (grounding,
+            notable-object identification, planning) and proposing a single LLaVA-based
+            MLLM that fuses scene- and object-level features from every CAV in one pass.
+            <strong>V2V-GoT</strong><sup class="cite"><a href="#ref-v2vgot">[2]</a></sup>
+            extends that setup with a graph-of-thoughts reasoning chain: it curates the
+            larger V2V-GoT-QA dataset (nine question nodes covering occlusion-aware
+            perception, planning-aware prediction, and planning), where the answer of each
+            parent node becomes the context of its child. Both works keep a
+            <em>centralized-fusion</em> assumption - one model still sees every car at
+            once - which is bandwidth-heavy, time-synchronization sensitive, and ignores
+            the trust boundary between vehicles from different manufacturers or operators.
+          </p>
+          <p>
+            The next section reviews both papers in detail, along with the V2V4Real
+            benchmark<sup class="cite"><a href="#ref-v2v4real">[3]</a></sup> on which the
+            rest of the page is measured. Our own hypotheses and the two contributions that
+            follow from them sit directly on top of that related work.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- RELATED WORKS  (V2V-GoT + V2V-LLM + V2V4Real)                 -->
+<!-- ============================================================ -->
+<section class="section is-band">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3" id="related">Related Works</h2>
+
+        <h3 class="title is-4">
+          V2V-LLM
+          <a href="https://arxiv.org/abs/2502.09980" class="paper-chip" target="_blank" rel="noopener" title="Chiu et al., 2026">
+            <span class="icon"><i class="ai ai-arxiv"></i></span>arXiv 2502.09980
+          </a>
+        </h3>
+        <div class="content has-text-justified">
+          <p>
+            V2V-LLM (Chiu et al., 2026) is the first work to frame cooperative autonomous
+            driving as an MLLM-based question-answering problem. It introduces the
+            <strong>V2V-QA</strong> dataset, built on top of V2V4Real (and V2X-Real), with
+            five types of natural-language QA pairs covering grounding at a reference
+            location (Q1), grounding behind an occluder (Q2 and Q3), notable object
+            identification (Q4), and planning (Q5).
+          </p>
+          <p>
+            The accompanying V2V-LLM baseline is a single LLaVA-v1.5-7b MLLM in which a
+            LiDAR-based 3D object detector (PointPillars) replaces the original CLIP image
+            encoder. Each CAV extracts a scene-level feature map and object-level feature
+            vectors from its own point cloud and ships them to a centralized LLM, which
+            answers any CAV's driving question in one pass. The work compares this
+            <em>LLM fusion</em> against no-fusion, early fusion, and feature-level
+            intermediate-fusion baselines (V2VNet, CoBEVT, V2X-ViT, AttFuse) on V2V-QA, and
+            shows that V2V-LLM is best on notable-object identification and planning.
+          </p>
+        </div>
+
+        <h3 class="title is-4" style="margin-top: 2.5rem;">
+          V2V-GoT
+          <a href="https://arxiv.org/abs/2509.18053" class="paper-chip" target="_blank" rel="noopener" title="Chiu et al., 2026">
+            <span class="icon"><i class="ai ai-arxiv"></i></span>arXiv 2509.18053
+          </a>
+        </h3>
+        <div class="content has-text-justified">
+          <p>
+            V2V-GoT (Chiu et al., 2026) extends V2V-LLM with a graph-of-thoughts reasoning
+            framework. The authors curate a new <strong>V2V-GoT-QA</strong> dataset, also
+            built on V2V4Real, that expands the original five V2V-QA tasks into nine
+            interconnected question nodes (Q1&hellip;Q9) organised around two ideas:
+            <em>occlusion-aware perception</em> (Q1&ndash;Q4) and <em>planning-aware
+            prediction</em> (Q5&ndash;Q7), followed by planning (Q8&ndash;Q9). Different
+            QA types are connected by directed edges in the graph; the answer of a parent
+            node is used as the input context of its children. The chain is:
+          </p>
+          <ul>
+            <li><span class="tag-method">Q1</span> visible notable objects</li>
+            <li><span class="tag-method">Q2</span> occluding objects</li>
+            <li><span class="tag-method">Q3</span> invisible notable objects (hidden behind occluders), takes Q2</li>
+            <li><span class="tag-method">Q4</span> overall notable objects, takes Q1+Q3</li>
+            <li><span class="tag-method">Q5</span> prediction by perception, takes Q4</li>
+            <li><span class="tag-method">Q6</span> prediction by planning (other CAVs' planned trajectories), takes Q4</li>
+            <li><span class="tag-method">Q7</span> overall prediction, takes Q5+Q6</li>
+            <li><span class="tag-method">Q8</span> suggested speed &amp; steering (action class), takes Q7</li>
+            <li><span class="tag-method">Q9</span> suggested trajectory, takes Q8</li>
+          </ul>
+          <p>
+            The V2V-GoT model itself reuses V2V-LLM's LLaVA-v1.5-7b backbone (with a
+            LiDAR-based detector replacing the image encoder), and additionally consumes
+            perception features at both the current and the previous timestep to capture
+            temporal dynamics. The MLLM is queried once per QA node, with the previous
+            answer threaded in as context.
+          </p>
+        </div>
+
+        <figure class="pipeline-figure">
+          <img src="./static/images/v2vgot_full_graph-1.png"
+               alt="V2V-GoT question graph: Q1 visible / Q2 occluding / Q3 invisible feed Q4 overall notable objects; Q5 prediction by perception and Q6 prediction by planning feed Q7 overall prediction; Q7 feeds Q8 suggested action classification and Q9 suggested trajectory."
+               class="pipeline-img" style="max-width: 640px;">
+          <figcaption>
+            The V2V-GoT question graph. Perception nodes (Q1&ndash;Q3) feed the overall
+            notable-object set Q4, which branches into prediction-by-perception (Q5) and
+            prediction-by-planning (Q6); their fusion in Q7 drives action classification
+            (Q8) and the final trajectory (Q9). We reuse this decomposition unchanged.
+            Figure adapted from Chiu et&nbsp;al., 2026.
+          </figcaption>
+        </figure>
+
+        <figure class="pipeline-figure">
+          <div class="qa-grid">
+            <div class="qa-cell">
+              <img src="./static/images/gqa/illustration_nq1-1.png" alt="Q1 illustration: ego CAV asks the MLLM to identify notable objects that are visible to it along its planned trajectory.">
+              <span class="qa-caption"><b>Q1</b>Visible Notable Objects</span>
+            </div>
+            <div class="qa-cell">
+              <img src="./static/images/gqa/illustration_nq2-1.png" alt="Q2 illustration: identify occluding objects near ego CAV.">
+              <span class="qa-caption"><b>Q2</b>Occluding Objects</span>
+            </div>
+            <div class="qa-cell">
+              <img src="./static/images/gqa/illustration_nq3-1.png" alt="Q3 illustration: identify invisible notable objects hidden behind occluders, using Q2 as context.">
+              <span class="qa-caption"><b>Q3</b>Invisible Notable Objects</span>
+            </div>
+            <div class="qa-cell">
+              <img src="./static/images/gqa/illustration_nq4-1.png" alt="Q4 illustration: merge Q1 and Q3 into the overall notable-object set.">
+              <span class="qa-caption"><b>Q4</b>Overall Notable Objects</span>
+            </div>
+            <div class="qa-cell">
+              <img src="./static/images/gqa/illustration_nq5-1.png" alt="Q5 illustration: prediction by perception, future trajectories of notable objects classified by motion.">
+              <span class="qa-caption"><b>Q5</b>Prediction by Perception</span>
+            </div>
+            <div class="qa-cell">
+              <img src="./static/images/gqa/illustration_nq6-1.png" alt="Q6 illustration: prediction by planning, using other CAVs' planned future trajectories as context.">
+              <span class="qa-caption"><b>Q6</b>Prediction by Planning</span>
+            </div>
+            <div class="qa-cell">
+              <img src="./static/images/gqa/illustration_nq7-1.png" alt="Q7 illustration: overall prediction merging Q5 and Q6.">
+              <span class="qa-caption"><b>Q7</b>Overall Prediction</span>
+            </div>
+            <div class="qa-cell">
+              <img src="./static/images/gqa/illustration_nq8-1.png" alt="Q8 illustration: suggested action classification, speed and steering categories.">
+              <span class="qa-caption"><b>Q8</b>Suggested Action Classification</span>
+            </div>
+            <div class="qa-cell">
+              <img src="./static/images/gqa/illustration_nq9-1.png" alt="Q9 illustration: suggested trajectory, six future waypoints for the next 3 seconds.">
+              <span class="qa-caption"><b>Q9</b>Suggested Trajectory</span>
+            </div>
+          </div>
+          <figcaption>
+            Illustration of V2V-GoT's nine QA pairs: Perception (Q1&ndash;Q4), Prediction
+            (Q5&ndash;Q7), and Planning (Q8&ndash;Q9). The black arrows pointing at the
+            MLLM indicate the perception data shared by the CAVs; other coloured arrows
+            represent predicted or suggested future trajectories. Figure adapted from
+            Chiu et&nbsp;al., 2026.
+          </figcaption>
+        </figure>
+
+        <h3 class="title is-4" id="dataset" style="margin-top: 2.5rem;">
+          V2V4Real
+          <a href="https://arxiv.org/abs/2303.07601" class="paper-chip" target="_blank" rel="noopener" title="Xu et al., CVPR 2023">
+            <span class="icon"><i class="ai ai-arxiv"></i></span>arXiv 2303.07601
+          </a>
+        </h3>
+        <div class="content has-text-justified">
+          <p>
+            <strong>V2V4Real</strong> is the real-world cooperative-perception dataset
+            underneath everything above. It was recorded with two connected vehicles
+            equipped with roof-mounted LiDAR; each sample is a synchronised pair of BEV
+            LiDAR point clouds with ground-truth bounding-box annotations and future
+            trajectories. Both V2V-QA and V2V-GoT-QA are built on this base: V2V-LLM and
+            V2V-GoT curate their QA pairs from V2V4Real's bounding boxes, ego trajectories
+            and geometric relationships between objects.
+          </p>
+          <p>
+            The testing split contains <strong>9 driving scenarios</strong>, which give us
+            <strong>1723 frame pairs</strong> after the 3-second tail trim used by both
+            QA datasets. Each scenario is a different route with its own road geometry,
+            traffic pattern, and manoeuvre profile. Below is a visual tour, with frame
+            counts per scenario.
           </p>
         </div>
 
@@ -1121,11 +1997,48 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- Contributions panel -->
+<!-- ============================================================ -->
+<!-- TWO MAIN CONTRIBUTIONS                                        -->
+<!-- ============================================================ -->
+<section class="section is-band">
+  <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3" id="contributions" style="margin-top: 2rem;">Two Main Contributions</h2>
+        <h2 class="title is-3" id="contributions">Research Questions and Contributions</h2>
+        <div class="content has-text-justified">
+          <p>
+            Building on V2V-GoT and V2V-LLM, we ask two questions that probe the
+            centralized-fusion assumption from orthogonal angles, and develop one
+            contribution per question.
+          </p>
+          <ol>
+            <li>
+              <strong>Does an explicit map prior reduce road-geometry violations?</strong><br>
+              Many planning errors in V2V-GoT are
+              road-geometry violations (wrong lane, drift into the kerb, missed turn cue)
+              rather than perception failures. An explicit OpenStreetMap road prior,
+              injected per-CAV into the GoT chain, should reduce these errors without
+              changing the chain itself.
+            </li>
+            <li>
+              <strong>Does fully decentralized V2V cooperation degrade planning performance?</strong><br>
+              If each CAV runs the full
+              Q1&hellip;Q9 chain on its own LiDAR and cooperation is reduced to a few
+              short text messages, we can stay close to the centralized baseline while
+              avoiding the bandwidth cost of broadcasting raw LiDAR features between
+              CAVs. Each vehicle relies only on its own sensor stream and a handful of
+              compact text messages from its neighbours.
+            </li>
+          </ol>
+          <p>
+            Each hypothesis maps to one of the two contributions below. They are
+            complementary: OSM grounding is a per-CAV intervention that survives
+            decentralization unchanged.
+          </p>
+        </div>
         <div class="contrib-grid">
           <a class="contrib-card" href="#osm">
             <h4>OSM Map Grounding</h4>
@@ -1148,80 +2061,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Overview tile nav -->
-    <div class="columns is-centered">
-      <div class="column is-full-width has-text-centered">
-        <h2 class="title is-3" style="margin-top: 2rem;">Overview</h2>
-        <div class="nav-grid">
-          <a href="#intro" class="nav-card">
-            <span class="nav-num">&sect; I</span>
-            <span class="nav-title">Introduction</span>
-          </a>
-          <a href="#dataset" class="nav-card">
-            <span class="nav-num">Dataset</span>
-            <span class="nav-title">V2V4Real &middot; 9 scenarios</span>
-          </a>
-          <a href="#osm" class="nav-card">
-            <span class="nav-num">Part A &middot; &sect; II</span>
-            <span class="nav-title">OSM Map Grounding</span>
-          </a>
-          <a href="#decent" class="nav-card">
-            <span class="nav-num">Part B &middot; &sect; III</span>
-            <span class="nav-title">Decentralization</span>
-          </a>
-          <a href="#conclusion" class="nav-card">
-            <span class="nav-num">&sect; IV</span>
-            <span class="nav-title">Conclusion</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- INTRODUCTION                                                  -->
-<!-- ============================================================ -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3" id="intro"><span class="section-num">&sect; I</span>Introduction</h2>
-        <div class="content has-text-justified">
-          <p>
-            Cooperative driving promises safer behaviour by letting vehicles see what their
-            neighbours see. Published V2V perception systems &mdash; including V2V-GoT &mdash;
-            usually assume <strong>intermediate feature fusion</strong>: each CAV ships
-            compressed BEV LiDAR features to a central node that runs a single jointly-trained
-            model. This is bandwidth-heavy, time-synchronization-sensitive, and ignores every
-            trust boundary between vehicles from different manufacturers or operators. It also
-            ignores a rich, free, vehicle-independent source of priors: the road map itself.
-          </p>
-          <p>
-            We ask two questions on top of V2V-GoT:
-          </p>
-          <ol>
-            <li>
-              <strong>Can an explicit map prior help?</strong> Most planning errors we observe
-              are road-geometry violations (wrong lane, drift into the kerb, missed turn cue),
-              not perception failures. We test whether grounding the GoT with an
-              <strong>OSM-derived road raster or description</strong> reduces these errors.
-            </li>
-            <li>
-              <strong>Can the GoT be decentralized?</strong> If each CAV runs the chain on its
-              own LiDAR and the only cooperation is a few short text messages, how close to the
-              centralized baseline can we get? Which messages carry the most signal?
-            </li>
-          </ol>
-          <p>
-            The two questions are complementary: OSM grounding is a per-CAV intervention that
-            survives decentralization unchanged, and we ultimately want both axes in the same
-            system.
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1231,148 +2070,137 @@
 <section class="section">
   <div class="container is-max-desktop">
     <div class="part-banner" id="osm">
-      <span class="part-label">Part&nbsp;A &middot; Contribution&nbsp;1</span>
-      <h2 class="title is-3">II. OSM Map Grounding</h2>
-      <p class="part-sub">Recovering GPS, aligning to LiDAR BEV, and three injection strategies for the road graph.</p>
+      <h2 class="title is-3">OSM Map Grounding</h2>
+      <p class="part-sub">A per-frame GPS recovered from V2V4Real metadata, then turned into a map prior for V2V-GoT in two complementary ways: text-only injection and a trained ViT encoder.</p>
     </div>
 
-    <!-- Motivation -->
-    <h3 class="title is-4">A.1 &nbsp; Motivation</h3>
+    <h3 class="title is-4">GPS recovery and per-frame mapping</h3>
     <div class="content has-text-justified">
       <p>
-        V2V-GoT sees the world only through BEV LiDAR. Lanes, road boundaries, intersections and
-        turn topology are <em>implicit</em> in the point cloud and must be re-inferred at every
-        timestep. Maps from OpenStreetMap, by contrast, encode this information directly and
-        come at near-zero per-frame cost. Our hypothesis is that injecting an OSM-derived map
-        prior in the planning prompt should reduce trajectory errors driven by road geometry
-        rather than by missed perception.
+        Everything that follows hinges on one piece of plumbing: getting a usable GPS for
+        every frame. V2V4Real does not publish latitude/longitude in a directly consumable
+        format, so we first recover ego positions from the underlying dataset metadata. We
+        then validate the recovery by rendering the local OSM road graph at the recovered
+        GPS and overlaying each frame's LiDAR BEV on top.
       </p>
-    </div>
-
-    <!-- Data preparation -->
-    <h3 class="title is-4">A.2 &nbsp; GPS recovery and LiDAR alignment</h3>
-    <div class="content has-text-justified">
-      <p>
-        V2V4Real does not publish latitude/longitude in a directly consumable format, so we
-        recovered ego positions from the underlying dataset metadata. We then validated spatial
-        correctness by overlaying each frame's LiDAR BEV against the local OSM road graph
-        rendered at the recovered GPS location.
-      </p>
+      <figure class="pipeline-figure">
+        <img src="./static/images/gps_lidar_fusion.png"
+             alt="Aerial satellite view with red and cyan LiDAR points from two CAVs overlaid on the road, plus their recovered GPS positions and trajectories drawn in red and blue. A 100 m radius circle marks the local Overpass query area."
+             class="pipeline-img" style="max-width: 720px;">
+        <figcaption>
+          Recovered ego position (red marker) and partner CAV (cyan marker) overlaid on a
+          satellite tile at the recovered GPS coordinates, with each vehicle's BEV LiDAR
+          projected into the same frame in matching colour. Orientation and position match
+          the road geometry, validating that the recovered GPS is usable for downstream
+          map and imagery queries. The 100&nbsp;m radius circle indicates the local tile we
+          pull around the ego.
+        </figcaption>
+      </figure>
       <figure class="image">
         <div class="diagram-slot">
-          <strong>[Figure A.1 &mdash; <code>Media/GPS_location_and_Lidar_fusion</code>]</strong><br>
-          Recovered ego position overlaid on the local OSM road graph, with the
-          LiDAR BEV projected into the same frame. Orientation and position
-          match the expected road geometry, validating that the recovered GPS
-          is usable for downstream Overpass API queries.
+          <strong>[Process diagram - to be drawn]</strong><br>
+          End-to-end documentation of the GPS recovery + LiDAR alignment pipeline:
+          metadata extraction, frame transform, tile query, BEV rasterization, and the
+          overlay shown above.
         </div>
       </figure>
       <p>
-        Orientation and position match the expected road geometry, which unblocks the rest of
-        the OSM pipeline: Overpass tile fetching, BEV rasterization, and alignment with the
-        LiDAR coordinate frame.
+        Orientation and position match the expected road geometry. From this point on
+        every frame in the V2V4Real split has an aligned <code>(lat, lng)</code>, which
+        unlocks any external map or imagery service. We use it to query a satellite tile
+        around the ego, then try two complementary ways to turn that tile into a map
+        prior V2V-GoT can consume: a text-only injection that needs no fine-tune, and a
+        new visual encoder trained on top of LLaVA.
       </p>
     </div>
 
-    <!-- Injection strategies -->
-    <h3 class="title is-4">A.3 &nbsp; Three injection strategies</h3>
+    <h3 class="title is-4">Approach 1: text-only inference</h3>
     <div class="content has-text-justified">
       <p>
-        We compare three ways of pushing the OSM road graph into V2V-GoT, chosen to span the
-        compute-vs-expressivity trade-off:
+        Our first approach is a cheap baseline that asks how much planning quality is
+        reachable with a purely textual map prior, before committing any GPU time to a
+        visual branch. At the recovered GPS we query the
+        <a href="https://overpass-api.de/">Overpass API</a> for the OpenStreetMap tags
+        describing the road the ego is on, and reduce the response to a compact JSON
+        object with three fields (lane count, free-text description, confidence). This
+        object is concatenated to the LLaVA prompt as extra text tokens at the start of
+        the Q1&hellip;Q9 chain. Nothing else in V2V-GoT changes, and because the prior is
+        a database lookup rather than a learned model, the path is fully zero-shot and
+        deterministic.
       </p>
-    </div>
-    <div class="strategy-grid">
-      <div class="strategy-card">
-        <h5>encoder</h5>
-        <span class="strategy-where">CNN&nbsp;/&nbsp;ViT encoder &rarr; LLaVA projector</span>
-        <span class="strategy-note">
-          Closest to the original proposal; richest representation. Trains an extra encoder
-          stack on top of the LoRA-adapted backbone.
-        </span>
-        <span class="cost-pill cost-high">
-          <span class="cost-dot"></span><span class="cost-dot"></span><span class="cost-dot"></span>
-          training&nbsp;cost: high
-        </span>
-      </div>
-      <div class="strategy-card">
-        <h5>raw-image</h5>
-        <span class="strategy-where">Rasterized OSM BEV &rarr; LLaVA visual context</span>
-        <span class="strategy-note">
-          Cheapest visual integration; the rasterized map is concatenated alongside the LiDAR
-          feature tokens and reuses LLaVA's pretrained vision tower.
-        </span>
-        <span class="cost-pill cost-medium">
-          <span class="cost-dot"></span><span class="cost-dot"></span><span class="cost-dot"></span>
-          training&nbsp;cost: medium
-        </span>
-      </div>
-      <div class="strategy-card">
-        <h5>text-graph</h5>
-        <span class="strategy-where">Textual road-graph description &rarr; extra text tokens</span>
-        <span class="strategy-note">
-          A short textual description of the local road graph is injected as tokens. Cheapest
-          to prototype and may even work zero-shot.
-        </span>
-        <span class="cost-pill cost-low">
-          <span class="cost-dot"></span><span class="cost-dot"></span><span class="cost-dot"></span>
-          training&nbsp;cost: low
-        </span>
-      </div>
-    </div>
-    <div class="content has-text-justified">
+      <p>Example output for one V2V4Real frame:</p>
+      <pre><code>{
+  "lanes": 2,
+  "description": "Two-lane road with grassy median",
+  "confidence": 0.95
+}</code></pre>
       <p>
-        The text-description path is also informative on its own: if it already lifts planning
-        quality without any fine-tuning, the bottleneck is information rather than modality.
+        Each record is tagged with the frame's <code>sequence</code>, <code>frame</code>
+        and <code>filename</code> for traceability, but only the inner JSON above is fed
+        into the model. The trade-off is obvious: a one-line caption throws away nearly
+        all of the spatial structure visible in the satellite tile. Whatever extra signal
+        the image carries beyond "two lanes, grassy median" is lost before it reaches
+        Q1.
       </p>
     </div>
 
-    <!-- Synthetic prototype -->
-    <h3 class="title is-4">A.4 &nbsp; Synthetic-road sanity check</h3>
+    <h3 class="title is-4">Approach 2: ViT encoder</h3>
     <div class="content has-text-justified">
       <p>
-        Before deploying GPU time to the full OSM pipeline, we built a synthetic-road dataset
-        in which a simple road-mask channel replaces the real OSM raster. This isolates two
-        questions: <em>(i)</em> does the token-injection pipeline plumb through the projector
-        and the LM without numerical collapse, and <em>(ii)</em> does a map-shaped channel
-        carry enough signal to move the planning metrics at all? Both checks passed, which
-        cleared the way for the full OSM integration.
+        A satellite tile carries vastly more information than a handful of OSM tags ever
+        can: exact lane geometry, intersection topology, occluder layout, neighbouring
+        buildings, road markings. If we want to actually move planning quality, feeding
+        that image to the model in visual form is the right bet. The text-only baseline
+        is mostly there to establish how much of the gap is already closed by a
+        low-effort proxy.
       </p>
+      <p>
+        We extend V2V-GoT with a dedicated visual branch for the satellite tile. A new
+        ViT encoder takes the cropped sat image at the recovered GPS, its output is
+        passed through a modality projector that maps the features into LLaVA's embedding
+        space, and the resulting tokens are fed into LLaVA alongside the existing BEV
+        LiDAR tokens. The branch sits in parallel with the original LiDAR feature path;
+        nothing about the LiDAR side of V2V-GoT changes.
+      </p>
+      <p>
+        Plugging this branch in without further training would leave LLaVA
+        <strong>out-of-distribution</strong>: the backbone has only ever seen BEV LiDAR
+        tokens through its projector, and a top-down RGB encoding is a different
+        modality. We address this by training the new ViT encoder and at the same time
+        applying a light LoRA fine-tune to LLaVA so it adapts to the satellite tokens
+        instead of treating them as noise. Only the ViT, the projector and the LoRA
+        adapters are updated; the rest of the LLaVA backbone stays frozen, which protects
+        the pre-trained Q1&hellip;Q9 reasoning we are trying to extend rather than
+        replace.
+      </p>
+      <figure class="pipeline-figure">
+        <img src="./static/images/v2vgot_with_osm_arch.png"
+             alt="Extended V2V-GoT architecture: four LiDAR columns (CAV_EGO and CAV_1 at the previous and current timesteps), each running through a frozen 3D Object Detector into a Perception Feature box and then into the shared Projector, alongside a new fifth branch where a satellite BEV image goes through a trainable ViT encoder and its own Projector. All token streams feed the Large Language Model, which is fine-tuned with LoRA. The ViT, both Projectors and the LoRA adapters carry a fire icon (trainable); the 3D Object Detectors carry a snowflake (frozen)."
+             class="pipeline-img" style="max-width: 1100px;">
+        <figcaption>
+          The extended V2V-GoT architecture. The original LiDAR feature path
+          (CAV<sub>EGO</sub> and CAV<sub>1</sub> at the previous and current
+          timesteps, each through a frozen 3D Object Detector and the shared
+          Projector) is preserved on the left. The new satellite branch on the
+          right adds a trainable ViT encoder and its own Projector that produces
+          map tokens consumed by the same LLaVA backbone. Trainable modules carry
+          a fire icon (ViT, both Projectors, LoRA); frozen modules carry a
+          snowflake (3D Object Detectors, LLaVA backbone).
+        </figcaption>
+      </figure>
+
     </div>
 
-    <!-- Training -->
-    <h3 class="title is-4">A.5 &nbsp; Training: from full fine-tune to LoRA</h3>
+    <!-- Results -->
+    <h3 class="title is-4">Results</h3>
     <div class="content has-text-justified">
       <p>
-        The original V2V-GoT recipe estimates 45&nbsp;h per fine-tune run on
-        4&times;&nbsp;H100&nbsp;80&nbsp;GB. Our SCITAS Izar allocation gives us at best
-        2&times;&nbsp;V100&nbsp;32&nbsp;GB, which do not support FlashAttention-2 or BF16; the
-        extra OSM channel further inflates token count. Effective throughput drops to roughly
-        200&nbsp;h per epoch, far beyond the budget needed for three full configurations.
-      </p>
-      <p>
-        We therefore switched to <strong>LoRA fine-tuning</strong> of the LLaVA backbone:
-        trainable parameter count and per-step memory both drop by an order of magnitude, and
-        the inductive bias is appropriate &mdash; we are not retraining V2V-GoT from scratch,
-        only asking it to absorb a relatively narrow new modality (OSM road geometry).
-      </p>
-    </div>
-
-    <!-- Results placeholder -->
-    <h3 class="title is-4">A.6 &nbsp; Results</h3>
-    <div class="content has-text-justified">
-      <p>
-        We compare the three injection strategies against the reproduced V2V-GoT baseline on
-        planning L2, collision rate (CR) and wrong-lane rate. The reproduced baseline matches
-        the published numbers to within $\pm 0.2\%$, giving us a trustworthy reference.
+        We compare both approaches against the reproduced V2V-GoT baseline on planning L2,
+        collision rate (CR) and wrong-lane rate. The reproduced baseline matches the
+        published numbers to within $\pm 0.2\%$, giving us a trustworthy reference.
       </p>
       <div class="table-container">
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
-          <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
-            <em>Table&nbsp;A.1 &mdash; placeholder.</em> Planning metrics for the three OSM
-            injection strategies against the reproduced baseline. Numbers to fill in once the
-            LoRA runs converge.
-          </caption>
           <thead>
             <tr>
               <th>Configuration</th>
@@ -1384,28 +2212,19 @@
           </thead>
           <tbody>
             <tr>
-              <td class="approach-cell">baseline (no OSM)</td>
-              <td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>reference</td>
+              <td class="approach-cell">baseline</td>
+              <td>-</td><td>-</td><td>-</td><td>reference</td>
             </tr>
             <tr>
-              <td class="approach-cell">+ OSM encoder</td>
-              <td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td>
+              <td class="approach-cell">+ text-only inference</td>
+              <td>-</td><td>-</td><td>-</td><td>zero-shot</td>
             </tr>
             <tr>
-              <td class="approach-cell">+ OSM raw image</td>
-              <td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td>
-            </tr>
-            <tr>
-              <td class="approach-cell">+ OSM text graph</td>
-              <td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td>
+              <td class="approach-cell">+ ViT encoder</td>
+              <td>-</td><td>-</td><td>-</td><td>-</td>
             </tr>
           </tbody>
         </table>
-      </div>
-      <div class="callout warn">
-        <strong>To do.</strong> Drop in the final LoRA numbers for the three injection
-        strategies once the runs are done. Also add a qualitative figure of two trajectories
-        (with and without OSM) over the same OSM tile to make the map effect visual.
       </div>
     </div>
 
@@ -1415,52 +2234,15 @@
 <!-- ============================================================ -->
 <!-- PART B: DECENTRALIZED V2V-GoT                                 -->
 <!-- ============================================================ -->
-<section class="section">
+<section class="section is-band">
   <div class="container is-max-desktop">
     <div class="part-banner" id="decent">
-      <span class="part-label">Part&nbsp;B &middot; Contribution&nbsp;2</span>
-      <h2 class="title is-3">III. Decentralized V2V-GoT</h2>
+      <h2 class="title is-3">Decentralized V2V-GoT</h2>
       <p class="part-sub">Per-CAV inference linked by two compact V2V text messages, closing most of the gap to centralized fusion.</p>
     </div>
 
-    <!-- Pipeline -->
-    <h3 class="title is-4">B.1 &nbsp; The V2V-GoT pipeline</h3>
-    <div class="content has-text-justified">
-      <p>
-        V2V-GoT decomposes cooperative driving into nine question nodes, each implemented as a
-        LoRA-tuned LLaVA prompt that takes (i)&nbsp;the asker's BEV LiDAR features as visual
-        tokens and (ii)&nbsp;a text prompt built from outputs of earlier nodes. The chain is:
-      </p>
-      <ul>
-        <li><span class="tag-method">Q1</span> visible notable objects</li>
-        <li><span class="tag-method">Q2</span> occluding objects</li>
-        <li><span class="tag-method">Q3</span> invisible notable objects (hidden behind occluders)</li>
-        <li><span class="tag-method">Q4</span> notable object identification &mdash; takes Q1+Q3</li>
-        <li><span class="tag-method">Q5</span> motion prediction of notables &mdash; takes Q4</li>
-        <li><span class="tag-method">Q6</span> is the other CAV a notable object? &mdash; takes Q4</li>
-        <li><span class="tag-method">Q7</span> motion with full context &mdash; takes Q5+Q6</li>
-        <li><span class="tag-method">Q8</span> suggested speed &amp; steering (action class) &mdash; takes Q7</li>
-        <li><span class="tag-method">Q9</span> trajectory planning &mdash; takes Q8</li>
-      </ul>
-    </div>
-
-    <h3 class="title is-4">B.2 &nbsp; Pipeline diagram</h3>
-    <figure class="pipeline-figure">
-      <img src="./static/images/pipeline_questions.png"
-           alt="V2V-GoT pipeline: Q1 visible / Q2 occluding / Q3 invisible feed Q4 overall notable objects; Q5 prediction by perception and Q6 prediction by planning feed Q7 overall prediction; Q7 feeds Q8 suggested action classification and Q9 suggested trajectory."
-           class="pipeline-img">
-      <figcaption>
-        <strong>Figure&nbsp;B.1.</strong> The V2V-GoT chain. Perception nodes (Q1&ndash;Q3) feed
-        the overall notable-object set Q4, which branches into prediction-by-perception (Q5)
-        and prediction-by-planning (Q6); their fusion in Q7 drives action classification (Q8)
-        and the final trajectory (Q9). In Part&nbsp;B we add two cross-CAV text edges on top of
-        this graph: a sender's Q1 list into the receiver's Q3 prompt, and the sender's Q9 plan
-        into the receiver's Q6 prompt.
-      </figcaption>
-    </figure>
-
-    <!-- From centralized to decentralized -->
-    <h3 class="title is-4">B.3 &nbsp; From centralized to decentralized</h3>
+    <!-- Methodology -->
+    <h3 class="title is-4">Methodology</h3>
     <div class="content has-text-justified">
       <p>
         In the original system, a single LM jointly consumes BEV LiDAR features from
@@ -1481,40 +2263,294 @@
             notable object on its path.</li>
       </ol>
       <p>
-        Concretely, the chain in Figure&nbsp;B.1 is duplicated &mdash; one instance per CAV,
-        running on disjoint inputs &mdash; and the two new cross-CAV edges link the two chains
-        at Q3 and Q6.
+        Concretely, the chain above is duplicated - one instance per CAV, running on
+        disjoint inputs - and the two new cross-CAV edges link the two chains at Q3 and
+        Q6.
       </p>
     </div>
 
-    <figure class="pipeline-figure">
-      <div class="diagram-slot" id="dual-chain-diagram">
-        <strong>[Two-CAV chain diagram &mdash; to be drawn]</strong><br>
-        Two copies of the Q1&hellip;Q9 graph from Figure&nbsp;B.1, side by side, with two
-        new arrows connecting them: sender's&nbsp;Q1&nbsp;&rarr;&nbsp;receiver's&nbsp;Q3
-        and sender's&nbsp;Q9&nbsp;&rarr;&nbsp;receiver's&nbsp;Q6. All other edges remain
-        intra-CAV.
-      </div>
+    <figure class="pipeline-figure" id="centralized-baseline-figure">
+      <svg viewBox="0 0 720 480" xmlns="http://www.w3.org/2000/svg" class="dual-chain"
+           role="img"
+           aria-label="Centralized V2V-GoT baseline. A central LLM at the top consumes BEV LiDAR feature tensors from both CAVs, shown as thick pipes carrying megabytes per frame. For contrast, a thin arrow at the bottom shows a typical V2V text message of a few kilobytes, the kind of payload V2V radios are actually designed to carry.">
+        <defs>
+          <marker id="cb-tip-l" viewBox="0 0 8 8" refX="0" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M8 0 L0 4 L8 8 z" fill="#888"/>
+          </marker>
+          <marker id="cb-tip-r" viewBox="0 0 8 8" refX="8" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 0 L8 4 L0 8 z" fill="#888"/>
+          </marker>
+        </defs>
+
+        <!-- ============ Central LLM (top) ============ -->
+        <rect x="180" y="22" width="360" height="84" rx="14" ry="14"
+              fill="#fbd6b9" stroke="#dca48b" stroke-width="1.4"/>
+        <text x="360" y="56" text-anchor="middle"
+              font-size="19" font-weight="700" fill="#222">Central LLM</text>
+        <text x="360" y="84" text-anchor="middle"
+              font-size="12.5" fill="#555">
+          jointly consumes <tspan font-style="italic">F</tspan><tspan baseline-shift="sub" font-size="9">EGO</tspan> and <tspan font-style="italic">F</tspan><tspan baseline-shift="sub" font-size="9">1</tspan> at every question
+        </text>
+
+        <!-- ============ Heavy LiDAR pipes (thick) ============ -->
+        <!-- Outer pipe (darker, edge) -->
+        <line x1="130" y1="300" x2="280" y2="106"
+              stroke="#c79a48" stroke-width="34" stroke-linecap="butt" opacity="0.95"/>
+        <!-- Inner pipe (lighter, fill) -->
+        <line x1="130" y1="300" x2="280" y2="106"
+              stroke="#fbe1a3" stroke-width="22" stroke-linecap="butt" opacity="0.95"/>
+
+        <line x1="590" y1="300" x2="440" y2="106"
+              stroke="#5e8bba" stroke-width="34" stroke-linecap="butt" opacity="0.95"/>
+        <line x1="590" y1="300" x2="440" y2="106"
+              stroke="#d8e6f5" stroke-width="22" stroke-linecap="butt" opacity="0.95"/>
+
+        <!-- Stylized "data packets" inside the pipes -->
+        <!-- Left pipe packets (3 packets staggered along the pipe) -->
+        <g opacity="0.9">
+          <rect x="138" y="260" width="14" height="9" rx="2" fill="#b8862d"
+                transform="rotate(-52 145 264)"/>
+          <rect x="178" y="210" width="14" height="9" rx="2" fill="#b8862d"
+                transform="rotate(-52 185 214)"/>
+          <rect x="220" y="158" width="14" height="9" rx="2" fill="#b8862d"
+                transform="rotate(-52 227 162)"/>
+        </g>
+        <g opacity="0.9">
+          <rect x="568" y="260" width="14" height="9" rx="2" fill="#3f6da1"
+                transform="rotate(52 575 264)"/>
+          <rect x="528" y="210" width="14" height="9" rx="2" fill="#3f6da1"
+                transform="rotate(52 535 214)"/>
+          <rect x="486" y="158" width="14" height="9" rx="2" fill="#3f6da1"
+                transform="rotate(52 493 162)"/>
+        </g>
+
+        <!-- ============ Pipe labels ============ -->
+        <text x="40" y="200" font-size="13" fill="#222" font-weight="700">
+          <tspan font-style="italic">F</tspan><tspan baseline-shift="sub" font-size="10">EGO</tspan>
+        </text>
+        <text x="40" y="218" font-size="11.5" fill="#555">BEV feature tensor</text>
+        <text x="40" y="236" font-size="12" fill="#c63a3a" font-weight="700">≈ MB per frame</text>
+
+        <text x="680" y="200" font-size="13" fill="#222" font-weight="700" text-anchor="end">
+          <tspan font-style="italic">F</tspan><tspan baseline-shift="sub" font-size="10">1</tspan>
+        </text>
+        <text x="680" y="218" font-size="11.5" fill="#555" text-anchor="end">BEV feature tensor</text>
+        <text x="680" y="236" font-size="12" fill="#c63a3a" font-weight="700" text-anchor="end">≈ MB per frame</text>
+
+        <!-- ============ Center warning ============ -->
+        <text x="360" y="200" text-anchor="middle" font-size="12" fill="#c63a3a" font-weight="700">
+          aggregate ≈ tens of MB/s
+        </text>
+        <text x="360" y="218" text-anchor="middle" font-size="11" fill="#c63a3a">
+          beyond practical V2V radios
+        </text>
+
+        <!-- ============ CAV_EGO box (bottom-left) ============ -->
+        <rect x="40" y="300" width="180" height="110" rx="10" ry="10"
+              fill="#fbe1a3" stroke="#dfba6a" stroke-width="1.2"/>
+        <text x="130" y="326" text-anchor="middle"
+              font-size="15" font-weight="700" fill="#222">CAV_EGO</text>
+        <text x="130" y="350" text-anchor="middle"
+              font-size="11.5" fill="#444">LiDAR + 3D Detector</text>
+        <text x="130" y="368" text-anchor="middle"
+              font-size="11.5" fill="#444">+ Perception Feature</text>
+        <text x="130" y="394" text-anchor="middle"
+              font-size="13" fill="#444">→ <tspan font-style="italic">F</tspan><tspan baseline-shift="sub" font-size="9">EGO</tspan></text>
+
+        <!-- ============ CAV_1 box (bottom-right) ============ -->
+        <rect x="500" y="300" width="180" height="110" rx="10" ry="10"
+              fill="#d8e6f5" stroke="#9fbedf" stroke-width="1.2"/>
+        <text x="590" y="326" text-anchor="middle"
+              font-size="15" font-weight="700" fill="#222">CAV_1</text>
+        <text x="590" y="350" text-anchor="middle"
+              font-size="11.5" fill="#444">LiDAR + 3D Detector</text>
+        <text x="590" y="368" text-anchor="middle"
+              font-size="11.5" fill="#444">+ Perception Feature</text>
+        <text x="590" y="394" text-anchor="middle"
+              font-size="13" fill="#444">→ <tspan font-style="italic">F</tspan><tspan baseline-shift="sub" font-size="9">1</tspan></text>
+
+        <!-- ============ Thin text-message arrow (contrast) ============ -->
+        <line x1="225" y1="446" x2="495" y2="446"
+              stroke="#888" stroke-width="1.4"
+              marker-start="url(#cb-tip-l)" marker-end="url(#cb-tip-r)"/>
+        <text x="360" y="439" text-anchor="middle" font-size="11" fill="#555" font-weight="600">
+          typical V2V text message ≈ KB
+        </text>
+        <text x="360" y="463" text-anchor="middle" font-size="10.5" fill="#888" font-style="italic">
+          (what V2V radios are actually designed to carry)
+        </text>
+      </svg>
       <figcaption>
-        <strong>Figure&nbsp;B.2.</strong> Decentralized V2V-GoT: each CAV runs the full
-        Q1&hellip;Q9 chain on its own LiDAR. Two cross-CAV text messages (Q1&rarr;Q3 and
-        Q9&rarr;Q6) replace the centralized LiDAR-feature fusion of the original system.
+        Centralized V2V-GoT baseline. A single central LLM has to jointly consume BEV
+        LiDAR feature tensors from <em>both</em>
+        <span style="color: var(--accent); font-weight: 600;">CAV_EGO</span> and
+        <span style="font-weight: 600;">CAV_1</span> at every question. Each tensor is on
+        the order of megabytes per frame (thick coloured pipes), so the aggregate transport
+        between the two vehicles is on the order of tens of megabytes per second. For
+        comparison, the thin arrow at the bottom is the kind of message V2V radios are
+        designed to carry: a few kilobytes per second, three orders of magnitude lighter.
+        Sending raw LiDAR features over the air is therefore not realistic in practice,
+        which motivates moving to the per-CAV chain below.
       </figcaption>
     </figure>
 
-    <!-- Setup -->
-    <h3 class="title is-4">B.4 &nbsp; Experimental setup</h3>
+    <figure class="pipeline-figure">
+      <svg viewBox="0 0 720 430" xmlns="http://www.w3.org/2000/svg" class="dual-chain" id="dual-chain-diagram"
+           role="img" aria-label="Decentralized V2V-GoT: two copies of the Q1 to Q9 chain side by side, with cross-CAV q1msg and Q9 plan messages connecting them.">
+        <defs>
+          <marker id="arr-intra" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 0 L8 4 L0 8 z" fill="var(--ink-muted)" opacity="0.55"/>
+          </marker>
+          <marker id="arr-msg" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L8 4 L0 8 z" fill="var(--accent)"/>
+          </marker>
+        </defs>
+
+        <!-- Chain headers -->
+        <text x="140" y="22" class="ch-header" fill="var(--accent)">CAV_EGO</text>
+        <text x="580" y="22" class="ch-header" fill="var(--ink)">CAV_1</text>
+
+        <!-- ============ LEFT CHAIN (CAV_EGO) intra-edges ============ -->
+        <!-- Q2 -> Q3 -->
+        <line x1="156" y1="90" x2="184" y2="90" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q1 -> Q4 -->
+        <line x1="92" y1="104" x2="128" y2="136" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q3 -> Q4 -->
+        <line x1="188" y1="104" x2="152" y2="136" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q4 -> Q5 -->
+        <line x1="128" y1="164" x2="112" y2="196" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q4 -> Q6 -->
+        <line x1="152" y1="164" x2="168" y2="196" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q5 -> Q7 -->
+        <line x1="112" y1="224" x2="128" y2="256" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q6 -> Q7 -->
+        <line x1="168" y1="224" x2="152" y2="256" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q7 -> Q8 -->
+        <line x1="140" y1="284" x2="140" y2="314" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q8 -> Q9 -->
+        <line x1="140" y1="344" x2="140" y2="374" class="edge-intra" marker-end="url(#arr-intra)"/>
+
+        <!-- ============ RIGHT CHAIN (CAV_1) intra-edges, mirrored ============ -->
+        <!-- Q2 -> Q3 (Q2 at 580, Q3 at 520) -->
+        <line x1="564" y1="90" x2="536" y2="90" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q1 -> Q4 (Q1 at 640) -->
+        <line x1="628" y1="104" x2="592" y2="136" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q3 -> Q4 -->
+        <line x1="532" y1="104" x2="568" y2="136" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q4 -> Q5 (Q5 at 620) -->
+        <line x1="592" y1="164" x2="608" y2="196" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q4 -> Q6 (Q6 at 540) -->
+        <line x1="568" y1="164" x2="552" y2="196" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q5 -> Q7 -->
+        <line x1="608" y1="224" x2="592" y2="256" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q6 -> Q7 -->
+        <line x1="552" y1="224" x2="568" y2="256" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q7 -> Q8 -->
+        <line x1="580" y1="284" x2="580" y2="314" class="edge-intra" marker-end="url(#arr-intra)"/>
+        <!-- Q8 -> Q9 -->
+        <line x1="580" y1="344" x2="580" y2="374" class="edge-intra" marker-end="url(#arr-intra)"/>
+
+        <!-- ============ CROSS-CAV q1msg (top, arched) ============ -->
+        <!-- EGO.Q1 -> CAV1.Q3 -->
+        <path d="M 96 80 C 200 30 380 30 506 80" class="edge-msg" marker-end="url(#arr-msg)"/>
+        <!-- CAV1.Q1 -> EGO.Q3 -->
+        <path d="M 624 80 C 520 50 280 50 214 80" class="edge-msg" marker-end="url(#arr-msg)"/>
+        <!-- q1msg labels -->
+        <text x="260" y="35" class="edge-label">q1msg</text>
+        <text x="460" y="35" class="edge-label">q1msg</text>
+
+        <!-- ============ CROSS-CAV Q9 plan (bottom, diagonal) ============ -->
+        <!-- EGO.Q9 -> CAV1.Q6 -->
+        <path d="M 156 390 C 300 390 440 290 538 218" class="edge-msg" marker-end="url(#arr-msg)"/>
+        <!-- CAV1.Q9 -> EGO.Q6 -->
+        <path d="M 564 390 C 420 390 280 290 182 218" class="edge-msg" marker-end="url(#arr-msg)"/>
+        <!-- Q9 plan labels -->
+        <text x="240" y="310" class="edge-label">Q9 plan</text>
+        <text x="480" y="310" class="edge-label">Q9 plan</text>
+
+        <!-- ============ LEFT CHAIN nodes (CAV_EGO) ============ -->
+        <g class="node-a">
+          <g><circle cx="80" cy="90" r="14"/><text x="80" y="91" class="node-label">Q1</text></g>
+          <g><circle cx="140" cy="90" r="14"/><text x="140" y="91" class="node-label">Q2</text></g>
+          <g><circle cx="200" cy="90" r="14"/><text x="200" y="91" class="node-label">Q3</text></g>
+          <g><circle cx="140" cy="150" r="14"/><text x="140" y="151" class="node-label">Q4</text></g>
+          <g><circle cx="100" cy="210" r="14"/><text x="100" y="211" class="node-label">Q5</text></g>
+          <g><circle cx="180" cy="210" r="14"/><text x="180" y="211" class="node-label">Q6</text></g>
+          <g><circle cx="140" cy="270" r="14"/><text x="140" y="271" class="node-label">Q7</text></g>
+          <g><circle cx="140" cy="330" r="14"/><text x="140" y="331" class="node-label">Q8</text></g>
+          <g><circle cx="140" cy="390" r="14"/><text x="140" y="391" class="node-label">Q9</text></g>
+        </g>
+
+        <!-- ============ RIGHT CHAIN nodes (CAV_1), mirrored ============ -->
+        <g class="node-b">
+          <g><circle cx="640" cy="90" r="14"/><text x="640" y="91" class="node-label">Q1</text></g>
+          <g><circle cx="580" cy="90" r="14"/><text x="580" y="91" class="node-label">Q2</text></g>
+          <g><circle cx="520" cy="90" r="14"/><text x="520" y="91" class="node-label">Q3</text></g>
+          <g><circle cx="580" cy="150" r="14"/><text x="580" y="151" class="node-label">Q4</text></g>
+          <g><circle cx="620" cy="210" r="14"/><text x="620" y="211" class="node-label">Q5</text></g>
+          <g><circle cx="540" cy="210" r="14"/><text x="540" y="211" class="node-label">Q6</text></g>
+          <g><circle cx="580" cy="270" r="14"/><text x="580" y="271" class="node-label">Q7</text></g>
+          <g><circle cx="580" cy="330" r="14"/><text x="580" y="331" class="node-label">Q8</text></g>
+          <g><circle cx="580" cy="390" r="14"/><text x="580" y="391" class="node-label">Q9</text></g>
+        </g>
+
+        <!-- Legend strip -->
+        <g transform="translate(0, 420)">
+          <line x1="40" y1="-3" x2="60" y2="-3" class="edge-intra"/>
+          <text x="66" y="0" class="legend-text">intra-CAV edge</text>
+          <line x1="200" y1="-3" x2="220" y2="-3" class="edge-msg"/>
+          <text x="226" y="0" class="legend-text">V2V text message</text>
+        </g>
+      </svg>
+      <figcaption>
+        Decentralized V2V-GoT: each CAV runs the full Q1&hellip;Q9 chain on its own LiDAR
+        (left, <span style="color: var(--accent); font-weight: 600;">CAV_EGO</span>;
+        right, <span style="font-weight: 600;">CAV_1</span>). Thin grey arrows are the
+        original intra-CAV edges; the two thick coloured arrows in each direction are the
+        only inter-CAV signals: a sender's Q1 list piped into the receiver's Q3 prompt
+        (top, <em>q1msg</em>), and the sender's Q9 planned trajectory piped into the
+        receiver's Q6 prompt (bottom, <em>Q9 plan</em>). Centralized LiDAR-feature fusion
+        of the original V2V-GoT is replaced entirely by these four text messages.
+      </figcaption>
+    </figure>
+
+    <!-- Implementation -->
+    <h3 class="title is-4">Implementation</h3>
     <div class="content has-text-justified">
       <p>
-        All experiments use the V2V4Real validation split (9 scenarios, 1723 paired frames). We
-        evaluate each frame twice &mdash; once asking from the perspective of <code>ego</code>
-        and once from <code>CAV<sub>1</sub></code> &mdash; for a total of 3446 samples per
-        configuration.
+        The decentralized chain is run by invoking the V2V-GoT model twice per frame, once
+        per CAV, and threading the cross-CAV messages between the two runs at Q3 and Q6.
+        The model weights themselves are reused unchanged; only the prompt-construction
+        logic is modified.
+      </p>
+      <p>
+        Each <strong>q1msg</strong> serializes the sender's Q1 output as a short list of
+        <code>(x, y)</code> positions plus a motion descriptor per object and is pasted
+        into the receiver's Q3 prompt before that node is queried. Each <strong>Q9
+        plan</strong> serializes the sender's predicted trajectory as the six future
+        <code>(x, y)</code> waypoints and is pasted into the receiver's Q6 prompt. Both
+        messages stay in V2V-GoT's ego coordinate frame, so no transform is needed on the
+        receiver side.
+      </p>
+      <p>
+        For evaluation we replay each V2V4Real frame twice, once asking from the perspective
+        of <code>ego</code> and once from <code>CAV<sub>1</sub></code>, for a total of 3446
+        samples per configuration. The 9 scenarios and 1723 underlying frame pairs are the
+        ones shown in <a href="#related">Related Works</a>.
+      </p>
+    </div>
+
+    <!-- Experiments -->
+    <h3 class="title is-4">Experiments</h3>
+    <div class="content has-text-justified">
+      <p>
+        We compare three configurations that together isolate the effect of decentralization
+        and of each cross-CAV text message:
       </p>
       <div class="table-container">
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
           <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
-            <em>Table&nbsp;B.1.</em> The three configurations compared in Part&nbsp;B.
+            The three configurations we compare for the decentralized setup.
           </caption>
           <thead>
             <tr>
@@ -1529,8 +2565,8 @@
             <tr>
               <td class="approach-cell">central</td>
               <td>full cross-CAV</td>
-              <td><span class="mark mark-na">&mdash;</span></td>
-              <td><span class="mark mark-na">&mdash;</span></td>
+              <td><span class="mark mark-na">-</span></td>
+              <td><span class="mark mark-na">-</span></td>
               <td>centralized baseline</td>
             </tr>
             <tr>
@@ -1551,44 +2587,47 @@
         </table>
       </div>
       <p>
-        Per question we report the metrics most relevant to that node: Q1&ndash;Q4 use binary
-        F1/precision/recall and a location F1 at 4&nbsp;m; Q5 and Q7 use L2 over predicted
-        motion vectors; Q6 uses classification accuracy; Q8 uses action edit distance; Q9 uses
-        L2, CR and PDMS.
+        Per question we report the metrics most relevant to that node: Q1&ndash;Q4 use
+        binary F1/precision/recall and a location F1 at 4&nbsp;m; Q5 and Q7 use L2 over
+        predicted motion vectors; Q6 uses classification accuracy; Q8 uses action edit
+        distance; Q9 uses L2, CR and PDMS.
       </p>
     </div>
 
-    <!-- Results: aggregate -->
-    <h3 class="title is-4">B.5 &nbsp; Headline numbers</h3>
+    <!-- Results -->
+    <h3 class="title is-4">Results</h3>
     <div class="content has-text-justified">
       <p>
         <code>q1msg</code> is the full decentralized system and stays within
-        0.015&nbsp;PDMS of <code>central</code>.
+        0.10&nbsp;m of <code>central</code>'s trajectory L2 and 0.12&nbsp;pp on collision rate.
       </p>
     </div>
     <div class="kpi-grid">
       <div class="kpi-card">
         <span class="kpi-label">Centralized baseline</span>
-        <span class="kpi-value">0.876<span class="kpi-unit">PDMS</span></span>
-        <span class="kpi-note">L2 2.62&nbsp;m &middot; CR 1.84%</span>
+        <span class="kpi-value">2.62<span class="kpi-unit">m L2</span></span>
+        <span class="kpi-sub">1.84<span class="kpi-unit">% CR</span></span>
+        <span class="kpi-note">PDMS 0.876</span>
       </div>
       <div class="kpi-card is-accent">
         <span class="kpi-label">Ours &middot; q1msg</span>
-        <span class="kpi-value">0.861<span class="kpi-unit">PDMS</span></span>
-        <span class="kpi-note">L2 2.72&nbsp;m &middot; CR 1.96%</span>
+        <span class="kpi-value">2.72<span class="kpi-unit">m L2</span></span>
+        <span class="kpi-sub">1.96<span class="kpi-unit">% CR</span></span>
+        <span class="kpi-note">PDMS 0.861</span>
       </div>
       <div class="kpi-card is-delta">
         <span class="kpi-label">Gap to central</span>
-        <span class="kpi-value">&minus;0.015<span class="kpi-unit">PDMS</span></span>
-        <span class="kpi-note">+0.10&nbsp;m L2 &middot; +0.12&nbsp;pp CR</span>
+        <span class="kpi-value">+0.10<span class="kpi-unit">m L2</span></span>
+        <span class="kpi-sub">+0.12<span class="kpi-unit">pp CR</span></span>
+        <span class="kpi-note">&Delta;PDMS &minus;0.015</span>
       </div>
     </div>
     <div class="content has-text-justified">
       <div class="table-container">
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
           <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
-            <em>Table&nbsp;B.2.</em> Aggregate metrics across all 3446 samples. Best
-            decentralized value per column shaded green; worst shaded red.
+            Aggregate metrics across all 3446 samples. Best decentralized value per column
+            shaded green; worst shaded red.
           </caption>
           <thead>
             <tr>
@@ -1642,16 +2681,15 @@
       </div>
     </div>
 
-    <!-- Analysis -->
-    <h3 class="title is-4">B.6 &nbsp; Analysis: the Q8&rarr;Q9 bottleneck</h3>
-    <div class="content has-text-justified">
+    <div class="content has-text-justified" style="margin-top: 1.25rem;">
       <p>
-        Q8 metrics are essentially identical across all three configurations &mdash; centralized
-        features barely help once Q7 has produced a reasonable motion summary. Yet Q9 numbers
-        shift noticeably between configurations. Since Q9 only consumes Q8 as text input, this
-        sensitivity has to come from the <em>visual</em> tokens (the BEV LiDAR features). Q9 is
-        therefore the place where missing cross-CAV LiDAR hurts most: there is no rich textual
-        context to compensate.
+        <strong>The Q8&rarr;Q9 bottleneck.</strong> Q8 metrics are essentially identical
+        across all three configurations, since centralized features barely help once Q7 has
+        produced a reasonable motion summary. Yet Q9 numbers shift noticeably between
+        configurations. Since Q9 only consumes Q8 as text input, this sensitivity has to
+        come from the <em>visual</em> tokens (the BEV LiDAR features). Q9 is therefore the
+        place where missing cross-CAV LiDAR hurts most: there is no rich textual context to
+        compensate.
       </p>
       <p>
         The aggregate PDMS reported above follows the standard NAVSIM-style decomposition, with
@@ -1671,11 +2709,64 @@
       <div class="callout">
         <strong>Implication.</strong> Adding more cross-CAV text messages (e.g.&nbsp;a sender's
         Q5 message routed to the receiver's Q7) will continue to fall short of central unless
-        we also widen the Q9 input &mdash; either by injecting rich synthetic perception text in
+        we also widen the Q9 input - either by injecting rich synthetic perception text in
         the Q9 prompt, or by routing Q6&nbsp;/&nbsp;Q7 outputs into Q9 alongside Q8.
       </div>
     </div>
 
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- INTERACTIVE DEMO                                              -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3" id="demo">Interactive demo</h2>
+    <div class="content has-text-justified">
+      <p>
+        Browse the full pipeline frame-by-frame on inferred V2V4Real test scenarios.
+        Pick a scenario and a frame to see the matched satellite tile, the BEV with
+        ego, CAV and ground-truth trajectory, and the Q1&hellip;Q9 chain of thoughts
+        produced by LLaVA-v1.5-7B. Q9 is the only stage that consumes the OSM context
+        returned by the Overpass API at the recovered GPS.
+      </p>
+    </div>
+
+    <div class="demo-controls">
+      <label class="demo-field">
+        <span class="demo-field-label">Scenario</span>
+        <select id="demo-scenario"></select>
+      </label>
+      <label class="demo-field">
+        <span class="demo-field-label">Frame</span>
+        <select id="demo-frame"></select>
+      </label>
+      <button id="demo-run" class="demo-button" type="button" disabled>Visualise</button>
+    </div>
+
+    <div class="demo-info" id="demo-info">Loading demo data&hellip;</div>
+
+    <div class="demo-views">
+      <figure class="demo-view">
+        <figcaption>Satellite view</figcaption>
+        <img id="demo-sat" alt="Satellite tile around the ego at the recovered GPS" />
+      </figure>
+      <figure class="demo-view">
+        <figcaption>Bird's-eye view</figcaption>
+        <img id="demo-bev" alt="BEV showing ego, CAV pose and ground-truth trajectory" />
+      </figure>
+    </div>
+
+    <h3 class="title is-4">Graph-of-thought chain (Q1 &rarr; Q9)</h3>
+    <div class="demo-got" id="demo-got"></div>
+
+    <div class="callout">
+      <strong>Note.</strong> Outputs are pre-computed and bundled with the site; the
+      viewer reads <code>static/demo/demo_data.json</code> and the matching
+      pre-rendered PNGs, so no server or live model call is needed. Regenerate the
+      bundle with <code>python tools/build_demo.py</code> on the inference host.
+    </div>
   </div>
 </section>
 
@@ -1686,7 +2777,7 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3" id="conclusion"><span class="section-num">&sect; IV</span>Conclusion and Limitations</h2>
+        <h2 class="title is-3" id="conclusion">Conclusion and Limitations</h2>
         <div class="content has-text-justified">
           <p>
             We extended V2V-GoT along two axes. On the <strong>OSM</strong> side we recovered
@@ -1695,7 +2786,7 @@
             fine-tuning under a tight compute budget. On the <strong>decentralization</strong>
             side we showed that the GoT chain can be run per-CAV with only two short text
             messages, recovering planning quality close to the centralized baseline on V2V4Real
-            (PDMS&nbsp;0.861 vs.&nbsp;0.876).
+            (L2 2.72&nbsp;m vs.&nbsp;2.62&nbsp;m, CR 1.96% vs.&nbsp;1.84%).
           </p>
           <p>
             <strong>Limitations and honest leaks.</strong> All prompts use ego's coordinate
@@ -1726,6 +2817,42 @@
 </section>
 
 <!-- ============================================================ -->
+<!-- REFERENCES                                                    -->
+<!-- ============================================================ -->
+<section class="section is-band" id="references">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">References</h2>
+        <ol class="ref-list">
+          <li id="ref-v2vllm">
+            Chiu, Hachiuma, Wang, Smith, Wang, Chen.
+            <b>V2V-LLM: Vehicle-to-Vehicle Cooperative Autonomous Driving with Multimodal
+            Large Language Models.</b>
+            2026.
+            <a href="https://arxiv.org/abs/2502.09980" target="_blank" rel="noopener">arxiv.org/abs/2502.09980</a>
+          </li>
+          <li id="ref-v2vgot">
+            Chiu, Hachiuma, Wang, Wang, Chen, Smith.
+            <b>V2V-GoT: Vehicle-to-Vehicle Cooperative Autonomous Driving with Multimodal
+            Large Language Models and Graph-of-Thoughts.</b>
+            2026.
+            <a href="https://arxiv.org/abs/2509.18053" target="_blank" rel="noopener">arxiv.org/abs/2509.18053</a>
+          </li>
+          <li id="ref-v2v4real">
+            Xu, Xia, Li, Li, Zhang, Tu, Meng, Xiang, Dong, Song, Yu, Zhou, Ma.
+            <b>V2V4Real: A Real-world Large-scale Dataset for Vehicle-to-Vehicle
+            Cooperative Perception.</b>
+            CVPR 2023.
+            <a href="https://arxiv.org/abs/2303.07601" target="_blank" rel="noopener">arxiv.org/abs/2303.07601</a>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
 <!-- FOOTER                                                        -->
 <!-- ============================================================ -->
 <footer class="footer">
@@ -1745,6 +2872,39 @@
     </div>
   </div>
 </footer>
+
+<script>
+  (function () {
+    var STORAGE_KEY = 'v2vgot.theme';
+    var root = document.documentElement;
+    var btn = document.getElementById('themeToggle');
+    var label = document.getElementById('themeLabel');
+
+    function applyTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      if (label) label.textContent = (theme === 'dark' ? 'Dark' : 'Light');
+      if (btn) btn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    }
+
+    var saved = null;
+    try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+
+    var initial = saved;
+    if (!initial) {
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      initial = prefersDark ? 'dark' : 'light';
+    }
+    applyTheme(initial);
+
+    if (btn) {
+      btn.addEventListener('click', function () {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+      });
+    }
+  })();
+</script>
 
 </body>
 </html>
