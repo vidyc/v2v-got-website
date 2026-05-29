@@ -2137,14 +2137,14 @@
       <p>
         Our first approach is a cheap baseline that asks how much planning quality is
         reachable with a purely textual map prior, before committing any GPU time to a
-        visual branch. At the recovered GPS we query the
-        <a href="https://overpass-api.de/">Overpass API</a> for the OpenStreetMap tags
-        describing the road the ego is on, and reduce the response to a compact JSON
-        object with three fields (lane count, free-text description, confidence). This
-        object is concatenated to the LLaVA prompt as extra text tokens at the start of
-        the Q1&hellip;Q9 chain. Nothing else in V2V-GoT changes, and because the prior is
-        a database lookup rather than a learned model, the path is fully zero-shot and
-        deterministic.
+        visual branch. At the recovered GPS we fetch the
+        <a href="https://www.esri.com/" target="_blank" rel="noopener">Esri</a> satellite
+        tile of the ego's location and pass it to GPT-4o with a prompt asking it to describe
+        the scene, reducing the response to a compact JSON object with three fields (lane
+        count, free-text description, confidence). This object is concatenated to the LLaVA
+        prompt as extra text tokens at the start of the Q1&hellip;Q9 chain. Nothing else in
+        V2V-GoT changes, and because the prior comes from an off-the-shelf model with no
+        fine-tuning, the path stays fully zero-shot.
       </p>
       <p>Example output for one V2V4Real frame:</p>
       <pre><code>{
