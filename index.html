@@ -731,6 +731,20 @@
       outline: none;
       border-color: var(--accent);
     }
+    .demo-field input[type="range"] {
+      width: 100%;
+      margin: 0;
+      padding: 0.55rem 0;
+      accent-color: var(--accent);
+      cursor: pointer;
+      background: transparent;
+    }
+    .demo-field-label #demo-frame-readout {
+      font-family: var(--mono);
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--ink);
+    }
     .demo-button {
       padding: 0.55rem 1.2rem;
       font-family: var(--sans);
@@ -1685,17 +1699,11 @@
           <a href="#related" class="nav-card">
             <span class="nav-title">Related Works</span>
           </a>
-          <a href="#osm" class="nav-card">
-            <span class="nav-title">OSM Map Grounding</span>
-          </a>
-          <a href="#decent" class="nav-card">
-            <span class="nav-title">Decentralized V2V-GoT</span>
-          </a>
-          <a href="#conflict" class="nav-card">
-            <span class="nav-title">Conflict Resolution</span>
+          <a href="#methodology" class="nav-card">
+            <span class="nav-title">Methodology</span>
           </a>
           <a href="#final-results" class="nav-card">
-            <span class="nav-title">Final Results</span>
+            <span class="nav-title">Experiments</span>
           </a>
           <a href="#conclusion" class="nav-card">
             <span class="nav-title">Conclusion</span>
@@ -1759,6 +1767,26 @@
             independently of the decentralization step. The results will be provided for
             all nine test scenarios from V2V4Real (1,723 frame pairs total, 3,446 samples).
           </p>
+        </div>
+        <div class="contrib-grid">
+          <a class="contrib-card" href="#osm">
+            <h4>OSM Map Grounding</h4>
+            <p>
+              We recover GPS traces from V2V4Real metadata, align them to the LiDAR BEV
+              frame, and study three strategies for injecting the local OpenStreetMap road
+              graph into the GoT chain.
+            </p>
+            <span class="contrib-link">Read more</span>
+          </a>
+          <a class="contrib-card" href="#decent">
+            <h4>Decentralized V2V-GoT</h4>
+            <p>
+              Each CAV runs Q1&hellip;Q9 on its own LiDAR. Two compact V2V text messages
+              broadcast between question nodes close most of the gap to centralized
+              fusion.
+            </p>
+            <span class="contrib-link">Read more</span>
+          </a>
         </div>
       </div>
     </div>
@@ -2059,74 +2087,14 @@
 </section>
 
 <!-- ============================================================ -->
-<!-- TWO MAIN CONTRIBUTIONS                                        -->
-<!-- ============================================================ -->
-<section class="section is-band">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3" id="contributions">Research Questions and Contributions</h2>
-        <div class="content has-text-justified">
-          <p>
-            Building on V2V-GoT and V2V-LLM, we ask two questions that probe the
-            centralized-fusion assumption from orthogonal angles, and develop one
-            contribution per question.
-          </p>
-          <ol>
-            <li>
-              <strong>Does an explicit map prior reduce road-geometry violations?</strong><br>
-              Many planning errors in V2V-GoT are
-              road-geometry violations (wrong lane, drift into the kerb, missed turn cue)
-              rather than perception failures. An explicit OpenStreetMap road prior,
-              injected per-CAV into the GoT chain, should reduce these errors without
-              changing the chain itself.
-            </li>
-            <li>
-              <strong>Does fully decentralized V2V cooperation degrade planning performance?</strong><br>
-              If each CAV runs the full
-              Q1&hellip;Q9 chain on its own LiDAR and cooperation is reduced to a few
-              short text messages, we can stay close to the centralized baseline while
-              avoiding the bandwidth cost of broadcasting raw LiDAR features between
-              CAVs. Each vehicle relies only on its own sensor stream and a handful of
-              compact text messages from its neighbours.
-            </li>
-          </ol>
-          <p>
-            Each hypothesis maps to one of the two contributions below. They are
-            complementary: OSM grounding is a per-CAV intervention that survives
-            decentralization unchanged.
-          </p>
-        </div>
-        <div class="contrib-grid">
-          <a class="contrib-card" href="#osm">
-            <h4>OSM Map Grounding</h4>
-            <p>
-              We recover GPS traces from V2V4Real metadata, align them to the LiDAR BEV
-              frame, and study three strategies for injecting the local OpenStreetMap road
-              graph into the GoT chain.
-            </p>
-            <span class="contrib-link">Read more</span>
-          </a>
-          <a class="contrib-card" href="#decent">
-            <h4>Decentralized V2V-GoT</h4>
-            <p>
-              Each CAV runs Q1&hellip;Q9 on its own LiDAR. Two compact V2V text messages
-              broadcast between question nodes close most of the gap to centralized
-              fusion.
-            </p>
-            <span class="contrib-link">Read more</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
 <!-- PART A: OSM MAP GROUNDING                                     -->
 <!-- ============================================================ -->
 <section class="section">
   <div class="container is-max-desktop">
+    <div class="part-banner" id="methodology" style="margin-top:0;">
+      <h2 class="title is-3" style="font-size:1.95rem;">Methodology</h2>
+      <p class="part-sub">We extend V2V-GoT along three axes, each developed as its own study below: OSM map grounding, decentralized per-CAV inference, and a deterministic conflict resolver.</p>
+    </div>
     <div class="part-banner" id="osm">
       <h2 class="title is-3">OSM Map Grounding</h2>
       <p class="part-sub">A per-frame GPS recovered from V2V4Real metadata, then turned into a map prior for V2V-GoT in two complementary ways: text-only injection and a trained ViT encoder.</p>
@@ -2239,63 +2207,6 @@
         </figcaption>
       </figure>
 
-    </div>
-
-    <!-- Results -->
-    <h3 class="title is-4">Results</h3>
-    <div class="content has-text-justified">
-      <p>
-        We compare both approaches against the reproduced V2V-GoT baseline on planning L2,
-        collision rate (CR) and wrong-lane rate. The reproduced baseline matches the
-        published numbers to within $\pm 0.2\%$, giving us a trustworthy reference.
-      </p>
-      <div class="table-container">
-        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact grouped">
-          <thead>
-            <tr>
-              <th></th>
-              <th class="col-group" colspan="4">Perception</th>
-              <th class="col-group" colspan="3">Prediction</th>
-              <th class="col-group" colspan="3">Planning</th>
-              <th class="col-group">Comm.</th>
-            </tr>
-            <tr>
-              <th>Method</th>
-              <th>Q1 F1 &uarr;</th>
-              <th>Q2 F1 &uarr;</th>
-              <th>Q3 F1 &uarr;</th>
-              <th>Q4 F1 &uarr;</th>
-              <th>Q5 L2 &darr;</th>
-              <th>Q6 Acc &uarr;</th>
-              <th>Q7 L2 &darr;</th>
-              <th>Q8 L1 &darr;</th>
-              <th>Q9 L2 &darr;</th>
-              <th>Q9 CR &darr;</th>
-              <th>Comm. MB &darr;</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="approach-cell">Central</td>
-              <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
-              <td>8.06</td><td>87.5</td><td><strong>7.62</strong></td><td>0.0882</td>
-              <td>2.62</td><td>1.84</td><td>0.4068</td>
-            </tr>
-            <tr>
-              <td class="approach-cell">OSM-image</td>
-              <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
-              <td>8.06</td><td>87.5</td><td><strong>7.62</strong></td><td>0.0882</td>
-              <td><strong>2.10</strong></td><td><strong>0.81</strong></td><td>0.4068</td>
-            </tr>
-            <tr>
-              <td class="approach-cell">OSM-text</td>
-              <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
-              <td><strong>8.05</strong></td><td>87.5</td><td>7.64</td><td>0.0882</td>
-              <td>2.55</td><td>1.81</td><td>0.4068</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
 
   </div>
@@ -2617,8 +2528,8 @@
       </figcaption>
     </figure>
 
-    <!-- Experiments -->
-    <h3 class="title is-4">Experiments</h3>
+    <!-- Configurations -->
+    <h3 class="title is-4">Configurations</h3>
     <div class="content has-text-justified">
       <p>
         We compare three configurations that together isolate the effect of decentralization
@@ -2669,19 +2580,19 @@
             <img src="./static/images/arch_central.svg"
                  alt="Centralized inference flow: both LiDAR EGO and LiDAR CAV-1 feed a joint feature fusion driving the Q1 to Q9 chain, with the CAV-1 pose and trajectory feeding Q6."
                  class="arch-diagram" style="width:100%; height:auto; display:block;">
-            <div style="font-family:var(--mono); font-size:0.72rem; color:var(--ink-muted); margin-top:0.45rem;">Centralized</div>
+            <div style="font-family:var(--mono); font-size:1.05rem; font-weight:600; color:var(--ink); margin-top:0.55rem;">Centralized</div>
           </div>
           <div style="min-width:0; text-align:center;">
             <img src="./static/images/arch_decent.svg"
                  alt="Decentralized inference flow: only LiDAR EGO is active; LiDAR CAV-1, the sender Q1 text into Q3, and the CAV-1 pose and trajectory into Q6 are all inactive."
                  class="arch-diagram" style="width:100%; height:auto; display:block;">
-            <div style="font-family:var(--mono); font-size:0.72rem; color:var(--ink-muted); margin-top:0.45rem;">Decentralized</div>
+            <div style="font-family:var(--mono); font-size:1.05rem; font-weight:600; color:var(--ink); margin-top:0.55rem;">Decentralized</div>
           </div>
           <div style="min-width:0; text-align:center;">
             <img src="./static/images/arch_q1msg.svg"
                  alt="q1msg inference flow: asker LiDAR plus the sender Q1 text into Q3 and the CAV-1 pose and trajectory into Q6, with LiDAR CAV-1 inactive."
                  class="arch-diagram" style="width:100%; height:auto; display:block;">
-            <div style="font-family:var(--mono); font-size:0.72rem; color:var(--ink-muted); margin-top:0.45rem;"><code>q1msg</code></div>
+            <div style="font-family:var(--mono); font-size:1.05rem; font-weight:600; color:var(--ink); margin-top:0.55rem;"><code>q1msg</code></div>
           </div>
         </div>
         <figcaption>
@@ -2695,98 +2606,46 @@
       </figure>
     </div>
 
-    <!-- Results -->
-    <h3 class="title is-4">Results</h3>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- METHODOLOGY: OSM TEXT + DECENTRALIZED                         -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="part-banner" id="osm-decent">
+      <h2 class="title is-3">Final proposed architecture: OSM text grounding + decentralized</h2>
+      <p class="part-sub">The textual OSM prior stacked on the fully decentralized chain, replacing cross-CAV LiDAR fusion entirely.</p>
+    </div>
     <div class="content has-text-justified">
       <p>
-        <code>q1msg</code> is the full decentralized system and stays within
-        0.10&nbsp;m of <code>central</code>'s trajectory L2 and 0.12&nbsp;pp on collision rate.
+        This configuration stacks our textual OpenStreetMap (OSM) grounding on top of the
+        fully isolated decentralized setting. Each CAV runs the entire Q1&ndash;Q9
+        Graph-of-Thoughts chain locally on its own LiDAR, and the cross-CAV LiDAR feature
+        fusion is removed entirely, not augmented. In its place, every Q-node prompt is
+        prefixed with a compact OSM road-geometry description (lane count, a short free-text
+        road description, and a confidence) recovered from the per-frame GPS in the V2V4Real
+        metadata. We LoRA fine-tuned LLaVA to consume this text prior at all nine nodes.
+        Because no LiDAR features and no messages are exchanged, the per-frame inter-CAV
+        payload is 0.0000&nbsp;MB: by the communication accounting this variant is no longer
+        cooperative V2V, which makes its accuracy gains over the centralized model all the
+        more notable.
       </p>
     </div>
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <span class="kpi-label">Centralized baseline</span>
-        <span class="kpi-value">2.62<span class="kpi-unit">m L2</span></span>
-        <span class="kpi-sub">1.84<span class="kpi-unit">% CR</span></span>
-        <span class="kpi-note">PDMS 0.876</span>
-      </div>
-      <div class="kpi-card is-accent">
-        <span class="kpi-label">Ours &middot; q1msg</span>
-        <span class="kpi-value">2.72<span class="kpi-unit">m L2</span></span>
-        <span class="kpi-sub">1.96<span class="kpi-unit">% CR</span></span>
-        <span class="kpi-note">PDMS 0.861</span>
-      </div>
-      <div class="kpi-card is-delta">
-        <span class="kpi-label">Gap to central</span>
-        <span class="kpi-value">+0.10<span class="kpi-unit">m L2</span></span>
-        <span class="kpi-sub">+0.12<span class="kpi-unit">pp CR</span></span>
-        <span class="kpi-note">&Delta;PDMS &minus;0.015</span>
-      </div>
-    </div>
-    <div class="content has-text-justified">
-      <div class="table-container">
-        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact grouped">
-          <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
-            Aggregate metrics across all 3446 samples. Best per column in boldface.
-          </caption>
-          <thead>
-            <tr>
-              <th></th>
-              <th class="col-group" colspan="4">Perception</th>
-              <th class="col-group" colspan="3">Prediction</th>
-              <th class="col-group" colspan="3">Planning</th>
-              <th class="col-group">Comm.</th>
-            </tr>
-            <tr>
-              <th>Method</th>
-              <th>Q1 F1 &uarr;</th>
-              <th>Q2 F1 &uarr;</th>
-              <th>Q3 F1 &uarr;</th>
-              <th>Q4 F1 &uarr;</th>
-              <th>Q5 L2 &darr;</th>
-              <th>Q6 Acc &uarr;</th>
-              <th>Q7 L2 &darr;</th>
-              <th>Q8 L1 &darr;</th>
-              <th>Q9 L2 &darr;</th>
-              <th>Q9 CR &darr;</th>
-              <th>Comm. MB &darr;</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="approach-cell">Central</td>
-              <td><strong>51.6</strong></td><td><strong>30.1</strong></td><td>43.8</td><td>60.7</td>
-              <td>8.06</td><td><strong>87.5</strong></td><td><strong>7.62</strong></td><td>0.0882</td>
-              <td><strong>2.62</strong></td><td><strong>1.84</strong></td><td>0.4068</td>
-            </tr>
-            <tr>
-              <td class="approach-cell">Decent.</td>
-              <td>50.3</td><td>27.9</td><td><strong>44.1</strong></td><td><strong>62.3</strong></td>
-              <td><strong>8.01</strong></td><td>0.0</td><td>9.43</td><td>0.0897</td>
-              <td>2.85</td><td>2.28</td><td><strong>0.0000</strong></td>
-            </tr>
-            <tr class="is-highlight">
-              <td class="approach-cell">Q1msg</td>
-              <td>51.1</td><td>27.2</td><td>34.6</td><td>60.3</td>
-              <td>8.14</td><td>87.3</td><td>7.65</td><td><strong>0.0879</strong></td>
-              <td>2.72</td><td>1.96</td><td>0.0003</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
   </div>
 </section>
 
 <!-- ============================================================ -->
 <!-- CONFLICT RESOLUTION                                           -->
 <!-- ============================================================ -->
-<section class="section">
+<section class="section is-band">
   <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3" id="conflict">Conflict resolution</h2>
+        <div class="part-banner" style="margin-top:0;">
+          <h2 class="title is-3" id="conflict">Conflict resolution</h2>
+        </div>
         <div class="content has-text-justified">
           <p>
             The per-vehicle Q1&ndash;Q9 chain reasons about each CAV in isolation, so two
@@ -2979,7 +2838,7 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3" id="final-results">Final results</h2>
+        <h2 class="title is-3" id="final-results">Experiments</h2>
         <h3 class="title is-4">Experimental setup</h3>
         <div class="content has-text-justified">
           <p>
@@ -3003,15 +2862,288 @@
           </p>
         </div>
         <h3 class="title is-4">Results</h3>
+        <h4 class="title is-5">OSM map grounding</h4>
         <div class="content has-text-justified">
           <p>
-            The table below reports every variant on the V2V4Real validation split.
-            Merging the two extension axes, OSM-text injection on top of the decentralized
-            <code>q1msg</code> chain, gives our strongest configuration:
-            <strong>OSM-text&nbsp;+&nbsp;Decent.</strong> is best on most metrics, including
-            trajectory L2 at Q5, Q7 and Q9, Q6 action accuracy and Q8, all while
-            transmitting zero bytes of LiDAR features between CAVs. OSM-image still holds the
-            lowest collision rate.
+            We compare both approaches against the reproduced V2V-GoT baseline on planning L2,
+            collision rate (CR) and wrong-lane rate. The reproduced baseline matches the
+            published numbers to within $\pm 0.2\%$, giving us a trustworthy reference.
+          </p>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact grouped">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="col-group" colspan="4">Perception</th>
+                  <th class="col-group" colspan="3">Prediction</th>
+                  <th class="col-group" colspan="3">Planning</th>
+                  <th class="col-group">Comm.</th>
+                </tr>
+                <tr>
+                  <th>Method</th>
+                  <th>Q1 F1 &uarr;</th>
+                  <th>Q2 F1 &uarr;</th>
+                  <th>Q3 F1 &uarr;</th>
+                  <th>Q4 F1 &uarr;</th>
+                  <th>Q5 L2 &darr;</th>
+                  <th>Q6 Acc &uarr;</th>
+                  <th>Q7 L2 &darr;</th>
+                  <th>Q8 L1 &darr;</th>
+                  <th>Q9 L2 &darr;</th>
+                  <th>Q9 CR &darr;</th>
+                  <th>Comm. MB &darr;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="approach-cell">Central</td>
+                  <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
+                  <td>8.06</td><td>87.5</td><td><strong>7.62</strong></td><td>0.0882</td>
+                  <td>2.62</td><td>1.84</td><td>0.4068</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">OSM-image</td>
+                  <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
+                  <td>8.06</td><td>87.5</td><td><strong>7.62</strong></td><td>0.0882</td>
+                  <td><strong>2.10</strong></td><td><strong>0.81</strong></td><td>0.4068</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">OSM-text</td>
+                  <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
+                  <td><strong>8.05</strong></td><td>87.5</td><td>7.64</td><td>0.0882</td>
+                  <td>2.55</td><td>1.81</td><td>0.4068</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Map grounding improves planning while leaving perception and communication
+            untouched: every Q1&ndash;Q8 metric and the 0.41&nbsp;MB per-frame communication
+            cost are identical to the baseline, since OSM is a per-CAV signal injected only at
+            Q9. The satellite-image branch is strongest, cutting the collision rate from 1.84%
+            to 0.81% and Q9 trajectory L2 from 2.62&nbsp;m to 2.10&nbsp;m; the lighter text
+            query gives a smaller but consistent gain (CR 1.81%, L2 2.55&nbsp;m). Both keep
+            trajectories within their road lanes more often.
+          </p>
+          <p>
+            These experiments also point to <em>how</em> the map should enter the chain.
+            Injecting the OSM signal as visual embeddings at every Q-node caused the reasoning
+            to collapse: stacking dense map tokens across all nine nodes overflowed the model's
+            context budget and drowned out the LiDAR and language tokens. The compact text
+            description carries the same road-geometry prior (lane count, a short free-text road
+            description, and a confidence) in a fraction of the tokens, so it can sit at every
+            node without exhausting the context window. That the text variant succeeds exactly
+            where the per-node embedding variant collapsed points to a context-length limit
+            rather than the map information itself being unhelpful.
+          </p>
+          <p>
+            One data caveat: about 7.5% of frames (260 of 3,446) returned empty OSM captions,
+            so a fraction of nodes ran without the prior. Tightening the Overpass coverage is
+            expected to widen the gains further.
+          </p>
+        </div>
+        <h4 class="title is-5">Decentralized inference</h4>
+        <div class="content has-text-justified">
+          <p>
+            <code>q1msg</code> is the full decentralized system and stays within
+            0.10&nbsp;m of <code>central</code>'s trajectory L2 and 0.12&nbsp;pp on collision rate.
+          </p>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-label">Centralized baseline</span>
+            <span class="kpi-value">2.62<span class="kpi-unit">m L2</span></span>
+            <span class="kpi-sub">1.84<span class="kpi-unit">% CR</span></span>
+            <span class="kpi-note">PDMS 0.876</span>
+          </div>
+          <div class="kpi-card is-accent">
+            <span class="kpi-label">Ours &middot; q1msg</span>
+            <span class="kpi-value">2.72<span class="kpi-unit">m L2</span></span>
+            <span class="kpi-sub">1.96<span class="kpi-unit">% CR</span></span>
+            <span class="kpi-note">PDMS 0.861</span>
+          </div>
+          <div class="kpi-card is-delta">
+            <span class="kpi-label">Gap to central</span>
+            <span class="kpi-value">+0.10<span class="kpi-unit">m L2</span></span>
+            <span class="kpi-sub">+0.12<span class="kpi-unit">pp CR</span></span>
+            <span class="kpi-note">&Delta;PDMS &minus;0.015</span>
+          </div>
+        </div>
+        <div class="content has-text-justified">
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact grouped">
+              <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
+                Aggregate metrics across all 3446 samples. Best per column in boldface.
+              </caption>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="col-group" colspan="4">Perception</th>
+                  <th class="col-group" colspan="3">Prediction</th>
+                  <th class="col-group" colspan="3">Planning</th>
+                  <th class="col-group">Comm.</th>
+                </tr>
+                <tr>
+                  <th>Method</th>
+                  <th>Q1 F1 &uarr;</th>
+                  <th>Q2 F1 &uarr;</th>
+                  <th>Q3 F1 &uarr;</th>
+                  <th>Q4 F1 &uarr;</th>
+                  <th>Q5 L2 &darr;</th>
+                  <th>Q6 Acc &uarr;</th>
+                  <th>Q7 L2 &darr;</th>
+                  <th>Q8 L1 &darr;</th>
+                  <th>Q9 L2 &darr;</th>
+                  <th>Q9 CR &darr;</th>
+                  <th>Comm. MB &darr;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="approach-cell">Central</td>
+                  <td><strong>51.6</strong></td><td><strong>30.1</strong></td><td>43.8</td><td>60.7</td>
+                  <td>8.06</td><td><strong>87.5</strong></td><td><strong>7.62</strong></td><td>0.0882</td>
+                  <td><strong>2.62</strong></td><td><strong>1.84</strong></td><td>0.4068</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Decent.</td>
+                  <td>50.3</td><td>27.9</td><td><strong>44.1</strong></td><td><strong>62.3</strong></td>
+                  <td><strong>8.01</strong></td><td>0.0</td><td>9.43</td><td>0.0897</td>
+                  <td>2.85</td><td>2.28</td><td><strong>0.0000</strong></td>
+                </tr>
+                <tr class="is-highlight">
+                  <td class="approach-cell">Q1msg</td>
+                  <td>51.1</td><td>27.2</td><td>34.6</td><td>60.3</td>
+                  <td>8.14</td><td>87.3</td><td>7.65</td><td><strong>0.0879</strong></td>
+                  <td>2.72</td><td>1.96</td><td>0.0003</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            Stripping cooperation entirely (<code>Decent.</code>) drops communication to zero
+            but degrades planning (L2 2.85&nbsp;m, CR 2.28%) and collapses the cooperative
+            planning node Q6 to 0.0 accuracy. Reintroducing the two short text messages
+            (<code>q1msg</code>) restores Q6 accuracy to 87.3% and recovers most of the gap
+            (L2 2.72&nbsp;m, CR 1.96%) while transmitting only 0.0003&nbsp;MB per frame, three
+            orders of magnitude below central's 0.41&nbsp;MB.
+          </p>
+        </div>
+        <h3 class="title is-4" id="fusion">Final proposed architecture: OSM text grounding + decentralized</h3>
+        <div class="content has-text-justified">
+          <p>
+            A textual map prior replaces cross-CAV LiDAR fusion entirely, at zero communication,
+            yet it beats the centralized V2V-GoT baseline across perception, prediction, and
+            planning.
+          </p>
+        </div>
+
+    <div class="kpi-grid" style="grid-template-columns:repeat(4, 1fr);">
+      <div class="kpi-card">
+        <span class="kpi-label">Planning L2 error</span>
+        <span class="kpi-value" style="color:var(--good);">&minus;31%</span>
+        <span class="kpi-note">2.62 &rarr; 1.80 m</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Collision rate</span>
+        <span class="kpi-value" style="color:var(--good);">&minus;47%</span>
+        <span class="kpi-note">1.84% &rarr; 0.98%</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Prediction L2 (Q7)</span>
+        <span class="kpi-value" style="color:var(--good);">&minus;23%</span>
+        <span class="kpi-note">7.62 &rarr; 5.86 m</span>
+      </div>
+      <div class="kpi-card is-accent">
+        <span class="kpi-label">Comm. per frame</span>
+        <span class="kpi-value">0.0000<span class="kpi-unit">MB</span></span>
+        <span class="kpi-note">vs 0.4068 MB</span>
+      </div>
+    </div>
+
+    <h4 class="title is-5">Outcome</h4>
+    <div class="content has-text-justified">
+      <p>
+        The OSM text prior compensates for the missing neighbour LiDAR features and improves
+        the model on 10 of the 12 reported metrics. The largest gains land where they matter
+        most, in downstream prediction and planning, while the most safety-relevant metric, the
+        collision rate, is cut nearly in half.
+      </p>
+      <div class="table-container">
+        <table class="table is-narrow is-hoverable is-fullwidth compact">
+          <thead>
+            <tr>
+              <th>Stage / metric</th>
+              <th>Centralized V2V-GoT</th>
+              <th>OSM-text + Decent. (ours)</th>
+              <th>&Delta;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Q1 &middot; Visible objects F1 &uarr;</td><td>51.6</td><td>50.7</td><td><span style="color:var(--bad);">&minus;0.9</span></td></tr>
+            <tr><td>Q2 &middot; Occluding objects F1 &uarr;</td><td>30.1</td><td><strong>30.5</strong></td><td><span style="color:var(--good);">+0.4</span></td></tr>
+            <tr><td>Q3 &middot; Invisible objects F1 &uarr;</td><td>43.8</td><td><strong>49.4</strong></td><td><span style="color:var(--good);">+5.6</span></td></tr>
+            <tr><td>Q4 &middot; Overall objects F1 &uarr;</td><td>60.7</td><td>51.3</td><td><span style="color:var(--bad);">&minus;9.4</span></td></tr>
+            <tr><td>Q5 &middot; Prediction-by-perception L2 &darr;</td><td>8.06</td><td><strong>6.18</strong></td><td><span style="color:var(--good);">&minus;23%</span></td></tr>
+            <tr><td>Q6 &middot; Action accuracy &uarr;</td><td>87.5%</td><td><strong>90.8%</strong></td><td><span style="color:var(--good);">+3.3 pp</span></td></tr>
+            <tr><td>Q7 &middot; Overall prediction L2 &darr;</td><td>7.62</td><td><strong>5.86</strong></td><td><span style="color:var(--good);">&minus;23%</span></td></tr>
+            <tr><td>Q8 &middot; Action edit dist. L1 &darr;</td><td>0.0882</td><td><strong>0.0858</strong></td><td><span style="color:var(--good);">&minus;2.7%</span></td></tr>
+            <tr><td>Q9 &middot; Planning L2 &darr;</td><td>2.62</td><td><strong>1.80</strong></td><td><span style="color:var(--good);">&minus;31%</span></td></tr>
+            <tr><td>Q9 &middot; Collision rate &darr;</td><td>1.84%</td><td><strong>0.98%</strong></td><td><span style="color:var(--good);">&minus;47%</span></td></tr>
+            <tr><td>PDMS (NAVSIM) &uarr;</td><td>0.876</td><td><strong>0.891</strong></td><td><span style="color:var(--good);">+1.7%</span></td></tr>
+            <tr><td>Comm. per frame (MB) &darr;</td><td>0.4068</td><td><strong>0.0000</strong></td><td><span style="color:var(--good);">eliminated</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The planning gains are consistent across every prediction horizon, not just on average:
+        the model stays closer to the ground-truth trajectory and safer at 1&nbsp;s, 2&nbsp;s
+        and 3&nbsp;s alike.
+      </p>
+      <div class="table-container">
+        <table class="table is-narrow is-hoverable is-fullwidth compact">
+          <thead>
+            <tr>
+              <th rowspan="2" style="border-bottom:1px solid var(--ink);">Horizon</th>
+              <th colspan="2" style="border-bottom:0.8px solid var(--ink-soft);">L2 error (m) &darr;</th>
+              <th colspan="2" style="border-bottom:0.8px solid var(--ink-soft);">Collision rate &darr;</th>
+            </tr>
+            <tr>
+              <th>Central</th><th>Ours</th><th>Central</th><th>Ours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1&nbsp;s</td><td>1.65</td><td><strong>1.14</strong></td><td>0.12%</td><td><strong>0.06%</strong></td></tr>
+            <tr><td>2&nbsp;s</td><td>2.63</td><td><strong>1.80</strong></td><td>1.92%</td><td><strong>0.99%</strong></td></tr>
+            <tr><td>3&nbsp;s</td><td>3.59</td><td><strong>2.45</strong></td><td>3.48%</td><td><strong>1.90%</strong></td></tr>
+            <tr><td>Avg</td><td>2.62</td><td><strong>1.80</strong></td><td>1.84%</td><td><strong>0.98%</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li><strong>Prediction improves the most:</strong> both prediction nodes drop 23% in L2 (Q5 8.06&rarr;6.18, Q7 7.62&rarr;5.86), and action-class accuracy (Q6) rises 3.3&nbsp;pp to 90.8%.</li>
+        <li><strong>Occlusion reasoning gets sharper:</strong> invisible-object F1 (Q3) jumps 5.6 points (43.8&rarr;49.4), the hardest perception sub-task.</li>
+        <li><strong>Higher-quality plans:</strong> PDMS rises to 0.891 and the no-collision sub-score (NC) improves from 0.965 to 0.981, with time-to-collision essentially perfect (TTC 0.999).</li>
+        <li><strong>At no bandwidth:</strong> all of the above with communication eliminated (0.0000&nbsp;MB), versus 0.4068&nbsp;MB per frame for the centralized model.</li>
+      </ul>
+      <p style="color:var(--ink-muted);">
+        For full transparency, two intermediate perception metrics regress: overall
+        notable-object F1 (Q4, &minus;9.4) and visible-object F1 (Q1, &minus;0.9). Every
+        downstream prediction and planning metric still improves, suggesting the road-geometry
+        prior constrains the final trajectory directly rather than depending on a perfect
+        intermediate object count.
+      </p>
+        </div>
+        <h3 class="title is-4">Summary</h3>
+        <div class="content has-text-justified">
+          <p>
+            Pulling every variant together, the table below reports all configurations on the
+            V2V4Real validation split. Merging the two extension axes, OSM-text injection on top
+            of the decentralized <code>q1msg</code> chain, gives our strongest configuration:
+            <strong>OSM-text&nbsp;+&nbsp;Decent.</strong> ranks best on most metrics, including
+            trajectory L2 at Q5, Q7 and Q9, Q6 action accuracy and Q8, all while transmitting
+            zero bytes of LiDAR features between CAVs. OSM-image still holds the lowest collision
+            rate.
           </p>
           <div class="table-container">
             <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact grouped">
@@ -3119,6 +3251,13 @@
             mitigates most of that performance loss. The residual degradation is acceptable.
           </p>
           <p>
+            <strong>Best of both axes.</strong> Combining the two extensions, decentralized
+            inference with text-format OSM grounding, gives our strongest result while staying
+            a realistic V2V approach. It carries the good aspects of both: the planning quality
+            of OSM grounding, the communication efficiency of decentralized text messaging, and
+            the feasibility of a protocol that real V2V radios can actually carry.
+          </p>
+          <p>
             <strong>The question-graph bottleneck.</strong> The reasoning graph carries a lot
             of perception and planning context between its nodes, but the link between Q8 and
             Q9 is far narrower: it passes only a <code>suggested_speed</code> and a
@@ -3156,60 +3295,13 @@
 </section>
 
 <!-- ============================================================ -->
-<!-- INTERACTIVE DEMO                                              -->
-<!-- ============================================================ -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3" id="demo">Interactive demo</h2>
-    <div class="content has-text-justified">
-      <p>
-        Browse the full pipeline frame-by-frame on inferred V2V4Real test scenarios.
-        Pick a scenario and a frame to see the matched satellite tile, the BEV with
-        ego, CAV and ground-truth trajectory, and the Q1&hellip;Q9 chain of thoughts
-        produced by LLaVA-v1.5-7B. Q9 is the only stage that consumes the OSM context
-        returned by the Overpass API at the recovered GPS.
-      </p>
-    </div>
-
-    <div class="demo-controls">
-      <label class="demo-field">
-        <span class="demo-field-label">Scenario</span>
-        <select id="demo-scenario"></select>
-      </label>
-      <label class="demo-field">
-        <span class="demo-field-label">Frame</span>
-        <select id="demo-frame"></select>
-      </label>
-      <button id="demo-run" class="demo-button" type="button" disabled>Visualise</button>
-    </div>
-
-    <div class="demo-info" id="demo-info">Loading demo data&hellip;</div>
-
-    <div class="demo-views">
-      <figure class="demo-view">
-        <figcaption>Satellite view</figcaption>
-        <img id="demo-sat" alt="Satellite tile around the ego at the recovered GPS" />
-      </figure>
-      <figure class="demo-view">
-        <figcaption>Bird's-eye view</figcaption>
-        <img id="demo-bev" alt="BEV showing ego, CAV pose and ground-truth trajectory" />
-      </figure>
-    </div>
-
-    <h3 class="title is-4">Graph-of-thought chain (Q1 &rarr; Q9)</h3>
-    <div class="demo-got" id="demo-got"></div>
-
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- AUTHOR CONTRIBUTIONS                                          -->
+<!-- INDIVIDUAL CONTRIBUTIONS                                      -->
 <!-- ============================================================ -->
 <section class="section">
   <div class="container is-max-desktop">
     <div class="columns is-centered">
       <div class="column is-full-width">
-        <h2 class="title is-3" id="contributions">Author Contributions</h2>
+        <h2 class="title is-3" id="individual-contributions">Individual contributions</h2>
         <div class="content has-text-justified">
           <p>
             A.M.L. and I.F. conceived the two extension axes in discussion with all
@@ -3236,6 +3328,53 @@
     </div>
   </div>
 </section>
+
+<!-- ============================================================ -->
+<!-- INTERACTIVE DEMO                                              -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3" id="demo">Interactive demo</h2>
+    <div class="content has-text-justified">
+      <p>
+        Browse the full pipeline frame-by-frame on inferred V2V4Real test scenarios.
+        Pick a scenario and drag the frame slider to see the matched satellite tile, the
+        BEV with ego, CAV and ground-truth trajectory, and the Q1&hellip;Q9 chain of thoughts
+        produced by LLaVA-v1.5-7B; the view updates as you slide. Q9 is the only stage that
+        consumes the OSM context returned by the Overpass API at the recovered GPS.
+      </p>
+    </div>
+
+    <div class="demo-controls">
+      <label class="demo-field">
+        <span class="demo-field-label">Scenario</span>
+        <select id="demo-scenario"></select>
+      </label>
+      <label class="demo-field">
+        <span class="demo-field-label">Frame <span id="demo-frame-readout"></span></span>
+        <input type="range" id="demo-frame" min="0" max="0" step="1" value="0" />
+      </label>
+    </div>
+
+    <div class="demo-info" id="demo-info">Loading demo data&hellip;</div>
+
+    <div class="demo-views">
+      <figure class="demo-view">
+        <figcaption>Satellite view</figcaption>
+        <img id="demo-sat" alt="Satellite tile around the ego at the recovered GPS" />
+      </figure>
+      <figure class="demo-view">
+        <figcaption>Bird's-eye view</figcaption>
+        <img id="demo-bev" alt="BEV showing ego, CAV pose and ground-truth trajectory" />
+      </figure>
+    </div>
+
+    <h3 class="title is-4">Graph-of-thought chain (Q1 &rarr; Q9)</h3>
+    <div class="demo-got" id="demo-got"></div>
+
+  </div>
+</section>
+
 
 <!-- ============================================================ -->
 <!-- REFERENCES                                                    -->

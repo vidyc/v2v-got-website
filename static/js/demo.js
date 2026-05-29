@@ -5,7 +5,7 @@
 
   var scenarioSel = document.getElementById("demo-scenario");
   var frameSel    = document.getElementById("demo-frame");
-  var runBtn      = document.getElementById("demo-run");
+  var frameReadout = document.getElementById("demo-frame-readout");
   var satImg      = document.getElementById("demo-sat");
   var bevImg      = document.getElementById("demo-bev");
   var gotDiv      = document.getElementById("demo-got");
@@ -40,7 +40,7 @@
     gotDiv.innerHTML = "";
     satImg.removeAttribute("src");
     bevImg.removeAttribute("src");
-    runBtn.disabled = true;
+    frameSel.disabled = true;
   }
 
   function populateScenarios() {
@@ -55,22 +55,12 @@
   }
 
   function populateFrames(si) {
-    frameSel.innerHTML = "";
     var sc = data.scenarios[si];
     if (!sc) { return; }
-    sc.frames.forEach(function (fr) {
-      var opt = document.createElement("option");
-      opt.value = String(fr.ti);
-      opt.textContent = "t=" + fr.ti + "   (frame " + fr.frame + ")";
-      frameSel.appendChild(opt);
-    });
-  }
-
-  function findFrame(sc, ti) {
-    for (var i = 0; i < sc.frames.length; i++) {
-      if (sc.frames[i].ti === ti) { return sc.frames[i]; }
-    }
-    return null;
+    frameSel.min = "0";
+    frameSel.max = String(Math.max(0, sc.frames.length - 1));
+    frameSel.value = "0";
+    frameSel.disabled = sc.frames.length <= 1;
   }
 
   function findStageOutput(frame, q) {
@@ -109,13 +99,16 @@
 
   function visualise() {
     var si = parseInt(scenarioSel.value, 10);
-    var ti = parseInt(frameSel.value, 10);
     var sc = data.scenarios[si];
     if (!sc) { return; }
-    var fr = findFrame(sc, ti);
-    if (!fr) {
-      infoDiv.textContent = "No data for scenario " + si + ", frame " + ti + ".";
-      return;
+    var idx = parseInt(frameSel.value, 10) || 0;
+    if (idx < 0) { idx = 0; }
+    if (idx > sc.frames.length - 1) { idx = sc.frames.length - 1; }
+    var fr = sc.frames[idx];
+    if (!fr) { return; }
+    if (frameReadout) {
+      frameReadout.textContent =
+        "t=" + fr.ti + " (" + (idx + 1) + "/" + sc.frames.length + ")";
     }
     satImg.src = fr.sat;
     setBev(fr);
@@ -130,8 +123,9 @@
 
   scenarioSel.addEventListener("change", function () {
     populateFrames(parseInt(scenarioSel.value, 10));
+    visualise();
   });
-  runBtn.addEventListener("click", visualise);
+  frameSel.addEventListener("input", visualise);
 
   // Swap the BEV light/dark variant when the page theme changes.
   new MutationObserver(function () {
@@ -154,7 +148,6 @@
       }
       populateScenarios();
       populateFrames(0);
-      runBtn.disabled = false;
       visualise();
     })
     .catch(function (err) {
