@@ -14,6 +14,16 @@
   if (!scenarioSel) { return; }
 
   var data = null;
+  var currentFrame = null;
+
+  function isDark() {
+    return document.documentElement.getAttribute("data-theme") === "dark";
+  }
+
+  function setBev(fr) {
+    currentFrame = fr;
+    bevImg.src = (isDark() && fr.bev_dark) ? fr.bev_dark : fr.bev;
+  }
 
   function escapeHtml(s) {
     if (s === null || s === undefined) { return ""; }
@@ -108,7 +118,7 @@
       return;
     }
     satImg.src = fr.sat;
-    bevImg.src = fr.bev;
+    setBev(fr);
     renderGoT(fr);
     var ready = fr.stages.filter(function (s) { return s.answer && s.answer.length; }).length;
     infoDiv.innerHTML =
@@ -122,6 +132,14 @@
     populateFrames(parseInt(scenarioSel.value, 10));
   });
   runBtn.addEventListener("click", visualise);
+
+  // Swap the BEV light/dark variant when the page theme changes.
+  new MutationObserver(function () {
+    if (currentFrame) { setBev(currentFrame); }
+  }).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
 
   fetch(DATA_URL, { cache: "no-cache" })
     .then(function (r) {

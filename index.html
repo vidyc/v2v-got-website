@@ -125,8 +125,8 @@
     }
     html, body { background: var(--bg); color: var(--ink); transition: background-color .25s ease, color .25s ease; }
     /* Anchor landings: leave a little air above the heading */
-    section.section { scroll-margin-top: 1.25rem; }
-    h2[id], h3[id] { scroll-margin-top: 1.25rem; }
+    section.section { scroll-margin-top: 3.75rem; }
+    h2[id], h3[id] { scroll-margin-top: 3.75rem; }
     body {
       font-family: var(--sans);
       font-size: 16px;
@@ -135,6 +135,7 @@
       -moz-osx-font-smoothing: grayscale;
       background: var(--body-gradient), var(--bg);
       background-attachment: fixed, fixed;
+      overflow-x: clip;
     }
     .content, .content p, p, li {
       font-family: var(--serif);
@@ -529,6 +530,9 @@
       text-align: left;
     }
     .pipeline-figure figcaption strong { color: var(--ink); }
+    /* Line-art SVG diagrams: transparent; recolor in dark mode so dark ink reads. */
+    [data-theme="dark"] img.arch-diagram,
+    [data-theme="dark"] #resolver-flow-figure img { filter: invert(0.92) hue-rotate(180deg); }
 
     /* ============================================================
        Diagram placeholder
@@ -580,78 +584,112 @@
     }
 
     /* ============================================================
-       Tables - hairline academic
+       Tables - LaTeX booktabs style (rules only, no boxes/fills)
        ============================================================ */
     .table-container {
-      margin: 1.3rem 0;
-      border-radius: var(--radius);
-      border: 1px solid var(--line);
+      margin: 1.5rem 0;
+      border: none;
+      border-radius: 0;
       overflow-x: auto;
-      background: var(--surface);
+      background: transparent;
     }
     table.table {
-      font-family: var(--sans);
-      font-size: 0.88rem;
-      color: var(--ink-soft);
+      font-family: var(--serif);
+      font-size: 0.92rem;
+      color: var(--ink);
+      background-color: transparent;
       border: none !important;
-      margin-bottom: 0;
+      border-collapse: collapse;
+      margin: 0 auto;
     }
-    table.table thead th {
-      background: var(--bg-soft) !important;
-      color: var(--ink) !important;
-      font-weight: 600;
-      font-size: 0.78rem;
-      letter-spacing: 0;
+    table.table td, table.table th {
+      background-color: transparent;
       border: none !important;
-      border-bottom: 1px solid var(--line) !important;
-      padding: 0.6rem 0.7rem;
+    }
+    /* booktabs rules */
+    table.table thead tr:first-child th { border-top: 1.7px solid var(--ink) !important; }      /* \toprule */
+    table.table thead tr:last-child th  { border-bottom: 1px solid var(--ink) !important; }      /* \midrule */
+    table.table thead th.col-group      { border-bottom: 0.8px solid var(--ink-soft) !important; } /* \cmidrule */
+    table.table tbody tr:last-child td  { border-bottom: 1.7px solid var(--ink) !important; }     /* \bottomrule */
+
+    table.table thead th {
+      color: var(--ink) !important;
+      font-weight: 700;
+      font-size: 0.84rem;
+      letter-spacing: 0;
+      text-transform: none;
+      padding: 0.35rem 0.85rem;
       text-align: center;
-      vertical-align: middle;
+      vertical-align: bottom;
+      white-space: nowrap;
     }
     table.table thead tr:first-child th:first-child { text-align: left; }
+    /* Grouped column super-header (Perception / Prediction / ...) */
+    table.table thead th.col-group {
+      font-weight: 600;
+      font-size: 0.8rem;
+      font-style: italic;
+      color: var(--ink-soft) !important;
+      padding-bottom: 0.2rem;
+    }
     table.table tbody td {
-      border: none !important;
-      border-bottom: 1px solid var(--line-soft) !important;
-      padding: 0.5rem 0.7rem;
+      padding: 0.34rem 0.85rem;
       vertical-align: middle;
       text-align: center;
-      font-variant-numeric: tabular-nums;
-      font-family: var(--mono);
-      font-size: 0.85rem;
+      font-variant-numeric: tabular-nums lining-nums;
+      font-feature-settings: "tnum";
+      font-family: var(--serif);
+      font-size: 0.9rem;
       color: var(--ink);
     }
-    table.table tbody tr:last-child td { border-bottom: none !important; }
     table.table tbody td:first-child {
       text-align: left;
-      font-family: var(--sans);
-      color: var(--ink-soft);
+      font-family: var(--serif);
+      color: var(--ink);
     }
-    table.table tbody tr:hover td { background: var(--bg-soft); }
-    table.table.is-striped tbody tr:nth-child(even) { background: transparent !important; }
+    /* Neutralize Bulma striping fills, then apply our own subtle hover */
+    table.table.is-striped tbody tr:nth-child(even),
+    table.table.is-hoverable tbody tr:hover { background-color: transparent !important; }
+    table.table tbody tr:hover td { background: color-mix(in srgb, var(--ink) 12%, transparent); }
+    /* Interior \midrule between row groups (opt-in via .group-sep) */
+    table.table tbody tr.group-sep td { border-top: 1px solid var(--ink) !important; }
     table.table caption {
       caption-side: bottom !important;
       text-align: left !important;
-      padding: 0.6rem 0.85rem 0.8rem;
-      font-family: var(--sans);
-      font-size: 0.78rem;
+      padding: 0.7rem 0.2rem 0;
+      font-family: var(--serif);
+      font-size: 0.84rem;
+      line-height: 1.5;
       color: var(--ink-muted);
       font-style: normal;
-      background: var(--surface);
-      border-top: 1px solid var(--line-soft);
+      background: transparent;
+      border: none;
     }
     table.table caption em { color: var(--ink); font-style: normal; font-weight: 600; }
 
     .approach-cell {
-      font-family: var(--mono) !important;
+      font-family: var(--serif) !important;
       font-weight: 500 !important;
       color: var(--ink) !important;
       letter-spacing: 0;
-      font-size: 0.85rem !important;
+      font-size: 0.9rem !important;
     }
-    /* Best / worst use only colour, no fill */
-    .metric-best  { color: var(--good) !important; font-weight: 600; background: transparent !important; }
-    .metric-worst { color: var(--bad)  !important; background: transparent !important; }
-    table.table tbody tr.metric-worst td { background: transparent !important; color: var(--bad) !important; }
+    /* Best / worst: emphasis only, booktabs-style (no fills) */
+    .metric-best  { font-weight: 700; background: transparent !important; }
+    .metric-worst { color: var(--ink-muted) !important; background: transparent !important; }
+    /* Best value per column is bold (\textbf), no colour */
+    table.table tbody td strong { color: var(--ink); font-weight: 700; }
+    /* Compact legend shown under a results table */
+    .table-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.1rem;
+      margin: 0.5rem 0 1.3rem;
+      font-family: var(--serif);
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+    }
+    .table-legend b { color: var(--ink); font-weight: 700; }
 
     table.compact td, table.compact th { padding: 0.45rem 0.6rem; }
 
@@ -1076,18 +1114,7 @@
     .mark-yes { color: var(--good); }
     .mark-no  { color: var(--ink-muted); }
     .mark-na  { color: var(--ink-muted); opacity: 0.5; }
-    table.table tbody tr.is-highlight td:not(.metric-best):not(.metric-worst) {
-      background: var(--bg-soft) !important;
-    }
-    table.table tbody tr.is-highlight td:first-child {
-      color: var(--ink) !important;
-      font-weight: 600;
-      box-shadow: inset 2px 0 0 var(--ink);
-    }
-    table.table tbody tr.is-highlight td.approach-cell {
-      color: var(--ink) !important;
-      font-weight: 600;
-    }
+    /* No whole-row highlight: emphasis comes only from bold best values (<strong>). */
 
     /* ============================================================
        Scenario grid (dataset section)
@@ -1205,6 +1232,9 @@
        Masthead band  -  editorial newspaper bar with theme toggle
        ============================================================ */
     .masthead {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
       background: var(--masthead-bg);
       color: var(--masthead-fg);
       padding: 9px 28px;
@@ -1328,13 +1358,6 @@
       background: var(--surface-mute);
     }
 
-    /* In dark theme, table accent row contrast bump */
-    [data-theme="dark"] table.table tbody tr.is-highlight td:first-child {
-      box-shadow: inset 2px 0 0 var(--accent);
-    }
-    [data-theme="light"] table.table tbody tr.is-highlight td:first-child {
-      box-shadow: inset 2px 0 0 var(--accent);
-    }
 
     /* Author-row separators - use accent in light for editorial feel */
     [data-theme="light"] .author-chip + .author-chip::before {
@@ -1667,6 +1690,12 @@
           </a>
           <a href="#decent" class="nav-card">
             <span class="nav-title">Decentralized V2V-GoT</span>
+          </a>
+          <a href="#conflict" class="nav-card">
+            <span class="nav-title">Conflict Resolution</span>
+          </a>
+          <a href="#final-results" class="nav-card">
+            <span class="nav-title">Final Results</span>
           </a>
           <a href="#conclusion" class="nav-card">
             <span class="nav-title">Conclusion</span>
@@ -2221,8 +2250,15 @@
         published numbers to within $\pm 0.2\%$, giving us a trustworthy reference.
       </p>
       <div class="table-container">
-        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact grouped">
           <thead>
+            <tr>
+              <th></th>
+              <th class="col-group" colspan="4">Perception</th>
+              <th class="col-group" colspan="3">Prediction</th>
+              <th class="col-group" colspan="3">Planning</th>
+              <th class="col-group">Comm.</th>
+            </tr>
             <tr>
               <th>Method</th>
               <th>Q1 F1 &uarr;</th>
@@ -2611,7 +2647,7 @@
               <td>centralized baseline</td>
             </tr>
             <tr>
-              <td class="approach-cell">strip</td>
+              <td class="approach-cell">decentralized</td>
               <td>per-CAV only</td>
               <td><span class="mark mark-no">&#10007;</span></td>
               <td><span class="mark mark-no">&#10007;</span></td>
@@ -2622,17 +2658,41 @@
               <td>per-CAV only</td>
               <td><span class="mark mark-yes">&#10003;</span></td>
               <td><span class="mark mark-yes">&#10003;</span></td>
-              <td><strong>full proposed system</strong></td>
+              <td>decentralized with text messaging</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p>
-        Per question we report the metrics most relevant to that node: Q1&ndash;Q4 use
-        binary F1/precision/recall and a location F1 at 4&nbsp;m; Q5 and Q7 use L2 over
-        predicted motion vectors; Q6 uses classification accuracy; Q8 uses action edit
-        distance; Q9 uses L2, CR and PDMS.
-      </p>
+      <figure class="pipeline-figure" style="width:90vw; max-width:90vw; margin-left:calc(50% - 45vw); margin-right:calc(50% - 45vw); padding-left:2rem; padding-right:2rem;">
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:1rem; justify-items:center; align-items:end;">
+          <div style="min-width:0; text-align:center;">
+            <img src="./static/images/arch_central.svg"
+                 alt="Centralized inference flow: both LiDAR EGO and LiDAR CAV-1 feed a joint feature fusion driving the Q1 to Q9 chain, with the CAV-1 pose and trajectory feeding Q6."
+                 class="arch-diagram" style="width:100%; height:auto; display:block;">
+            <div style="font-family:var(--mono); font-size:0.72rem; color:var(--ink-muted); margin-top:0.45rem;">Centralized</div>
+          </div>
+          <div style="min-width:0; text-align:center;">
+            <img src="./static/images/arch_decent.svg"
+                 alt="Decentralized inference flow: only LiDAR EGO is active; LiDAR CAV-1, the sender Q1 text into Q3, and the CAV-1 pose and trajectory into Q6 are all inactive."
+                 class="arch-diagram" style="width:100%; height:auto; display:block;">
+            <div style="font-family:var(--mono); font-size:0.72rem; color:var(--ink-muted); margin-top:0.45rem;">Decentralized</div>
+          </div>
+          <div style="min-width:0; text-align:center;">
+            <img src="./static/images/arch_q1msg.svg"
+                 alt="q1msg inference flow: asker LiDAR plus the sender Q1 text into Q3 and the CAV-1 pose and trajectory into Q6, with LiDAR CAV-1 inactive."
+                 class="arch-diagram" style="width:100%; height:auto; display:block;">
+            <div style="font-family:var(--mono); font-size:0.72rem; color:var(--ink-muted); margin-top:0.45rem;"><code>q1msg</code></div>
+          </div>
+        </div>
+        <figcaption>
+          Single-asker information flow for the three configurations. Coloured, solid nodes and
+          arrows are active inputs; dashed grey nodes are inputs the configuration withholds.
+          <strong>Centralized</strong> fuses both CAVs' LiDAR features;
+          <strong>decentralized</strong> keeps only the asker's own LiDAR; and
+          <strong>q1msg</strong> adds two lightweight text messages, the sender's Q1 list into
+          Q3 and the CAV-1 pose and trajectory into Q6.
+        </figcaption>
+      </figure>
     </div>
 
     <!-- Results -->
@@ -2665,11 +2725,18 @@
     </div>
     <div class="content has-text-justified">
       <div class="table-container">
-        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact grouped">
           <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
             Aggregate metrics across all 3446 samples. Best per column in boldface.
           </caption>
           <thead>
+            <tr>
+              <th></th>
+              <th class="col-group" colspan="4">Perception</th>
+              <th class="col-group" colspan="3">Prediction</th>
+              <th class="col-group" colspan="3">Planning</th>
+              <th class="col-group">Comm.</th>
+            </tr>
             <tr>
               <th>Method</th>
               <th>Q1 F1 &uarr;</th>
@@ -2709,42 +2776,382 @@
       </div>
     </div>
 
-    <div class="content has-text-justified" style="margin-top: 1.25rem;">
-      <p>
-        <strong>The Q8&rarr;Q9 bottleneck.</strong> Q8 metrics are essentially identical
-        across all three configurations, since centralized features barely help once Q7 has
-        produced a reasonable motion summary. Yet Q9 numbers shift noticeably between
-        configurations. Since Q9 only consumes Q8 as text input, this sensitivity has to
-        come from the <em>visual</em> tokens (the BEV LiDAR features). The question graph is
-        the bottleneck here: its nodes pass each other rich perception and planning context,
-        but the Q8&rarr;Q9 edge is unusually thin, carrying only a <code>suggested_speed</code>
-        and <code>suggested_steering</code>. Q9 is therefore the
-        place where missing cross-CAV LiDAR hurts most: there is no rich textual context to
-        compensate.
-      </p>
-      <p>
-        The aggregate PDMS reported above follows the standard NAVSIM-style decomposition, with
-        No-Collision (NC), Time-To-Collision (TTC) and Comfort (C) as multiplicative components:
-      </p>
-      <p>
-        \[
-          \mathrm{PDMS} \;\propto\; \mathrm{NC} \cdot \mathrm{TTC} \cdot \mathrm{C}
-        \]
-      </p>
-      <p>
-        Across the three configurations the spread on NC and TTC is small (a few percent), while
-        comfort moves more visibly with the decentralization: trajectories become jaggier when
-        cross-CAV LiDAR is missing, which both lowers comfort directly and nudges the path into
-        nominal-collision regions, inflating CR.
-      </p>
-      <div class="callout">
-        <strong>Implication.</strong> Adding more cross-CAV text messages (e.g.&nbsp;a sender's
-        Q5 message routed to the receiver's Q7) will continue to fall short of central unless
-        we also widen the Q9 input - either by injecting rich synthetic perception text in
-        the Q9 prompt, or by routing Q6&nbsp;/&nbsp;Q7 outputs into Q9 alongside Q8.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CONFLICT RESOLUTION                                           -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3" id="conflict">Conflict resolution</h2>
+        <div class="content has-text-justified">
+          <p>
+            The per-vehicle Q1&ndash;Q9 chain reasons about each CAV in isolation, so two
+            locally sensible plans can still collide once executed jointly. To bound this, we
+            add a deterministic resolver that runs on the two Q9 trajectories after inference.
+            It is rule-based and applied identically to every variant in the
+            <a href="#final-results">final comparison</a>, acting as a final safety layer
+            rather than a learned module, so it can sit on top of any model without retraining.
+          </p>
+          <p>
+            <strong>Conflict definition.</strong> We first need a concrete trigger. Each car is
+            represented by its oriented hitbox swept along its predicted Q9 trajectory, and we
+            take the minimum hitbox-to-hitbox distance between the two cars over the prediction
+            horizon. A scenario is flagged as a conflict when this clearance drops below
+            3&nbsp;m: below that margin, small prediction errors are enough to turn two close
+            paths into contact.
+          </p>
+          <p>
+            <strong>Resolution rules.</strong> Each scenario passes through a fixed cascade and
+            stops at the first rule that applies:
+          </p>
+          <ol>
+            <li><em>Agreement.</em> Both cars predict the same speed class and the same
+                steering; the plans are treated as coordinated and executed unchanged.</li>
+            <li><em>No physical conflict.</em> The minimum clearance is at least 3&nbsp;m; the
+                paths do not intersect and are executed unchanged.</li>
+            <li><em>Speed reduction.</em> The two cars fall in different speed classes; the
+                faster car drops one speed rung to widen the time-to-contact margin.</li>
+            <li><em>OSM right-of-way.</em> A map is available and the two roads carry different
+                priority; the lower-priority car yields.</li>
+            <li><em>Tiebreak.</em> No earlier rule resolves the case; <code>ego</code>
+                deterministically yields to <code>CAV-1</code>, again realized as a speed
+                reduction.</li>
+          </ol>
+          <p>
+            Rule&nbsp;4 requires per-road priority and is not exercised in the reported run, so
+            the numbers below come from the four remaining rules.
+          </p>
+        </div>
+
+        <figure class="pipeline-figure" id="resolver-flow-figure">
+          <img src="./static/images/resolver.png"
+               alt="Deterministic conflict resolver flow. All 1,723 validation scenarios pass through the rule cascade; 84 start with a sub-3 m clearance and 55 remain unresolved after the cascade."
+               class="pipeline-img" style="max-width: 720px;">
+          <figcaption>
+            Deterministic conflict resolver. All 1,723 validation scenarios pass through the
+            rule cascade; 84 start with a sub-3&nbsp;m clearance and 55 remain unresolved after
+            the cascade.
+          </figcaption>
+        </figure>
+
+        <div class="content has-text-justified">
+          <p>
+            <strong>Results.</strong> The figure traces all 1,723 validation scenarios through
+            the cascade. Of these, 84 contain a sub-3&nbsp;m clearance before resolution.
+            Agreement covers 25 of them but leaves them unchanged, since matching action classes
+            are assumed coordinated. The remaining 59 reach the geometric and tiebreak branches:
+            speed reduction clears 26, the tiebreak path settles 3, and 30 cannot be opened past
+            the margin. After the cascade 55 scenarios still violate the 3&nbsp;m clearance, down
+            from 84, matching the resolver-only row of the table below. The resolver on its own
+            is therefore a modest filter; its value grows once peer intent is injected at Q8,
+            which shrinks the conflict set it has to handle.
+          </p>
+        </div>
+
+        <h3 class="title is-4">Pre-LLM peer injection</h3>
+        <div class="content has-text-justified">
+          <p>
+            We tested whether peer information should be injected before the final resolver, and
+            where in the V2V-GoT chain this information is most useful. The baseline runs both
+            CAVs independently and only resolves conflicts afterward. Our variants inject a peer
+            signal into either Q8, which predicts speed and steering, Q9, which generates the
+            final trajectory, or both. We also compare full trajectory signals against compact
+            alternatives.
+          </p>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
+              <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
+                Pre-LLM peer-injection ablations on 1,723 validation frames. Conflict counts are
+                frame counts; percentages are shown in parentheses. Best per column in boldface.
+              </caption>
+              <thead>
+                <tr>
+                  <th>Peer signal<br>&rarr; target</th>
+                  <th>Scope</th>
+                  <th>Q8 speed<br>acc. &uarr;</th>
+                  <th>Q8 steer<br>acc. &uarr;</th>
+                  <th>Q9 endpoint<br>err. &darr;</th>
+                  <th>Pred. conflicts<br>before resolver &darr;</th>
+                  <th>Pred. conflicts<br>after resolver &darr;</th>
+                  <th>Conflicts if<br>ego yields &darr;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="approach-cell">None</td>
+                  <td>all</td>
+                  <td><strong>97.7</strong></td><td><strong>95.8</strong></td><td>8.869</td>
+                  <td>84 (4.9%)</td><td>55 (3.2%)</td><td>62 (3.6%)</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q9-full &rarr; Q8</td>
+                  <td>conflict-before</td>
+                  <td>95.9</td><td>95.4</td><td>5.787</td>
+                  <td><strong>14 (0.8%)</strong></td><td><strong>7 (0.4%)</strong></td><td><strong>11 (0.6%)</strong></td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q9-full &rarr; Q9</td>
+                  <td>conflict-before</td>
+                  <td><strong>97.7</strong></td><td><strong>95.8</strong></td><td>6.115</td>
+                  <td>22 (1.3%)</td><td>10 (0.6%)</td><td>17 (1.0%)</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q9-full &rarr; Q8+Q9</td>
+                  <td>conflict-before</td>
+                  <td>95.9</td><td>95.4</td><td>6.169</td>
+                  <td>21 (1.2%)</td><td>14 (0.8%)</td><td>15 (0.9%)</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q9-full &rarr; Q8</td>
+                  <td>all</td>
+                  <td>84.7</td><td>88.8</td><td>8.128</td>
+                  <td>16 (0.9%)</td><td>12 (0.7%)</td><td>12 (0.7%)</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q9-full &rarr; Q9</td>
+                  <td>all</td>
+                  <td><strong>97.7</strong></td><td><strong>95.8</strong></td><td>24.629</td>
+                  <td>220 (12.8%)</td><td>168 (9.8%)</td><td>159 (9.2%)</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q9-full &rarr; Q8+Q9</td>
+                  <td>all</td>
+                  <td>84.7</td><td>88.8</td><td>24.749</td>
+                  <td>207 (12.0%)</td><td>185 (10.7%)</td><td>155 (9.0%)</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q9-full &rarr; Q8</td>
+                  <td>conflict-after</td>
+                  <td>96.5</td><td><strong>95.8</strong></td><td>5.693</td>
+                  <td><strong>14 (0.8%)</strong></td><td><strong>7 (0.4%)</strong></td><td><strong>11 (0.6%)</strong></td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q9-endpoint &rarr; Q8</td>
+                  <td>conflict-before</td>
+                  <td>97.5</td><td><strong>95.8</strong></td><td><strong>5.637</strong></td>
+                  <td>18 (1.0%)</td><td>9 (0.5%)</td><td>15 (0.9%)</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q7-compact &rarr; Q8</td>
+                  <td>conflict-before</td>
+                  <td>96.7</td><td>95.5</td><td>5.689</td>
+                  <td>18 (1.0%)</td><td>8 (0.5%)</td><td>14 (0.8%)</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q6-compact &rarr; Q8</td>
+                  <td>conflict-before</td>
+                  <td>97.0</td><td>95.6</td><td>5.648</td>
+                  <td>18 (1.0%)</td><td>9 (0.5%)</td><td>14 (0.8%)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            The main trend is clear: peer information is most useful when injected into Q8,
+            before speed and steering are fixed. Injecting the neighbor's full Q9 trajectory
+            into Q8 reduces post-resolver conflicts from 55 to 7. Applying the same idea only
+            after the resolver fails reaches the same final result, while being more
+            compute-efficient because it reruns only the remaining hard cases.
+          </p>
+          <p>
+            Direct Q9 injection is less reliable. It helps when restricted to conflict frames,
+            but becomes harmful when applied to all samples, increasing remaining conflicts to
+            168&ndash;185. Compact signals are also strong: Q7-compact leaves only 8 conflicts,
+            while Q9-endpoint and Q6-compact leave 9. This suggests that the useful mechanism is
+            not simply sharing more information, but sharing the right peer intent at the right
+            node: Q8 should adapt the action choice, and the deterministic resolver should
+            remain as the final safety layer.
+          </p>
+        </div>
       </div>
     </div>
+  </div>
+</section>
 
+<!-- ============================================================ -->
+<!-- FINAL RESULTS                                                 -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3" id="final-results">Final results</h2>
+        <h3 class="title is-4">Experimental setup</h3>
+        <div class="content has-text-justified">
+          <p>
+            All experiments are conducted on the V2V4Real validation split following the same
+            evaluation protocol used in V2V-GoT<sup class="cite"><a href="#ref-v2vgot">[2]</a></sup>.
+            We reuse the original question-wise metrics for all Q1&ndash;Q9 nodes, including
+            perception F1 scores, trajectory L2 distance, action accuracy, steering/speed
+            prediction error, and collision rate.
+          </p>
+          <p>
+            We evaluate the following inference variants: centralized V2V-GoT, fully
+            decentralized inference without communication, lightweight text-based messaging
+            schemes, and the proposed OSM-grounded extensions. Communication overhead is
+            additionally measured as the average transmitted payload per frame between CAVs.
+          </p>
+          <p>
+            Per question we report the metrics most relevant to that node: Q1&ndash;Q4 use
+            binary F1/precision/recall and a location F1 at 4&nbsp;m; Q5 and Q7 use L2 over
+            predicted motion vectors; Q6 uses classification accuracy; Q8 uses action edit
+            distance; Q9 uses L2, CR and PDMS.
+          </p>
+        </div>
+        <h3 class="title is-4">Results</h3>
+        <div class="content has-text-justified">
+          <p>
+            The table below reports every variant on the V2V4Real validation split.
+            Merging the two extension axes, OSM-text injection on top of the decentralized
+            <code>q1msg</code> chain, gives our strongest configuration:
+            <strong>OSM-text&nbsp;+&nbsp;Decent.</strong> is best on most metrics, including
+            trajectory L2 at Q5, Q7 and Q9, Q6 action accuracy and Q8, all while
+            transmitting zero bytes of LiDAR features between CAVs. OSM-image still holds the
+            lowest collision rate.
+          </p>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact grouped">
+              <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
+                V2V-GoT inference variants on V2V4Real val. Q1&ndash;Q4 are categorical
+                metrics (F1, higher is better); Q5/Q7/Q9 are trajectory L2 in meters (lower
+                is better); Q6 is action accuracy (%); Q8 is normalized L1 on the
+                speed/steering tokens (lower is better); Q9 CR is the collision rate;
+                Comm. MB is bytes transmitted between CAVs per frame. Best per column in
+                boldface.
+              </caption>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="col-group" colspan="4">Perception</th>
+                  <th class="col-group" colspan="3">Prediction</th>
+                  <th class="col-group" colspan="3">Planning</th>
+                  <th class="col-group">Comm.</th>
+                </tr>
+                <tr>
+                  <th>Method</th>
+                  <th>Q1 F1 &uarr;</th>
+                  <th>Q2 F1 &uarr;</th>
+                  <th>Q3 F1 &uarr;</th>
+                  <th>Q4 F1 &uarr;</th>
+                  <th>Q5 L2 &darr;</th>
+                  <th>Q6 Acc &uarr;</th>
+                  <th>Q7 L2 &darr;</th>
+                  <th>Q8 L1 &darr;</th>
+                  <th>Q9 L2 &darr;</th>
+                  <th>Q9 CR &darr;</th>
+                  <th>Comm. MB &darr;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="approach-cell">Central</td>
+                  <td><strong>51.6</strong></td><td>30.1</td><td>43.8</td><td>60.7</td>
+                  <td>8.06</td><td>87.5</td><td>7.62</td><td>0.0882</td>
+                  <td>2.62</td><td>1.84</td><td>0.4068</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Decent.</td>
+                  <td>50.3</td><td>27.9</td><td>44.1</td><td><strong>62.3</strong></td>
+                  <td>8.01</td><td>0.0</td><td>9.43</td><td>0.0897</td>
+                  <td>2.85</td><td>2.28</td><td><strong>0.0000</strong></td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">Q1msg</td>
+                  <td>51.1</td><td>27.2</td><td>34.6</td><td>60.3</td>
+                  <td>8.14</td><td>87.3</td><td>7.65</td><td>0.0879</td>
+                  <td>2.72</td><td>1.96</td><td>0.0003</td>
+                </tr>
+                <tr class="group-sep">
+                  <td class="approach-cell">OSM-image (Q9 only)</td>
+                  <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
+                  <td>8.06</td><td>87.5</td><td>7.62</td><td>0.0882</td>
+                  <td>2.10</td><td><strong>0.81</strong></td><td>0.4068</td>
+                </tr>
+                <tr>
+                  <td class="approach-cell">OSM-text (all 9 Q-nodes)</td>
+                  <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
+                  <td>8.05</td><td>87.5</td><td>7.64</td><td>0.0882</td>
+                  <td>2.55</td><td>1.81</td><td>0.4068</td>
+                </tr>
+                <tr class="is-highlight group-sep">
+                  <td class="approach-cell">OSM-text + Decent.</td>
+                  <td>50.7</td><td><strong>30.5</strong></td><td><strong>49.4</strong></td><td>51.3</td>
+                  <td><strong>6.18</strong></td><td><strong>90.8</strong></td><td><strong>5.86</strong></td><td><strong>0.0858</strong></td>
+                  <td><strong>1.80</strong></td><td>0.98</td><td><strong>0.0000</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CONCLUSION                                                    -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3" id="conclusion">Conclusion and Limitations</h2>
+        <div class="content has-text-justified">
+          <p>
+            We extended V2V-GoT along two axes. On the <strong>OSM</strong> side we recovered
+            usable GPS traces from V2V4Real, aligned them to the LiDAR BEV, and laid out three
+            injection strategies (encoder, raw image, text graph) which we compare with LoRA
+            fine-tuning under a tight compute budget. On the <strong>decentralization</strong>
+            side we showed that the GoT chain can be run per-CAV with only two short text
+            messages, recovering planning quality close to the centralized baseline on V2V4Real
+            (L2 2.72&nbsp;m vs.&nbsp;2.62&nbsp;m, CR 1.96% vs.&nbsp;1.84%).
+          </p>
+          <p>
+            <strong>Key takeaways.</strong> On the OSM side, grounding the planner in map
+            context lowers the collision rate and keeps trajectories within their road lanes
+            more often. On the decentralization side, a realistic protocol is feasible:
+            running the Graph-of-Thought chain per-CAV degrades performance only slightly in
+            exchange for much cheaper communication, and adding a message from Q1 to Q3
+            mitigates most of that performance loss. The residual degradation is acceptable.
+          </p>
+          <p>
+            <strong>The question-graph bottleneck.</strong> The reasoning graph carries a lot
+            of perception and planning context between its nodes, but the link between Q8 and
+            Q9 is far narrower: it passes only a <code>suggested_speed</code> and a
+            <code>suggested_steering</code>. That thin edge is where missing cross-CAV
+            information hurts the final plan most.
+          </p>
+          <p><strong>Limitations.</strong></p>
+          <ul>
+            <li><em>Too much context collapses the outputs.</em> Adding more context into a
+                node can collapse its predictions, an effect that is especially pronounced for
+                OSM: around 34% of the results degenerate to a (0,0) prediction.</li>
+            <li><em>The architecture overfits to both feature halves.</em> The model's output
+                collapses when the other CAV's half is zeroed; duplicating the ego's own
+                features into that half is what makes it work.</li>
+            <li><em>We underestimated the training and inference duration.</em></li>
+            <li><em>Rare close interactions.</em> V2V4Real ground truth contains only 1 frame
+                in 1,723 (0.06%) where the two CAVs' trajectories come within the resolver's
+                3&nbsp;m threshold. This makes the conflict-resolution analysis useful as a
+                stress test, but statistically limited as a benchmark for rare close-interaction
+                cases.</li>
+            <li><em>Compute availability.</em> Several variants require repeated V2V-GoT
+                inference, rerunning selected Q-nodes, or LoRA fine-tuning with additional
+                OSM/satellite inputs. Since these experiments depend on shared GPU compute
+                nodes, limited compute power and node availability constrained the number of
+                full retraining runs, random seeds, and exhaustive ablations we could perform.
+                The reported results should therefore be interpreted as the strongest validated
+                configurations under the available compute budget, rather than as a complete
+                search over all possible injection locations, prompts, and coordination
+                policies.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -2792,69 +3199,6 @@
     <h3 class="title is-4">Graph-of-thought chain (Q1 &rarr; Q9)</h3>
     <div class="demo-got" id="demo-got"></div>
 
-    <div class="callout">
-      <strong>Note.</strong> Outputs are pre-computed and bundled with the site; the
-      viewer reads <code>static/demo/demo_data.json</code> and the matching
-      pre-rendered PNGs, so no server or live model call is needed. Regenerate the
-      bundle with <code>python tools/build_demo.py</code> on the inference host.
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- CONCLUSION                                                    -->
-<!-- ============================================================ -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3" id="conclusion">Conclusion and Limitations</h2>
-        <div class="content has-text-justified">
-          <p>
-            We extended V2V-GoT along two axes. On the <strong>OSM</strong> side we recovered
-            usable GPS traces from V2V4Real, aligned them to the LiDAR BEV, and laid out three
-            injection strategies (encoder, raw image, text graph) which we compare with LoRA
-            fine-tuning under a tight compute budget. On the <strong>decentralization</strong>
-            side we showed that the GoT chain can be run per-CAV with only two short text
-            messages, recovering planning quality close to the centralized baseline on V2V4Real
-            (L2 2.72&nbsp;m vs.&nbsp;2.62&nbsp;m, CR 1.96% vs.&nbsp;1.84%).
-          </p>
-          <p>
-            <strong>Key takeaways.</strong> On the OSM side, grounding the planner in map
-            context lowers the collision rate and keeps trajectories within their road lanes
-            more often. On the decentralization side, a realistic protocol is feasible:
-            running the Graph-of-Thought chain per-CAV degrades performance only slightly in
-            exchange for much cheaper communication, and adding a message from Q1 to Q3
-            mitigates most of that performance loss. The residual degradation is acceptable.
-          </p>
-          <p>
-            <strong>The question-graph bottleneck.</strong> The reasoning graph carries a lot
-            of perception and planning context between its nodes, but the link between Q8 and
-            Q9 is far narrower: it passes only a <code>suggested_speed</code> and a
-            <code>suggested_steering</code>. That thin edge is where missing cross-CAV
-            information hurts the final plan most.
-          </p>
-          <p><strong>Limitations.</strong></p>
-          <ul>
-            <li><em>Too much context collapses the outputs.</em> Adding more context into a
-                node can collapse its predictions, an effect that is especially pronounced for
-                OSM: around 34% of the results degenerate to a (0,0) prediction.</li>
-            <li><em>The architecture overfits to both feature halves.</em> The model's output
-                collapses when the other CAV's half is zeroed; duplicating the ego's own
-                features into that half is what makes it work.</li>
-            <li><em>We underestimated the training and inference duration.</em></li>
-          </ul>
-          <p>
-            <strong>Honest leaks.</strong> All prompts use ego's coordinate
-            frame for both askers; simply switching CAV<sub>1</sub> to its own frame at
-            inference time is not a valid experiment because the LM was trained exclusively in
-            ego frame. We treat the Q6 plan broadcast as honest: real V2V protocols already
-            broadcast a vehicle's intended trajectory, and the V2V4Real ground-truth trajectory
-            is the best available proxy for that intent.
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
