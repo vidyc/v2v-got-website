@@ -1535,10 +1535,8 @@
 <!-- ============================================================ -->
 <div class="masthead" role="banner">
   <div class="mh-left">
-    EPFL <span class="mh-dot">·</span> CS-503 <span class="mh-dot">·</span>
-    <span class="mh-num">2026 / Vol. I</span>
+    EPFL <span class="mh-dot">·</span> CS-503
   </div>
-  <div class="mh-mid">V2V-GoT - Project Page</div>
   <div class="mh-right">
     <button type="button" class="theme-toggle" id="themeToggle" aria-label="Switch theme" title="Switch theme">
       <span class="t-icon" aria-hidden="true">
@@ -1563,7 +1561,6 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <div class="hero-meta">Research project · 2026</div>
           <h1 class="title publication-title">
             Decentralized Graph-of-Thoughts with OSM Map Grounding
           </h1>
@@ -1578,11 +1575,11 @@
           <div class="affiliation">EPFL &middot; CS-503 Project</div>
 
           <div class="hero-actions">
-            <a href="#" class="hero-btn is-primary" target="_blank" rel="noopener">
+            <a href="https://github.com/tercierp/cs503-v2v-project" class="hero-btn is-primary" target="_blank" rel="noopener">
               <span class="icon"><i class="fab fa-github"></i></span>
               <span>Code</span>
             </a>
-            <a href="#" class="hero-btn" target="_blank" rel="noopener">
+            <a href="./report.pdf" class="hero-btn" target="_blank" rel="noopener">
               <span class="icon"><i class="fas fa-file-pdf"></i></span>
               <span>Report</span>
             </a>
@@ -1623,26 +1620,26 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified has-dropcap">
           <p>
-            V2V-GoT casts cooperative autonomous driving as a Graph-of-Thoughts (GoT) over
-            nine perception, prediction and planning question nodes (Q1&hellip;Q9), with all
-            participating CAVs sharing one centralized LM that fuses their LiDAR features. We
-            build on this baseline along two axes.
-          </p>
-          <p>
-            <strong>OSM map grounding.</strong> We recover GPS traces from V2V4Real metadata,
-            align them to the LiDAR BEV frame, and study three strategies for injecting the
-            local OpenStreetMap road graph into the GoT: a learned visual encoder feeding the
-            projector, a rasterized OSM image fed directly into LLaVA's visual context, and a
-            short textual description of the road graph injected as text tokens.
-          </p>
-          <p>
-            <strong>Decentralization.</strong> Each CAV runs the entire Q1&hellip;Q9 chain on
-            its own LiDAR. Vehicles cooperate only through two compact V2V text messages
-            broadcast between question nodes. Our full decentralized configuration trails the
-            centralized baseline by only 0.10&nbsp;m on planning L2 (2.72&nbsp;m vs.
-            2.62&nbsp;m) and 0.12&nbsp;pp on collision rate (1.96% vs. 1.84%) on V2V4Real,
-            while exposing a clear Q8&rarr;Q9 information bottleneck in the original GoT
-            design.
+            The V2V-GoT approach formulates the task of cooperative autonomous driving as a
+            Graph-of-Thoughts (GoT) among nine question nodes, yet with a centralized
+            large-language model (LLM) that fuses the raw data from LiDAR scans obtained from
+            all connected autonomous vehicles (CAVs). In our study, we extend V2V-GoT in a
+            decentralized way on two axes independently. First, using the metadata available
+            in the V2V4Real dataset, we get the GPS trajectories of all vehicles and integrate
+            the OSM map data of the local road network graph into the GoT pipeline through two
+            methods: an Overpass API query for pure-text data and a ViT encoder processing
+            satellite imagery. Second, we decentralize the pipeline, which implies that all
+            questions Q1&ndash;Q9 are executed locally at each individual CAV, and instead of
+            exchanging features across CAVs, we exchange plain text messages between CAVs. The
+            result is that decentralized V2V-GoT performs equally to the original one with
+            only a marginal drop in performance, namely &minus;0.10&nbsp;m L2 and
+            &minus;0.12% collisions on V2V4Real, yet reducing cross-CAV communication 1000
+            times to 0.0003&nbsp;MB versus 0.4068&nbsp;MB per frame. More interesting,
+            combining the two axes leads to: stacking the textual OSM grounding over the
+            decentralized chain proves more effective than the centralized setup, reducing the
+            planning L2 error from 2.62&nbsp;m to 1.80&nbsp;m (&minus;31%), and reducing the
+            collision rate almost in half, from 1.84% to 0.98%, without adding even one penny
+            in terms of the inter-CAV communication overhead.
           </p>
         </div>
       </div>
@@ -1690,36 +1687,48 @@
         <h2 class="title is-3" id="intro">Introduction</h2>
         <div class="content has-text-justified">
           <p>
-            <strong>Vehicle-to-vehicle (V2V) cooperative perception</strong> lets connected
-            cars see beyond their own sensors by exchanging information with nearby
-            vehicles. The motivation is concrete: a car's own LiDAR is blind to anything
-            occluded by a truck, a building, or a hill, but a neighbouring car very often
-            is not. Decoding the shared scene correctly is the difference between a planner
-            that knows about an oncoming pedestrian and one that does not, and the safety
-            ceiling of single-vehicle perception is plausibly capped by exactly the kinds
-            of occlusions that V2V can cut through.
-          </p>
-          <p>
-            Recent academic work has reframed cooperative driving as a question-answering
-            problem on top of a Multimodal LLM.
+            V2V cooperative perception allows a connected vehicle to perceive further than
+            its onboard sensor by communicating with other vehicles within its vicinity. The
+            goal is simple: a car's LiDAR cannot see any objects occluded by a truck, a
+            building, or a hill, while another vehicle nearby certainly can. Recently,
+            research papers have posed cooperative driving as a question-answer problem
+            using a multimodal LLM.
             <strong>V2V-LLM</strong><sup class="cite"><a href="#ref-v2vllm">[1]</a></sup>
-            opened this line by curating the V2V-QA dataset on V2V4Real (grounding,
-            notable-object identification, planning) and proposing a single LLaVA-based
-            MLLM that fuses scene- and object-level features from every CAV in one pass.
+            pioneered this line of attack with a multimodal LLM on the V2V-QA dataset
+            (created on the foundation of
+            V2V4Real<sup class="cite"><a href="#ref-v2v4real">[3]</a></sup>) and
             <strong>V2V-GoT</strong><sup class="cite"><a href="#ref-v2vgot">[2]</a></sup>
-            extends that setup with a graph-of-thoughts reasoning chain: it curates the
-            larger V2V-GoT-QA dataset (nine question nodes covering occlusion-aware
-            perception, planning-aware prediction, and planning), where the answer of each
-            parent node becomes the context of its child. Both works keep a
-            <em>centralized-fusion</em> assumption - one model still sees every car at
-            once - which is bandwidth-heavy, time-synchronization sensitive, and ignores
-            the trust boundary between vehicles from different manufacturers or operators.
+            expanded on it by posing a graph-of-thoughts chain on nine question nodes
+            relating to occlusion-aware perception, planning-aware prediction, and
+            planning. However, both frameworks rely on the same two assumptions: the
+            <em>centralized-fusion</em> assumption (where one centralized LM takes the BEV
+            LiDAR features of all the CAVs in one go) and the <em>map-blindness</em>
+            assumption. The centralized approach suffers from a high bandwidth overhead, a
+            tight time-synchronization constraint, and disregards the trust boundary among
+            manufacturers. Both challenges are considered, and each research question
+            corresponds to a single contribution.
           </p>
           <p>
-            The next section reviews both papers in detail, along with the V2V4Real
-            benchmark<sup class="cite"><a href="#ref-v2v4real">[3]</a></sup> on which the
-            rest of the page is measured. Our own hypotheses and the two contributions that
-            follow from them sit directly on top of that related work.
+            <em>RQ1: Will a concrete map prior decrease road-geometry violation?</em> Most
+            of the errors in the V2V-GoT plans are caused by road geometry violations and
+            not by the perception module. We extract per-frame GPS coordinates from
+            V2V4Real metadata, match them to the LiDAR BEV frame, and experiment with two
+            different types of local OSM textual query with the Overpass API, an OSM image
+            provided to the visual encoder, and a ViT encoder with lightweight LoRA
+            fine-tuning.
+          </p>
+          <p>
+            <em>RQ2: Will full decentralization of the V2V cooperation deteriorate
+            planning?</em> We perform all nine steps of the question-and-answer chain on a
+            per-CAV basis, where cross-CAV feature fusion is replaced with compact text
+            messages exchange or no message at all between question nodes: visible objects
+            from the receiver's Q1 provided to Q3 of the sender, sender's Q9 plan provided
+            to Q6 of the receiver.
+          </p>
+          <p>
+            The two contributions complement each other, with OSM injection working
+            independently of the decentralization step. The results will be provided for
+            all nine test scenarios from V2V4Real (1,723 frame pairs total, 3,446 samples).
           </p>
         </div>
       </div>
@@ -1735,6 +1744,26 @@
     <div class="columns is-centered">
       <div class="column is-full-width">
         <h2 class="title is-3" id="related">Related Works</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            <strong>Backbones for cooperative perception.</strong>
+            CoBEVT<sup class="cite"><a href="#ref-cobevt">[4]</a></sup>,
+            Where2comm<sup class="cite"><a href="#ref-where2comm">[5]</a></sup>, and
+            OPV2V<sup class="cite"><a href="#ref-opv2v">[6]</a></sup>
+            investigate multi-CAV feature-level fusion without utilizing an LLM. Their
+            detector backbone is adopted in V2V-GoT while our attention is on reasoning
+            above.
+          </p>
+          <p>
+            <strong>Planning with map conditionings.</strong> The work by
+            TOKEN<sup class="cite"><a href="#ref-token">[7]</a></sup> demonstrates that HD
+            maps are essential to produce better trajectories in nuScenes. HD maps are not
+            available in many places around the world and may even be owned by an operator
+            company. Thus, they are replaced with OpenStreetMaps acquired via the public
+            Overpass API.
+          </p>
+        </div>
 
         <h3 class="title is-4">
           V2V-LLM
@@ -2096,14 +2125,6 @@
           pull around the ego.
         </figcaption>
       </figure>
-      <figure class="image">
-        <div class="diagram-slot">
-          <strong>[Process diagram - to be drawn]</strong><br>
-          End-to-end documentation of the GPS recovery + LiDAR alignment pipeline:
-          metadata extraction, frame transform, tile query, BEV rasterization, and the
-          overlay shown above.
-        </div>
-      </figure>
       <p>
         Orientation and position match the expected road geometry. From this point on
         every frame in the V2V4Real split has an aligned <code>(lat, lng)</code>, which
@@ -2203,25 +2224,38 @@
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
           <thead>
             <tr>
-              <th>Configuration</th>
-              <th>L2 (m) &darr;</th>
-              <th>CR &darr;</th>
-              <th>Wrong-lane rate &darr;</th>
-              <th>Training cost</th>
+              <th>Method</th>
+              <th>Q1 F1 &uarr;</th>
+              <th>Q2 F1 &uarr;</th>
+              <th>Q3 F1 &uarr;</th>
+              <th>Q4 F1 &uarr;</th>
+              <th>Q5 L2 &darr;</th>
+              <th>Q6 Acc &uarr;</th>
+              <th>Q7 L2 &darr;</th>
+              <th>Q8 L1 &darr;</th>
+              <th>Q9 L2 &darr;</th>
+              <th>Q9 CR &darr;</th>
+              <th>Comm. MB &darr;</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="approach-cell">baseline</td>
-              <td>-</td><td>-</td><td>-</td><td>reference</td>
+              <td class="approach-cell">Central</td>
+              <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
+              <td>8.06</td><td>87.5</td><td><strong>7.62</strong></td><td>0.0882</td>
+              <td>2.62</td><td>1.84</td><td>0.4068</td>
             </tr>
             <tr>
-              <td class="approach-cell">+ text-only inference</td>
-              <td>-</td><td>-</td><td>-</td><td>zero-shot</td>
+              <td class="approach-cell">OSM-image</td>
+              <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
+              <td>8.06</td><td>87.5</td><td><strong>7.62</strong></td><td>0.0882</td>
+              <td><strong>2.10</strong></td><td><strong>0.81</strong></td><td>0.4068</td>
             </tr>
             <tr>
-              <td class="approach-cell">+ ViT encoder</td>
-              <td>-</td><td>-</td><td>-</td><td>-</td>
+              <td class="approach-cell">OSM-text</td>
+              <td>51.6</td><td>30.1</td><td>43.8</td><td>60.7</td>
+              <td><strong>8.05</strong></td><td>87.5</td><td>7.64</td><td>0.0882</td>
+              <td>2.55</td><td>1.81</td><td>0.4068</td>
             </tr>
           </tbody>
         </table>
@@ -2245,27 +2279,60 @@
     <h3 class="title is-4">Methodology</h3>
     <div class="content has-text-justified">
       <p>
-        In the original system, a single LM jointly consumes BEV LiDAR features from
-        <em>both</em> CAVs at every question. The decentralized version we study replaces this
-        with per-CAV inference: each vehicle independently runs the full Q1&hellip;Q9 chain on
-        its own LiDAR. Cooperation is restricted to two compact text messages broadcast between
-        question nodes:
+        The original V2V-GoT formulation assumes a centralized inference pipeline in which
+        all CAVs transmit their local observations to a central LLM. In practice, each CAV
+        sends its own LiDAR representation together with the textual context accumulated
+        along the question-answer chain. While this design maximizes the amount of
+        information available to the planner, it introduces a major scalability limitation.
+        In a realistic deployment, every CAV would need to continuously broadcast
+        high-dimensional LiDAR features to neighbouring vehicles or to a centralized
+        server. For a system composed of $N$ vehicles, this results in an all-to-all
+        communication pattern with $\mathcal{O}(N(N-1))$ exchanged messages per timestep.
+        Since LiDAR feature tensors are significantly larger than text messages (around
+        0.4&nbsp;MB when compressed), the resulting bandwidth and synchronization
+        requirements rapidly become impractical for real-world deployment.
+      </p>
+      <p>
+        This motivates the exploration of decentralized cooperative reasoning, where each
+        CAV performs inference independently and cooperation is restricted to lightweight
+        textual communication. Our objective is to quantify how much planning and
+        perception performance deteriorates when raw sensor sharing is removed, and to
+        determine whether text-based coordination can compensate for the missing
+        information. We evaluate two decentralized settings.
+      </p>
+      <p>
+        <strong>Fully isolated decentralization (<code>decent</code>).</strong> As a first
+        baseline, we completely isolate both CAVs during inference. Each vehicle executes
+        the full Q1&hellip;Q9 Graph-of-Thought chain locally using only its own LiDAR
+        observations and internal reasoning state. No LiDAR features, intermediate
+        embeddings, or textual messages are exchanged between agents. This setting
+        establishes the lower-bound performance achievable without any cooperation and
+        lets us directly measure the contribution of inter-agent information sharing in
+        the original centralized formulation.
+      </p>
+      <p>
+        <strong>Text-based decentralized cooperation (<code>q1msg</code>).</strong> We
+        then progressively reintroduce cooperation using lightweight text messaging
+        between CAVs. Instead of exchanging raw LiDAR features, agents communicate compact
+        natural-language summaries derived from intermediate GoT nodes. The communication
+        protocol follows the semantics already present in the original V2V-GoT reasoning
+        graph, where outputs from upstream nodes can be reused as contextual information
+        for downstream planning and prediction tasks. Two messages are used:
       </p>
       <ol>
-        <li><strong>Q1 message (q1msg).</strong> After running Q1, each CAV broadcasts its list
-            of visible notable objects (positions + motion descriptor). The receiving CAV
-            concatenates this list to its own Q3 prompt, giving it a chance to reason about
-            objects it cannot see directly.</li>
+        <li><strong>Q1 message (q1msg).</strong> After running Q1, each CAV broadcasts its
+            list of visible notable objects (positions + motion descriptor). The receiving
+            CAV concatenates this list to its own Q3 prompt, giving it a chance to reason
+            about objects it cannot see directly.</li>
         <li><strong>Q9 plan broadcast (Q6 input).</strong> Each CAV broadcasts its intended
-            future trajectory, matching the convention used by cooperative-driving protocols
-            where a vehicle announces its planned path. The receiver pastes this trajectory
-            into its Q6 prompt so the chain can reason about whether the other CAV is itself a
-            notable object on its path.</li>
+            future trajectory, matching the convention used by cooperative-driving
+            protocols where a vehicle announces its planned path. The receiver pastes this
+            trajectory into its Q6 prompt so the chain can reason about whether the other
+            CAV is itself a notable object on its path.</li>
       </ol>
       <p>
-        Concretely, the chain above is duplicated - one instance per CAV, running on
-        disjoint inputs - and the two new cross-CAV edges link the two chains at Q3 and
-        Q6.
+        Concretely, the chain above is duplicated, one instance per CAV running on disjoint
+        inputs, and the two cross-CAV edges link the two chains at Q3 and Q6.
       </p>
     </div>
 
@@ -2514,32 +2581,6 @@
       </figcaption>
     </figure>
 
-    <!-- Implementation -->
-    <h3 class="title is-4">Implementation</h3>
-    <div class="content has-text-justified">
-      <p>
-        The decentralized chain is run by invoking the V2V-GoT model twice per frame, once
-        per CAV, and threading the cross-CAV messages between the two runs at Q3 and Q6.
-        The model weights themselves are reused unchanged; only the prompt-construction
-        logic is modified.
-      </p>
-      <p>
-        Each <strong>q1msg</strong> serializes the sender's Q1 output as a short list of
-        <code>(x, y)</code> positions plus a motion descriptor per object and is pasted
-        into the receiver's Q3 prompt before that node is queried. Each <strong>Q9
-        plan</strong> serializes the sender's predicted trajectory as the six future
-        <code>(x, y)</code> waypoints and is pasted into the receiver's Q6 prompt. Both
-        messages stay in V2V-GoT's ego coordinate frame, so no transform is needed on the
-        receiver side.
-      </p>
-      <p>
-        For evaluation we replay each V2V4Real frame twice, once asking from the perspective
-        of <code>ego</code> and once from <code>CAV<sub>1</sub></code>, for a total of 3446
-        samples per configuration. The 9 scenarios and 1723 underlying frame pairs are the
-        ones shown in <a href="#related">Related Works</a>.
-      </p>
-    </div>
-
     <!-- Experiments -->
     <h3 class="title is-4">Experiments</h3>
     <div class="content has-text-justified">
@@ -2626,55 +2667,42 @@
       <div class="table-container">
         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth compact">
           <caption style="caption-side:bottom; text-align:left; padding-top:0.4rem;">
-            Aggregate metrics across all 3446 samples. Best decentralized value per column
-            shaded green; worst shaded red.
+            Aggregate metrics across all 3446 samples. Best per column in boldface.
           </caption>
           <thead>
             <tr>
-              <th>Approach</th>
-              <th>Q1 F1@4 &uarr;</th>
-              <th>Q3 F1@4 &uarr;</th>
-              <th>Q4 acc &uarr;</th>
+              <th>Method</th>
+              <th>Q1 F1 &uarr;</th>
+              <th>Q2 F1 &uarr;</th>
+              <th>Q3 F1 &uarr;</th>
+              <th>Q4 F1 &uarr;</th>
               <th>Q5 L2 &darr;</th>
-              <th>Q6 acc &uarr;</th>
+              <th>Q6 Acc &uarr;</th>
               <th>Q7 L2 &darr;</th>
-              <th>Q8 edit &darr;</th>
+              <th>Q8 L1 &darr;</th>
               <th>Q9 L2 &darr;</th>
               <th>Q9 CR &darr;</th>
-              <th>Q9 PDMS &uarr;</th>
+              <th>Comm. MB &darr;</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="approach-cell">central</td>
-              <td>0.516</td><td>0.438</td><td>0.905</td><td>8.06</td><td>0.875</td>
-              <td>7.62</td><td>0.088</td><td>2.621</td><td>0.0184</td><td>0.876</td>
+              <td class="approach-cell">Central</td>
+              <td><strong>51.6</strong></td><td><strong>30.1</strong></td><td>43.8</td><td>60.7</td>
+              <td>8.06</td><td><strong>87.5</strong></td><td><strong>7.62</strong></td><td>0.0882</td>
+              <td><strong>2.62</strong></td><td><strong>1.84</strong></td><td>0.4068</td>
             </tr>
             <tr>
-              <td class="approach-cell">strip</td>
-              <td>0.511</td>
-              <td class="metric-best">0.427</td>
-              <td>0.893</td>
-              <td class="metric-best">7.97</td>
-              <td class="metric-worst">0.000</td>
-              <td class="metric-worst">9.06</td>
-              <td class="metric-worst">0.093</td>
-              <td class="metric-worst">2.725</td>
-              <td class="metric-worst">0.0206</td>
-              <td class="metric-worst">0.859</td>
+              <td class="approach-cell">Decent.</td>
+              <td>50.3</td><td>27.9</td><td><strong>44.1</strong></td><td><strong>62.3</strong></td>
+              <td><strong>8.01</strong></td><td>0.0</td><td>9.43</td><td>0.0897</td>
+              <td>2.85</td><td>2.28</td><td><strong>0.0000</strong></td>
             </tr>
             <tr class="is-highlight">
-              <td class="approach-cell">q1msg</td>
-              <td>0.511</td>
-              <td class="metric-worst">0.346</td>
-              <td>0.893</td>
-              <td class="metric-worst">8.14</td>
-              <td class="metric-best">0.873</td>
-              <td class="metric-best">7.65</td>
-              <td class="metric-best">0.088</td>
-              <td class="metric-best">2.723</td>
-              <td class="metric-best">0.0196</td>
-              <td class="metric-best">0.861</td>
+              <td class="approach-cell">Q1msg</td>
+              <td>51.1</td><td>27.2</td><td>34.6</td><td>60.3</td>
+              <td>8.14</td><td>87.3</td><td>7.65</td><td><strong>0.0879</strong></td>
+              <td>2.72</td><td>1.96</td><td>0.0003</td>
             </tr>
           </tbody>
         </table>
@@ -2687,7 +2715,10 @@
         across all three configurations, since centralized features barely help once Q7 has
         produced a reasonable motion summary. Yet Q9 numbers shift noticeably between
         configurations. Since Q9 only consumes Q8 as text input, this sensitivity has to
-        come from the <em>visual</em> tokens (the BEV LiDAR features). Q9 is therefore the
+        come from the <em>visual</em> tokens (the BEV LiDAR features). The question graph is
+        the bottleneck here: its nodes pass each other rich perception and planning context,
+        but the Q8&rarr;Q9 edge is unusually thin, carrying only a <code>suggested_speed</code>
+        and <code>suggested_steering</code>. Q9 is therefore the
         place where missing cross-CAV LiDAR hurts most: there is no rich textual context to
         compensate.
       </p>
@@ -2789,27 +2820,73 @@
             (L2 2.72&nbsp;m vs.&nbsp;2.62&nbsp;m, CR 1.96% vs.&nbsp;1.84%).
           </p>
           <p>
-            <strong>Limitations and honest leaks.</strong> All prompts use ego's coordinate
+            <strong>Key takeaways.</strong> On the OSM side, grounding the planner in map
+            context lowers the collision rate and keeps trajectories within their road lanes
+            more often. On the decentralization side, a realistic protocol is feasible:
+            running the Graph-of-Thought chain per-CAV degrades performance only slightly in
+            exchange for much cheaper communication, and adding a message from Q1 to Q3
+            mitigates most of that performance loss. The residual degradation is acceptable.
+          </p>
+          <p>
+            <strong>The question-graph bottleneck.</strong> The reasoning graph carries a lot
+            of perception and planning context between its nodes, but the link between Q8 and
+            Q9 is far narrower: it passes only a <code>suggested_speed</code> and a
+            <code>suggested_steering</code>. That thin edge is where missing cross-CAV
+            information hurts the final plan most.
+          </p>
+          <p><strong>Limitations.</strong></p>
+          <ul>
+            <li><em>Too much context collapses the outputs.</em> Adding more context into a
+                node can collapse its predictions, an effect that is especially pronounced for
+                OSM: around 34% of the results degenerate to a (0,0) prediction.</li>
+            <li><em>The architecture overfits to both feature halves.</em> The model's output
+                collapses when the other CAV's half is zeroed; duplicating the ego's own
+                features into that half is what makes it work.</li>
+            <li><em>We underestimated the training and inference duration.</em></li>
+          </ul>
+          <p>
+            <strong>Honest leaks.</strong> All prompts use ego's coordinate
             frame for both askers; simply switching CAV<sub>1</sub> to its own frame at
             inference time is not a valid experiment because the LM was trained exclusively in
             ego frame. We treat the Q6 plan broadcast as honest: real V2V protocols already
             broadcast a vehicle's intended trajectory, and the V2V4Real ground-truth trajectory
             is the best available proxy for that intent.
           </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- AUTHOR CONTRIBUTIONS                                          -->
+<!-- ============================================================ -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3" id="contributions">Author Contributions</h2>
+        <div class="content has-text-justified">
           <p>
-            <strong>Future work.</strong>
+            A.M.L. and I.F. conceived the two extension axes in discussion with all
+            authors. I.F. recovered the true GPS coordinates from the V2V4Real metadata
+            and validated alignment by overlaying LiDAR BEV onto the recovered positions,
+            unblocking all downstream OSM work; he also implemented the OSM
+            text-embedding injection and obtained the best-performing model by limiting
+            per-node context through a combined decentralized and text-OSM configuration.
+            A.M.L. and P.T. reproduced the V2V-GoT inference pipeline on V2V-GoT-QA
+            (matching reported numbers within &plusmn;0.2%), characterized the per-epoch
+            training cost on the available GPUs, built the project webpage, and developed
+            the alternative decentralized variants. P.T. implemented the shared training
+            pipeline and the synthetic road-representation sanity check for OSM-style
+            token injection, developed the image-based OSM model, and investigated
+            conflict-reduction strategies for the decentralized and <code>q1msg</code>
+            settings under partial and no information sharing. I.B. explored alternative
+            cooperative-driving datasets and adapted them toward the V2V-QA format, and
+            studied late-stage information injection routing a CAV's final-node output
+            back into another CAV's prediction Q-node. All authors discussed the results
+            and contributed to the final manuscript.
           </p>
-          <ul>
-            <li><em>OSM &times; decentralization:</em> stack the chosen OSM injection on top of
-                <code>q1msg</code>; OSM is a per-CAV signal and should compose cleanly.</li>
-            <li><em>Q5 cross-CAV messaging:</em> route the sender's Q5 motion predictions into
-                the receiver's Q7 prompt, the only major node that currently has no cooperative
-                input.</li>
-            <li><em>Q9 with synthetic perception text:</em> short fine-tune of Q9 with a richer
-                prompt containing Q3/Q5/Q6/Q7 outputs, so that planning can compensate textually
-                for missing cross-CAV visual tokens. Directly targets the Q8&rarr;Q9
-                bottleneck.</li>
-          </ul>
         </div>
       </div>
     </div>
@@ -2845,6 +2922,37 @@
             Cooperative Perception.</b>
             CVPR 2023.
             <a href="https://arxiv.org/abs/2303.07601" target="_blank" rel="noopener">arxiv.org/abs/2303.07601</a>
+          </li>
+          <li id="ref-cobevt">
+            Xu, Tu, Xiang, Pham, Bai, Ma.
+            <b>CoBEVT: Cooperative Bird's Eye View Semantic Segmentation with Sparse
+            Transformers.</b>
+            CoRL 2022.
+            <!-- TODO: verify arXiv URL -->
+            <a href="https://arxiv.org/abs/2207.02202" target="_blank" rel="noopener">arxiv.org/abs/2207.02202</a>
+          </li>
+          <li id="ref-where2comm">
+            Hu, Fang, Lu, Yuan, Yin, Wang, Cui, Wang.
+            <b>Where2comm: Communication-Efficient Collaborative Perception via Spatial
+            Confidence Maps.</b>
+            NeurIPS 2022.
+            <!-- TODO: verify arXiv URL -->
+            <a href="https://arxiv.org/abs/2209.12836" target="_blank" rel="noopener">arxiv.org/abs/2209.12836</a>
+          </li>
+          <li id="ref-opv2v">
+            Xu, Xiang, Tu, Xia, Yang, Ma.
+            <b>OPV2V: An Open Benchmark Dataset and Fusion Pipeline for Perception with
+            Vehicle-to-Vehicle Communication.</b>
+            ICRA 2022.
+            <!-- TODO: verify arXiv URL -->
+            <a href="https://arxiv.org/abs/2109.07644" target="_blank" rel="noopener">arxiv.org/abs/2109.07644</a>
+          </li>
+          <li id="ref-token">
+            <!-- TODO: verify TOKEN citation (multiple papers share the name) -->
+            TOKEN.
+            <b>Tokenize the World into Object-level Knowledge to Address Long-tail Events
+            in Autonomous Driving.</b>
+            <!-- venue and URL pending verification -->
           </li>
         </ol>
       </div>
