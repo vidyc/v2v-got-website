@@ -3680,18 +3680,26 @@
             </p>
           </div>
 
-          <div class="kpi-grid" style="grid-template-columns:repeat(2, 1fr);">
+          <div class="kpi-grid" style="grid-template-columns:repeat(4, 1fr);">
             <div class="kpi-card">
-              <span class="kpi-label"><code>q1msg</code>: gap to centralized</span>
-              <span class="kpi-value">+0.10<span class="kpi-unit">m L2</span></span>
-              <span class="kpi-sub">+0.12<span class="kpi-unit">pp CR</span></span>
-              <span class="kpi-note">Communication: 0.0003 MB (300× reduction)</span>
+              <span class="kpi-label">Planning L2 error</span>
+              <span class="kpi-value" style="color:var(--good);">&minus;31%</span>
+              <span class="kpi-note">2.62 &rarr; 1.80 m</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Collision rate</span>
+              <span class="kpi-value" style="color:var(--good);">&minus;47%</span>
+              <span class="kpi-note">1.84% &rarr; 0.98%</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Prediction L2 (Q7)</span>
+              <span class="kpi-value" style="color:var(--good);">&minus;23%</span>
+              <span class="kpi-note">7.62 &rarr; 5.86 m</span>
             </div>
             <div class="kpi-card is-accent">
-              <span class="kpi-label">Map prior alone closes</span>
-              <span class="kpi-value">&minus;31%</span>
-              <span class="kpi-sub">of the cooperation gap</span>
-              <span class="kpi-note">OSM-text + no V2V: 1.80 m L2, 0.98% CR</span>
+              <span class="kpi-label">Comm. per frame</span>
+              <span class="kpi-value">0.0000<span class="kpi-unit">MB</span></span>
+              <span class="kpi-note">vs 0.4068 MB</span>
             </div>
           </div>
 
