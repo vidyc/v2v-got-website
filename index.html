@@ -2189,7 +2189,9 @@
         instead of treating them as noise. Only the ViT, the projector and the LoRA
         adapters are updated; the rest of the LLaVA backbone stays frozen, which protects
         the pre-trained Q1&hellip;Q9 reasoning we are trying to extend rather than
-        replace.
+        replace. In the reported results, satellite tokens are injected only at Q9, so the
+        LLaVA fine-tuning affects only the final planning node; upstream nodes run without
+        the satellite branch active.
       </p>
       <figure class="pipeline-figure">
         <img src="./static/images/v2vgot_with_osm_arch.png"
@@ -2917,13 +2919,10 @@
             </table>
           </div>
           <p>
-            Map grounding improves planning while leaving perception and communication
-            untouched: every Q1&ndash;Q8 metric and the 0.41&nbsp;MB per-frame communication
-            cost are identical to the baseline, since OSM is a per-CAV signal injected only at
-            Q9. The satellite-image branch is strongest, cutting the collision rate from 1.84%
-            to 0.81% and Q9 trajectory L2 from 2.62&nbsp;m to 2.10&nbsp;m; the lighter text
-            query gives a smaller but consistent gain (CR 1.81%, L2 2.55&nbsp;m). Both keep
-            trajectories within their road lanes more often.
+            The architecture above describes the satellite branch in full generality: a trainable ViT encoder, a projector into LLaVA's embedding space, and a LoRA adapter. In practice we restrict the satellite tokens to Q9. We first fed them at every Q-node, mirroring the text setup, but the same context-overflow collapse we document for dense map embeddings reappeared: an image token sequence is far heavier than a one-line OSM caption, and stacking it across all nine nodes pushed the LiDAR and language tokens out of the model's usable context. With over 300 GPU-hours already spent across the text and image variants, and node availability on the shared cluster capping how many full retrains we could afford, we did not pursue a per-node image schedule further. We instead inject the satellite tokens only at Q9, where the OSM prior is most directly tied to the final trajectory, and report that configuration as OSM-image (Q9 only). The all-node visual variant is therefore an attempted design we could not validate under the compute budget, not a result we claim.
+          </p>
+          <p>
+            Map grounding improves planning while leaving perception and communication untouched: upstream nodes are inherited unchanged from the centralized model since the satellite branch is active only at Q9. The satellite-image branch is strongest, cutting the collision rate from 1.84% to 0.81% and Q9 trajectory L2 from 2.62&nbsp;m to 2.10&nbsp;m; the lighter text query gives a smaller but consistent gain (CR 1.81%, L2 2.55&nbsp;m). Both keep trajectories within their road lanes more often.
           </p>
           <p>
             These experiments also point to <em>how</em> the map should enter the chain.
